@@ -46,6 +46,7 @@ setup(
         ),
       Extension("xbob.ip.base._library",
         [
+          "xbob/ip/base/zigzag.cpp",
           "xbob/ip/base/utils.cpp",
           "xbob/ip/base/main.cpp",
           ],
