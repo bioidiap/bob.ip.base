@@ -201,7 +201,7 @@ latex_font_size = '10pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'xbob_ip_base.tex', u'Bob Color Conversion Utilities',
+  ('index', 'xbob_ip_base.tex', u'Bob Image Processing Utilities',
    u'Biometrics Group, Idiap Research Institute', 'manual'),
 ]
 
@@ -241,7 +241,7 @@ rst_epilog = """
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'xbob_ip_base', u'Bob Color Conversion Utilities', [u'Idiap Research Institute'], 1)
+    ('index', 'xbob_ip_base', u'Bob Image Processing Utilities', [u'Idiap Research Institute'], 1)
 ]
 
 # Default processing flags for sphinx
