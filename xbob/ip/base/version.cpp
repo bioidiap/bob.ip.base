@@ -15,6 +15,7 @@
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/version.hpp>
 #include <boost/format.hpp>
+#include <vl/generic.h>
 
 #ifdef NO_IMPORT_ARRAY
 #undef NO_IMPORT_ARRAY
@@ -81,6 +82,13 @@ static PyObject* python_version() {
 }
 
 /**
+ * VLFeat version
+ */
+static PyObject* vlfeat_version() {
+  return Py_BuildValue("s", VL_VERSION_STRING);
+}
+
+/**
  * Bob version, API version and platform
  */
 static PyObject* bob_version() {
@@ -115,6 +123,7 @@ static PyObject* build_version_dictionary() {
   if (!dict_steal(retval, "NumPy", numpy_version())) return 0;
   if (!dict_steal(retval, "xbob.blitz", xbob_blitz_version())) return 0;
   if (!dict_steal(retval, "Bob", bob_version())) return 0;
+  if (!dict_steal(retval, "VLFeat", vlfeat_version())) return 0;
 
   Py_INCREF(retval);
   return retval;
