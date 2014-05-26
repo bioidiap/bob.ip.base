@@ -2,16 +2,16 @@
 .. Laurent El Shafey <Laurent.El-Shafey@idiap.ch>
 .. Mon Apr 14 20:31:18 CEST 2014
 
-.. image:: https://travis-ci.org/bioidiap/xbob.ip.base.svg?branch=master
-   :target: https://travis-ci.org/bioidiap/xbob.ip.base
-.. image:: https://coveralls.io/repos/bioidiap/xbob.ip.base/badge.png
-   :target: https://coveralls.io/r/bioidiap/xbob.ip.base
-.. image:: http://img.shields.io/github/tag/bioidiap/xbob.ip.base.png
-   :target: https://github.com/bioidiap/xbob.ip.base
-.. image:: http://img.shields.io/pypi/v/xbob.ip.base.png
-   :target: https://pypi.python.org/pypi/xbob.ip.base
-.. image:: http://img.shields.io/pypi/dm/xbob.ip.base.png
-   :target: https://pypi.python.org/pypi/xbob.ip.base
+.. image:: https://travis-ci.org/bioidiap/bob.ip.base.svg?branch=master
+   :target: https://travis-ci.org/bioidiap/bob.ip.base
+.. image:: https://coveralls.io/repos/bioidiap/bob.ip.base/badge.png
+   :target: https://coveralls.io/r/bioidiap/bob.ip.base
+.. image:: http://img.shields.io/github/tag/bioidiap/bob.ip.base.png
+   :target: https://github.com/bioidiap/bob.ip.base
+.. image:: http://img.shields.io/pypi/v/bob.ip.base.png
+   :target: https://pypi.python.org/pypi/bob.ip.base
+.. image:: http://img.shields.io/pypi/dm/bob.ip.base.png
+   :target: https://pypi.python.org/pypi/bob.ip.base
 
 =================================
  Python bindings for bob.ip.base
@@ -42,7 +42,7 @@ Testing
 
 You can run a set of tests using the nose test runner::
 
-  $ nosetests -sv xbob.ip.base
+  $ nosetests -sv bob.ip.base
 
 .. warning::
 
@@ -59,7 +59,7 @@ You can run our documentation tests using sphinx itself::
 
 You can test overall test coverage with::
 
-  $ nosetests --with-coverage --cover-package=xbob.ip.base
+  $ nosetests --with-coverage --cover-package=bob.ip.base
 
 The ``coverage`` egg must be installed for this to work properly.
 

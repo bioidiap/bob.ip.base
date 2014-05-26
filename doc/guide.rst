@@ -8,13 +8,13 @@
 
   import numpy
   import math
-  import xbob.io.base
-  import xbob.io.image
-  import xbob.ip.base
-  from xbob.io.base.test_utils import datafile
+  import bob.io.base
+  import bob.io.image
+  import bob.ip.base
+  from bob.io.base.test_utils import datafile
 
-  image_path = datafile('image_r10.pgm', 'xbob.ip.base')
-  image = xbob.io.base.load(image_path)
+  image_path = datafile('image_r10.pgm', 'bob.ip.base')
+  image = bob.io.base.load(image_path)
 
   numpy.set_printoptions(precision=3, suppress=True)
 
@@ -52,7 +52,7 @@ the scale function of |project| is then called to up-scale the image:
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> xbob.ip.base.scale(A, B)
+  >>> bob.ip.base.scale(A, B)
   >>> print(B)
   [[ 1.   1.5  2.   2.5  3. ]
    [ 2.5  3.   3.5  4.   4.5]
@@ -65,7 +65,7 @@ can be different in horizontal and vertical direction:
   :options: +NORMALIZE_WHITESPACE
 
   >>> C = numpy.ndarray( (2, 5), dtype = numpy.float64 )
-  >>> xbob.ip.base.scale(A, C)
+  >>> bob.ip.base.scale(A, C)
   >>> print(C)
   [[ 1.   1.5  2.   2.5  3. ]
    [ 4.   4.5  5.   5.5  6. ]]
@@ -76,7 +76,7 @@ Rotating images
 
 The rotation of an image is slightly more difficult since the resulting image
 size has to be computed in advance. To facilitate this there is a function
-:py:func:`xbob.ip.base.get_rotated_output_shape` which can be used:
+:py:func:`bob.ip.base.get_rotated_output_shape` which can be used:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
@@ -85,18 +85,18 @@ size has to be computed in advance. To facilitate this there is a function
   >>> print(A)
   [[1 2 3]
    [4 5 6]]
-  >>> rotated_shape = xbob.ip.base.get_rotated_output_shape( A, 90 )
+  >>> rotated_shape = bob.ip.base.get_rotated_output_shape( A, 90 )
   >>> print(rotated_shape)
   (3, 2)
 
 After the creation of the image in the desired size, the
-:py:func:`xbob.ip.base.rotate` function can be executed:
+:py:func:`bob.ip.base.rotate` function can be executed:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
   >>> A_rotated = numpy.ndarray( rotated_shape, dtype = numpy.float64 ) # A small image of rotated size
-  >>> xbob.ip.base.rotate(A, A_rotated, 90)      # execute the rotation
+  >>> bob.ip.base.rotate(A, A_rotated, 90)      # execute the rotation
   >>> print(A_rotated)
   [[ 3.  6.]
    [ 2.  5.]
@@ -118,12 +118,12 @@ Image filtering
 
 One simple example of image filtering is to apply a Gaussian blur filter to an
 image. This can be easily done by first creating an object of the
-:py:class:`xbob.ip.base.Gaussian` class:
+:py:class:`bob.ip.base.Gaussian` class:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> filter = xbob.ip.base.Gaussian( radius_y = 1, radius_x = 1, sigma_y = math.sqrt(0.3*0.5), sigma_x = math.sqrt(0.3*0.5))
+  >>> filter = bob.ip.base.Gaussian( radius_y = 1, radius_x = 1, sigma_y = math.sqrt(0.3*0.5), sigma_x = math.sqrt(0.3*0.5))
 
 Now, let's see what happens to a small test image:
 
@@ -152,7 +152,7 @@ complex valued, the filtered image needs to be a complex type:
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> kernel = xbob.ip.base.GaborKernel(image.shape[-2:], (1,0))
+  >>> kernel = bob.ip.base.GaborKernel(image.shape[-2:], (1,0))
   >>> filtered_image = numpy.ndarray(image.shape[-2:], dtype = numpy.complex128)
   >>> kernel(image, filtered_image)
 
@@ -186,7 +186,7 @@ applying the object):
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> face_eyes_norm = xbob.ip.base.FaceEyesNorm(eyes_distance = 65, crop_height = 128, crop_width = 128, crop_eyecenter_offset_h = 32, crop_eyecenter_offset_w = 63.5)
+  >>> face_eyes_norm = bob.ip.base.FaceEyesNorm(eyes_distance = 65, crop_height = 128, crop_width = 128, crop_eyecenter_offset_h = 32, crop_eyecenter_offset_w = 63.5)
 
 Now, we have set up our object to generate images of size (128, 128) that will
 put the left eye at the pixel position (32, 31) and the right eye at the
@@ -197,7 +197,7 @@ left eye usually has a higher x-coordinate than the right eye:
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> face_image = xbob.io.base.load( image_path )
+  >>> face_image = bob.io.base.load( image_path )
   >>> cropped_image = numpy.ndarray( (128, 128), dtype = numpy.float64 )
   >>> face_eyes_norm( face_image, cropped_image, re_y = 67, re_x = 47, le_y = 62, le_x = 71)
 
@@ -206,13 +206,13 @@ Simple feature extraction
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some simple feature extraction functionality is also included in the
-:py:mod:`xbob.ip.base` module. Here is some simple example, how to extract
+:py:mod:`bob.ip.base` module. Here is some simple example, how to extract
 local binary patterns (LBP) with 8 neighbors from an image:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> lbp_extractor = xbob.ip.base.LBP(8)
+  >>> lbp_extractor = bob.ip.base.LBP(8)
 
 You can either get the LBP feature for a single point by specifying the
 position:
@@ -242,12 +242,12 @@ you need to get the required shape of the output image:
   0b11110000
 
 Gabor jets can be extracted from an image. Simply use the
-:py:class:`xbob.ip.base.GaborWaveletTransform` class:
+:py:class:`bob.ip.base.GaborWaveletTransform` class:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> gabor_wavelet_transform = xbob.ip.base.GaborWaveletTransform()
+  >>> gabor_wavelet_transform = bob.ip.base.GaborWaveletTransform()
 
 Gabor jets can be extracted either with or without phases. The structure of the
 resulting image without phases is 3-dimensional, whereas the structure with

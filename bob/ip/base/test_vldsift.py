@@ -13,9 +13,9 @@ import numpy
 import functools
 from nose.plugins.skip import SkipTest
 
-import xbob.io.base
-import xbob.io.image
-from xbob.io.base.test_utils import datafile
+import bob.io.base
+import bob.io.image
+from bob.io.base.test_utils import datafile
 
 def vldsift_found(test):
   '''Decorator to check if the VLDSIFT class is present before enabling a test'''
@@ -35,7 +35,7 @@ def load_image(relative_filename):
   # Please note our PNG loader will always load in RGB, but since that is a
   # grayscaled version of the image, I just select one of the planes.
   filename = os.path.join("sift", relative_filename)
-  array = xbob.io.base.load(datafile(filename, __name__))
+  array = bob.io.base.load(datafile(filename, __name__))
   return array.astype('float32')
 
 def equal(x, y, epsilon):
@@ -54,9 +54,9 @@ def test_VLDSiftPython():
   # Dense SIFT reference using VLFeat 0.9.13
   # (First 3 descriptors, Gaussian window)
   filename_beg = datafile(os.path.join("sift", "vldsift_gref_beg.hdf5"), __name__)
-  ref_vl_beg = xbob.io.base.load(filename_beg)
+  ref_vl_beg = bob.io.base.load(filename_beg)
   filename_end = datafile(os.path.join("sift", "vldsift_gref_end.hdf5"), __name__)
-  ref_vl_end = xbob.io.base.load(filename_end)
+  ref_vl_end = bob.io.base.load(filename_end)
 
   # Computes dense SIFT feature using VLFeat binding
   img = load_image('vlimg_ref.pgm')

@@ -7,8 +7,8 @@
 ============
 
 This section includes information for using the pure Python API of
-``xbob.ip.base``.
+``bob.ip.base``.
 
 
-.. automodule:: xbob.ip.base
+.. automodule:: bob.ip.base
 

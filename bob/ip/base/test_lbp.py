@@ -14,8 +14,8 @@ import numpy
 import nose.tools
 from nose.plugins.skip import SkipTest
 
-import xbob.io.base
-from xbob.io.base.test_utils import datafile, temporary_filename
+import bob.io.base
+from bob.io.base.test_utils import datafile, temporary_filename
 
 from . import LBP, LBPBorderHandling, LBPTop, ELBPType, integral
 
@@ -683,7 +683,7 @@ def test_io():
   lbp2 = LBP(16, 4., 2., uniform=True, rotation_invariant=True, circular=True)
 
   # re-generate the reference file, if wanted
-  f = xbob.io.base.HDF5File(temp_file, 'w')
+  f = bob.io.base.HDF5File(temp_file, 'w')
   f.create_group("LBP1")
   f.create_group("LBP2")
   f.cd("/LBP1")
@@ -693,7 +693,7 @@ def test_io():
   del f
 
   # load the file again
-  f = xbob.io.base.HDF5File(temp_file)
+  f = bob.io.base.HDF5File(temp_file)
   f.cd("/LBP1")
   read1 = LBP(f)
   f.cd("/LBP2")
@@ -705,7 +705,7 @@ def test_io():
   assert lbp2 == read2
 
   # load the reference file
-  f = xbob.io.base.HDF5File(test_file)
+  f = bob.io.base.HDF5File(test_file)
   f.cd("/LBP1")
   ref1 = LBP(f)
   f.cd("/LBP2")

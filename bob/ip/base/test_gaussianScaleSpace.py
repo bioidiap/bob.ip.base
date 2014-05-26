@@ -12,9 +12,9 @@ import os
 import numpy
 import nose.tools
 
-import xbob.io.base
-import xbob.io.image
-from xbob.io.base.test_utils import datafile
+import bob.io.base
+import bob.io.image
+from bob.io.base.test_utils import datafile
 
 from . import Gaussian, GaussianScaleSpace
 
@@ -50,7 +50,7 @@ def test_parametrization():
 
 def test_processing():
   # Processing tests
-  A = xbob.io.base.load(datafile(os.path.join("sift", "vlimg_ref.pgm"), __name__))
+  A = bob.io.base.load(datafile(os.path.join("sift", "vlimg_ref.pgm"), __name__))
   No = 3
   Ns = 3
   sigma0 = 1.6
@@ -100,7 +100,7 @@ def test_processing():
       Aa = B
       ##For saving/visualizing images
       #base_dir = '/home/user'
-      #xbob.io.base.save(Bpyr.astype('uint8'), os.path.join(base_dir, 'pyr_o'+str(o)+'_s'+str(s+1)+'.pgm'))
+      #bob.io.base.save(Bpyr.astype('uint8'), os.path.join(base_dir, 'pyr_o'+str(o)+'_s'+str(s+1)+'.pgm'))
 
 def test_comparison():
   # Comparisons tests

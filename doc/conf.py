@@ -58,12 +58,12 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'xbob.ip.base'
+project = u'bob.ip.base'
 import time
 copyright = u'%s, Idiap Research Institute' % time.strftime('%Y')
 
 # Grab the setup entry
-distribution = pkg_resources.require('xbob.ip.base')[0]
+distribution = pkg_resources.require('bob.ip.base')[0]
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -129,7 +129,7 @@ if sphinx.__version__ >= "1.0":
 #html_title = None
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = 'xbob_ip_base'
+#html_short_title = 'bob_ip_base'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -187,7 +187,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'xbob_ip_base_doc'
+htmlhelp_basename = 'bob_ip_base_doc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -201,7 +201,7 @@ latex_font_size = '10pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'xbob_ip_base.tex', u'Bob Image Processing Utilities',
+  ('index', 'bob_ip_base.tex', u'Bob Image Processing Utilities',
    u'Biometrics Group, Idiap Research Institute', 'manual'),
 ]
 
@@ -241,7 +241,7 @@ rst_epilog = """
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'xbob_ip_base', u'Bob Image Processing Utilities', [u'Idiap Research Institute'], 1)
+    ('index', 'bob_ip_base', u'Bob Image Processing Utilities', [u'Idiap Research Institute'], 1)
 ]
 
 # Default processing flags for sphinx

@@ -14,9 +14,9 @@ import functools
 import nose.tools
 from nose.plugins.skip import SkipTest
 
-import xbob.io.base
-import xbob.io.image
-from xbob.io.base.test_utils import datafile
+import bob.io.base
+import bob.io.image
+from bob.io.base.test_utils import datafile
 
 def vlsift_found(test):
   '''Decorator to check if the VLSIFT class is present before enabling a test'''
@@ -35,7 +35,7 @@ def load_image(relative_filename):
   # Please note our PNG loader will always load in RGB, but since that is a
   # grayscaled version of the image, I just select one of the planes.
   filename = os.path.join("sift", relative_filename)
-  array = xbob.io.base.load(datafile(filename, __name__))
+  array = bob.io.base.load(datafile(filename, __name__))
   return array
 
 def equal(x, y, epsilon):
@@ -89,7 +89,7 @@ def test_VLSiftKeypointsPython():
   # Compute SIFT descriptors at the given keypoints
   out_vl = mysift1(img, kp)
   # Compare to reference
-  ref_vl = xbob.io.base.load(datafile(os.path.join('sift','vlimg_ref_siftKP.hdf5'), __name__))
+  ref_vl = bob.io.base.load(datafile(os.path.join('sift','vlimg_ref_siftKP.hdf5'), __name__))
   for kp in range(kp.shape[0]):
     # First 4 values are the keypoint descriptions
     assert equals(out_vl[kp][4:], ref_vl[kp,:], 1e-3)
