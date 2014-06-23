@@ -53,7 +53,6 @@ setup(
           "bob/ip/base/old/extrapolate_mask.cc",
           "bob/ip/base/old/FaceEyesNorm.cc",
           "bob/ip/base/old/flipflop.cc",
-          "bob/ip/base/old/GaborWaveletTransform.cc",
           "bob/ip/base/old/gamma_correction.cc",
           "bob/ip/base/old/gaussian.cc",
           "bob/ip/base/old/GaussianScaleSpace.cc",
