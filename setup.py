@@ -75,7 +75,6 @@ setup(
           "bob/ip/base/old/vldsift.cc",
           "bob/ip/base/old/vlsift.cc",
           "bob/ip/base/old/WeightedGaussian.cc",
-          "bob/ip/base/old/zigzag.cc",
 
           # external requirements as boost::python bindings
           "bob/ip/base/old/blitz_numpy.cc",

@@ -8,45 +8,7 @@
 #ifdef NO_IMPORT_ARRAY
 #undef NO_IMPORT_ARRAY
 #endif
-#include <bob.blitz/capi.h>
-#include <bob.blitz/cleanup.h>
-#include <bob.extension/documentation.h>
-
-extern PyObject* PyBobIpBase_zigzag(PyObject*, PyObject*, PyObject*);
-static bob::extension::FunctionDoc s_zigzag = bob::extension::FunctionDoc(
-    "zigzag",
-
-    "Extracts a 1D array using a zigzag pattern from a 2D array",
-
-    "This function extracts a 1D array using a zigzag pattern from a 2D array. "
-    "If bottom_first is set to True, the second element of the pattern "
-    "is taken at the bottom of the upper left element, otherwise it is "
-    "taken at the right of the upper left element. "
-    "\n"
-    "The input is expected to be a 2D dimensional array. "
-    "The output is expected to be a 1D dimensional array. "
-    "\n"
-    " This method only supports arrays of the following data types:\n"
-    "\n"
-    " * :py:class:`numpy.uint8`\n"
-    " * :py:class:`numpy.uint16`\n"
-    " * :py:class:`numpy.float64` (or the native python ``float``)\n"
-    " \n"
-    " To create an object with a scalar type that will be accepted by this "
-    " method, use a construction like the following:\n"
-    " \n"
-    " .. code-block:: python\n"
-    " \n"
-    " >> import numpy\n"
-    " >> input_righttype = input_wrongtype.astype(numpy.float64)"
-    )
-
-    .add_prototype("src, dst, bf")
-    .add_parameter("src", "array_like (uint8|uint16|float64, 2D)", "The source matrix.")
-    .add_parameter("dst", "array_like (uint8|uint16|float64, 1D)", "The destination matrix.")
-    .add_parameter("right_first", "scalar (bool)", "Tells whether the zigzag pattern start to move to the right or not")
-;
-
+#include "main.h"
 
 static PyMethodDef module_methods[] = {
     {
