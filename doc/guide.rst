@@ -210,36 +210,5 @@ you need to get the required shape of the output image:
   >>> print(bin ( lbp_output_image [ 68, 61 ] ))
   0b11110000
 
-Gabor jets can be extracted from an image. Simply use the
-:py:class:`bob.ip.base.GaborWaveletTransform` class:
-
-.. doctest:: iptest
-  :options: +NORMALIZE_WHITESPACE
-
-  >>> gabor_wavelet_transform = bob.ip.base.GaborWaveletTransform()
-
-Gabor jets can be extracted either with or without phases. The structure of the
-resulting image without phases is 3-dimensional, whereas the structure with
-phases is 4-dimensional:
-
-.. doctest:: iptest
-  :options: +NORMALIZE_WHITESPACE
-
-  >>> jet_image_without_phases = gabor_wavelet_transform.empty_jet_image ( cropped_image, include_phases = False )
-  >>> jet_image_with_phases = gabor_wavelet_transform.empty_jet_image ( cropped_image, include_phases = True )
-  >>> print(jet_image_without_phases.shape)
-  (128, 128, 40)
-  >>> print(jet_image_with_phases.shape)
-  (128, 128, 2, 40)
-
-Now, we can fill the Gabor jets:
-
-.. doctest:: iptest
-  :options: +NORMALIZE_WHITESPACE
-
-  >>> gabor_wavelet_transform.compute_jets ( cropped_image, jet_image_with_phases )
-  >>> print(jet_image_with_phases [ 32, 32 ].shape)
-  (2, 40)
-
 .. Place here your external references
 .. include:: links.rst
