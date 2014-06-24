@@ -25,7 +25,6 @@ void bind_ip_gamma_correction();
 void bind_ip_integral();
 void bind_ip_scale();
 void bind_ip_shear();
-void bind_ip_zigzag();
 void bind_ip_rotate();
 void bind_ip_dctfeatures();
 void bind_ip_geomnorm();
@@ -72,7 +71,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_ip_integral();
   bind_ip_scale();
   bind_ip_shear();
-  bind_ip_zigzag();
   bind_ip_rotate();
   bind_ip_dctfeatures();
   bind_ip_geomnorm();
