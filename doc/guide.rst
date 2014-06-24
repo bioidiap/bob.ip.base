@@ -142,37 +142,6 @@ Now, let's see what happens to a small test image:
 
 The image of the cross has now been nicely smoothed.
 
-Another filter you might want to use is a Gabor filter. Gabor filters can be
-applied to any kind of images, including colored images (in which case the
-image is converted to gray scale first). A nice trick to get the trailing two
-dimensions of the image (i.e., the resolution of gray or colored image) is to
-extract shape[-2:] of the image. Since the output of a Gabor filter is always
-complex valued, the filtered image needs to be a complex type:
-
-.. doctest:: iptest
-  :options: +NORMALIZE_WHITESPACE
-
-  >>> kernel = bob.ip.base.GaborKernel(image.shape[-2:], (1,0))
-  >>> filtered_image = numpy.ndarray(image.shape[-2:], dtype = numpy.complex128)
-  >>> kernel(image, filtered_image)
-
-or simply:
-
-.. doctest:: iptest
-  :options: +NORMALIZE_WHITESPACE
-
-  >>> filtered_image = kernel(image)
-
-To compute the absolute and phase parts of the responses (as is the case for
-the extended local Gabor binary pattern (ELGBP)) you can simply use the
-`NumPy`_ functions on the resulting image:
-
-.. doctest:: iptest
-  :options: +NORMALIZE_WHITESPACE
-
-  >>> abs_image = numpy.abs(filtered_image)
-  >>> phase_image = numpy.angle(filtered_image)
-
 
 Normalizing images according to eye positions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
