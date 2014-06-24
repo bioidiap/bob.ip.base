@@ -22,6 +22,13 @@ Documentation
    guide
    py_api
 
+
+References
+----------
+
+.. [Atanasoaei2012]  *Cosmin Atanasoaei*. **Multivariate Boosting with Look-up Tables for Face Processing,** PhD thesis, EPFL, 2012.
+
+
 Indices and tables
 ------------------
 

@@ -37,21 +37,22 @@ static PyModuleDef module_definition = {
 static PyObject* create_module (void) {
 
 # if PY_VERSION_HEX >= 0x03000000
-  PyObject* m = PyModule_Create(&module_definition);
+  PyObject* module = PyModule_Create(&module_definition);
 # else
-  PyObject* m = Py_InitModule3(BOB_EXT_MODULE_NAME, module_methods, module_docstr);
+  PyObject* module = Py_InitModule3(BOB_EXT_MODULE_NAME, module_methods, module_docstr);
 # endif
-  if (!m) return 0;
-  auto m_ = make_safe(m); ///< protects against early returns
+  if (!module) return 0;
+  auto module_ = make_safe(module); ///< protects against early returns
 
-  if (PyModule_AddStringConstant(m, "__version__", BOB_EXT_MODULE_VERSION) < 0)
-    return 0;
+  if (PyModule_AddStringConstant(module, "__version__", BOB_EXT_MODULE_VERSION) < 0) return 0;
+  if (!init_BobIpLBP(module)) return 0;
 
   /* imports bob.blitz C-API + dependencies */
   if (import_bob_blitz() < 0) return 0;
+  if (import_bob_io_base() < 0) return 0;
 
-  Py_INCREF(m);
-  return m;
+  Py_INCREF(module);
+  return module;
 
 }
 

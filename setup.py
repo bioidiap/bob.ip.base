@@ -4,10 +4,17 @@
 # Thu 30 Jan 08:45:49 2014 CET
 
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['bob.blitz']))
+dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base']))
 from bob.blitz.extension import Extension
 
-packages = ['bob-ip >= 1.2.2', 'boost']
+import bob.io.base
+
+import os
+package_dir = os.path.dirname(os.path.realpath(__file__))
+package_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
+include_dirs = [package_dir, bob.io.base.get_include()]
+
+packages = ['bob-ip >= 1.2.2', 'bob-io >= 1.2.2', 'boost']
 version = '2.0.0a0'
 
 setup(
@@ -92,11 +99,13 @@ setup(
         ),
       Extension("bob.ip.base._library",
         [
+          "bob/ip/base/LBP.cpp",
           "bob/ip/base/zigzag.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
           ],
         packages = packages,
+        include_dirs = include_dirs,
         version = version,
         ),
       ],

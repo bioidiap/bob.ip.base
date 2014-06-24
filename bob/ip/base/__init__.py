@@ -1,7 +1,7 @@
 from ._library import *
-from ._old_library import *
-from .__glcm__ import *
-from .__glcm_prop__ import *
+#from ._old_library import *
+#from .__glcm__ import *
+#from .__glcm_prop__ import *
 from . import version
 from .version import module as __version__
 

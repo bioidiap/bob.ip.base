@@ -12,7 +12,23 @@
 
 #include <bob.blitz/capi.h>
 #include <bob.blitz/cleanup.h>
+#include <bob.io.base/api.h>
 #include <bob.extension/documentation.h>
+
+#include <bob/ip/LBP.h>
+
+// LBP
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::LBP> cxx;
+} PyBobIpLBPObject;
+
+extern PyTypeObject PyBobIpLBPType;
+
+bool init_BobIpLBP(PyObject* module);
+
+int PyBobIpLBP_Check(PyObject* o);
+
 
 
 // zigzag
