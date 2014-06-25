@@ -11,13 +11,25 @@
 #include "main.h"
 
 static PyMethodDef module_methods[] = {
-    {
-      s_zigzag.name(),
-      (PyCFunction)PyBobIpBase_zigzag,
-      METH_VARARGS|METH_KEYWORDS,
-      s_zigzag.doc()
-    },
-    {0}  // Sentinel
+  {
+    s_lbphs.name(),
+    (PyCFunction)PyBobIpBase_lbphs,
+    METH_VARARGS|METH_KEYWORDS,
+    s_lbphs.doc()
+  },
+  {
+    s_integral.name(),
+    (PyCFunction)PyBobIpBase_integral,
+    METH_VARARGS|METH_KEYWORDS,
+    s_integral.doc()
+  },
+  {
+    s_zigzag.name(),
+    (PyCFunction)PyBobIpBase_zigzag,
+    METH_VARARGS|METH_KEYWORDS,
+    s_zigzag.doc()
+  },
+  {0}  // Sentinel
 };
 
 
@@ -45,7 +57,8 @@ static PyObject* create_module (void) {
   auto module_ = make_safe(module); ///< protects against early returns
 
   if (PyModule_AddStringConstant(module, "__version__", BOB_EXT_MODULE_VERSION) < 0) return 0;
-  if (!init_BobIpLBP(module)) return 0;
+  if (!init_BobIpBaseLBP(module)) return 0;
+  if (!init_BobIpBaseLBPTop(module)) return 0;
 
   /* imports bob.blitz C-API + dependencies */
   if (import_bob_blitz() < 0) return 0;

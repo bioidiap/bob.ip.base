@@ -5,8 +5,8 @@
 #
 # Copyright (C) 2011-2014 Idiap Research Institute, Martigny, Switzerland
 
-"""Tests the LBP framework. Find attached to this test a table with expected
-LBP codes.
+"""Tests the LBP framework.
+Find attached to this test a table with expected LBP codes.
 """
 
 import math
@@ -17,7 +17,7 @@ from nose.plugins.skip import SkipTest
 import bob.io.base
 from bob.io.base.test_utils import datafile, temporary_filename
 
-from . import LBP, LBPBorderHandling, LBPTop, ELBPType, integral
+from . import LBP, LBPTop, integral
 
 def generate_3x3_image(image, values):
   """Generates a 3x3 image from a 9-position value vector using the following
@@ -422,7 +422,7 @@ def test_shape():
   sh = lbp.get_lbp_shape(image)
   nose.tools.eq_(sh, (1,1))
 
-  lbp = LBP(8, border_handling=LBPBorderHandling.WRAP)
+  lbp = LBP(8, border_handling="wrap")
   sh = lbp.get_lbp_shape(image)
   nose.tools.eq_(sh, (3,3))
 
@@ -466,16 +466,16 @@ def test_riu2_16p1r():
   proc9 = Processor(op, generate_5x5_image, (3,3), 5); nose.tools.eq_(proc9(values), res[2,2])
 
 def test_eLBP_8p1r():
-  op = LBP(8, 1, False, False, False, False, False, ELBPType.REGULAR) # eLBP_type = 0,
+  op = LBP(8, 1, False, False, False, False, False, "regular") # eLBP_type = 0,
   proc1 = Processor(op, generate_3x3_image, (1,1), 3)
   nose.tools.eq_(proc1('012345678'), 0xff) #0x0
-  op = LBP(8, 1, False, True, False, False, False, ELBPType.REGULAR) # eLBP_type = 0, to_average=True for modified LBP (MCT)
+  op = LBP(8, 1, False, True, False, False, False, "regular") # eLBP_type = 0, to_average=True for modified LBP (MCT)
   proc2 = Processor(op, generate_3x3_image, (1,1), 3)
   nose.tools.eq_(proc2('012345678'), 0x1f) #0x0
-  op = LBP(8, 1, False, False, False, False, False, ELBPType.TRANSITIONAL) # eLBP_type=1, transitional LBP
+  op = LBP(8, 1, False, False, False, False, False, "transitional") # eLBP_type=1, transitional LBP
   proc3 = Processor(op, generate_3x3_image, (1,1), 3)
   nose.tools.eq_(proc3('014725836'), 0x25) #0x0
-  op = LBP(8, 1, False, False, False, False, False, ELBPType.DIRECTION_CODED) # eLBP_type=2, direction coded LBP
+  op = LBP(8, 1, False, False, False, False, False, "direction-coded") # eLBP_type=2, direction coded LBP
   proc4 = Processor(op, generate_3x3_image, (1,1), 3)
   nose.tools.eq_(proc4('014725836'), 0x5d) #0x0
 
@@ -601,7 +601,7 @@ def test_mb_lbp():
 
   # generate integral image
   ii = numpy.ndarray((7,4), dtype = numpy.uint16)
-  integral(values, ii, True)
+  integral(values, ii, add_zero_border = True)
   nose.tools.eq_(op.get_lbp_shape(ii, True), (1,1))
   # get the multi-block code for this image
   nose.tools.eq_(op(ii, True)[0,0], 0x23)
@@ -622,10 +622,10 @@ def test_mb_lbp():
   op = LBP(8, (2,1), to_average=True, add_average_bit=True)
   nose.tools.eq_(op(ii, True)[0,0], 0x04f)
 
-  op = LBP(8, (2,1), elbp_type=ELBPType.TRANSITIONAL)
+  op = LBP(8, (2,1), elbp_type="transitional")
   nose.tools.eq_(op(ii, True)[0,0], 0x33)
 
-  op = LBP(8, (2,1), elbp_type=ELBPType.DIRECTION_CODED)
+  op = LBP(8, (2,1), elbp_type="direction-coded")
   nose.tools.eq_(op(ii, True)[0,0], 0x76)
 
 
@@ -642,7 +642,7 @@ def test_omb_lbp():
 
   # generate integral image
   ii = numpy.ndarray((6,8), dtype = numpy.uint16)
-  integral(values, ii, True)
+  integral(values, ii, add_zero_border = True)
   nose.tools.eq_(op.get_lbp_shape(ii, True), (1,1))
   # get the offset multi-block code for this image
   nose.tools.eq_(op(ii, True)[0,0], 0x1e)
@@ -663,10 +663,10 @@ def test_omb_lbp():
   op = LBP(8, (3,3), (2,1), to_average=True, add_average_bit=True)
   nose.tools.eq_(op(ii, True)[0,0], 0x3c)
 
-  op = LBP(8, (3,3), (2,1), elbp_type=ELBPType.TRANSITIONAL)
+  op = LBP(8, (3,3), (2,1), elbp_type="transitional")
   nose.tools.eq_(op(ii, True)[0,0], 0x0f)
 
-  op = LBP(8, (3,3), (2,1), elbp_type=ELBPType.DIRECTION_CODED)
+  op = LBP(8, (3,3), (2,1), elbp_type="direction-coded")
   nose.tools.eq_(op(ii, True)[0,0], 0x0a)
 
 
@@ -679,7 +679,7 @@ def test_io():
   temp_file = temporary_filename()
 
   # create file
-  lbp1 = LBP(8, (2,3), elbp_type=ELBPType.TRANSITIONAL, to_average=True, add_average_bit=True)
+  lbp1 = LBP(8, (2,3), elbp_type="transitional", to_average=True, add_average_bit=True)
   lbp2 = LBP(16, 4., 2., uniform=True, rotation_invariant=True, circular=True)
 
   # re-generate the reference file, if wanted
@@ -747,5 +747,37 @@ def test_vanilla_4p1r_4p1r_4p1r():
   nose.tools.eq_(proc2(values_5x5,plane_index=0,operator_coordinates=(0,0,0)),0xf)
   nose.tools.eq_(proc2(values_5x5,plane_index=1,operator_coordinates=(0,0,0)),0x7)
   nose.tools.eq_(proc2(values_5x5,plane_index=2,operator_coordinates=(0,0,0)),0x7)
+
+
+"""
+" Test LBPHS feature extraction
+"""
+def test_lbphs():
+  src = numpy.array([
+      [ 0, 10,  9, 10,  0,  5,  6,  7,  8,  9],
+      [10,  9, 10,  9, 10, 10, 11, 12, 13, 14],
+      [ 9, 10,  9, 10,  9, 15, 16, 17, 18, 19],
+      [10,  9, 10,  9, 10, 20, 21, 22, 23, 24],
+      [ 0, 10,  9, 10,  0, 25, 26, 27, 28, 29],
+      [20, 20, 20, 20, 20,  5, 22, 23, 22, 54],
+      [20, 20, 20, 20, 20, 33, 51,  6, 19, 94],
+      [20, 20, 20, 20, 20, 19,  7, 81, 53, 14],
+      [20, 20, 20, 20, 20, 56, 11, 18,  3, 64],
+      [20, 20, 20, 20, 20, 20,  5, 17,  9, 34]],
+      dtype = numpy.uint16);
+
+  lbphs = numpy.array([
+      [ 4,  2,  2,  0,  2,  0,  0,  0,  2,  0,  0,  0,  0,  0,  0, 13],
+      [ 0,  0,  4,  0,  4,  0, 12,  1,  0,  0,  1,  0,  0,  0,  3,  0],
+      [ 0,  0,  0,  1,  0,  0,  0,  4,  0,  0,  0,  1,  0,  5,  1, 13],
+      [ 5,  1,  1,  0,  1,  2,  0,  0,  4,  1,  0,  1,  0,  1,  2,  6]],
+      dtype = numpy.uint64
+  )
+
+  lbp = bob.ip.base.LBP(4, border_handling='wrap')
+  result = bob.ip.base.lbphs(src, lbp, block_size = (5,5), block_overlap=(0,0))
+
+  assert numpy.allclose(result, lbphs)
+
 
 

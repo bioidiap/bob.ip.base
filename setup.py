@@ -68,8 +68,6 @@ setup(
           "bob/ip/base/old/GLCMProp.cc",
           "bob/ip/base/old/histo.cc",
           "bob/ip/base/old/HOG.cc",
-          "bob/ip/base/old/integral.cc",
-          "bob/ip/base/old/LBP.cc",
           "bob/ip/base/old/Median.cc",
           "bob/ip/base/old/MultiscaleRetinex.cc",
           "bob/ip/base/old/rotate.cc",
@@ -99,8 +97,12 @@ setup(
         ),
       Extension("bob.ip.base._library",
         [
-          "bob/ip/base/LBP.cpp",
-          "bob/ip/base/zigzag.cpp",
+          "bob/ip/base/cpp/LBP.cpp",
+          "bob/ip/base/cpp/LBPTop.cpp",
+
+          "bob/ip/base/lbp.cpp",
+          "bob/ip/base/lbp_top.cpp",
+          "bob/ip/base/auxiliary.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
           ],
