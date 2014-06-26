@@ -26,7 +26,6 @@ void bind_ip_scale();
 void bind_ip_shear();
 void bind_ip_rotate();
 void bind_ip_dctfeatures();
-void bind_ip_geomnorm();
 void bind_ip_faceeyesnorm();
 void bind_ip_tantriggs();
 void bind_ip_histogram();
@@ -70,7 +69,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_ip_shear();
   bind_ip_rotate();
   bind_ip_dctfeatures();
-  bind_ip_geomnorm();
   bind_ip_faceeyesnorm();
   bind_ip_tantriggs();
   bind_ip_histogram();

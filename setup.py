@@ -63,7 +63,6 @@ setup(
           "bob/ip/base/old/gamma_correction.cc",
           "bob/ip/base/old/gaussian.cc",
           "bob/ip/base/old/GaussianScaleSpace.cc",
-          "bob/ip/base/old/GeomNorm.cc",
           "bob/ip/base/old/GLCM.cc",
           "bob/ip/base/old/GLCMProp.cc",
           "bob/ip/base/old/histo.cc",
@@ -97,11 +96,13 @@ setup(
         ),
       Extension("bob.ip.base._library",
         [
+          # pure C++ code
           "bob/ip/base/cpp/GeomNorm.cpp",
           "bob/ip/base/cpp/Affine.cpp",
           "bob/ip/base/cpp/LBP.cpp",
           "bob/ip/base/cpp/LBPTop.cpp",
 
+          # Python bindings
           "bob/ip/base/lbp.cpp",
           "bob/ip/base/lbp_top.cpp",
           "bob/ip/base/auxiliary.cpp",
