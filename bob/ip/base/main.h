@@ -23,6 +23,9 @@
 
 #if PY_VERSION_HEX >= 0x03000000
 #define PyInt_Check PyLong_Check
+#define PyInt_AS_LONG PyLong_AS_LONG
+#define PyString_AS_STRING PyUnicode_AsUTF8
+#define PyString_Check PyUnicode_Check
 #endif
 
 #define TRY try{
