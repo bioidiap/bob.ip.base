@@ -170,7 +170,7 @@ static auto process = bob::extension::FunctionDoc(
   "The central pixel is the point where the LBP planes intersect/have to be calculated from.",
   true
 )
-.add_prototype("input, xy, xt, xy")
+.add_prototype("input, xy, xt, yt")
 .add_parameter("input", "array_like (3D)", "The input set of gray-scale images for which LBPTop features should be extracted")
 .add_parameter("xy, xt, yt", "array_like (3D, uint16)", "The result of the LBP operator in the XY, XT and YT plane (frame), for the central frame of the input array")
 ;

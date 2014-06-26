@@ -752,7 +752,7 @@ static auto getShape = bob::extension::FunctionDoc(
 .add_prototype("shape, is_integral_image", "lbp_shape")
 .add_parameter("input", "array_like (2D)", "The input image for which LBP features should be extracted")
 .add_parameter("shape", "(int, int)", "The shape of the input image for which LBP features should be extracted")
-.add_parameter("shape", "bool", "[default: ``False``] Is the given image (shape) an integral image?")
+.add_parameter("is_integral_image", "bool", "[default: ``False``] Is the given image (shape) an integral image?")
 .add_return("lbp_shape", "(int, int)", "The shape of the LBP image that is required in a call to :py:func:`extract`")
 ;
 
