@@ -9,7 +9,7 @@
 """
 
 import numpy
-from . import flip, flop
+from .. import flip, flop
 
 A_org       = numpy.array(range(1,5), numpy.float64).reshape((2,2))
 A_ans_flip  = numpy.array([[3, 4], [1, 2]], numpy.float64)

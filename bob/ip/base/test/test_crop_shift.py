@@ -9,7 +9,7 @@
 """
 
 import numpy
-from . import crop, shift
+from .. import crop, shift
 
 A_org           = numpy.array(range(0,100), numpy.float64).reshape((10,10))
 A_crop_2x2_2x2  = numpy.array([[22, 23], [32, 33]], numpy.float64)

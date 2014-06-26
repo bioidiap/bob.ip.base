@@ -16,7 +16,7 @@ import bob.io.base
 import bob.io.image
 from bob.io.base.test_utils import datafile
 
-from . import Gaussian, GaussianScaleSpace
+from .. import Gaussian, GaussianScaleSpace
 
 eps = 1e-4
 

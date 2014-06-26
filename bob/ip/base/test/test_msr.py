@@ -11,7 +11,7 @@
 import numpy
 import nose.tools
 
-from . import MultiscaleRetinex, BorderType
+from .. import MultiscaleRetinex, BorderType
 
 eps = 1e-4
 

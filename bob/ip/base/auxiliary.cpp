@@ -314,7 +314,3 @@ PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject* args, PyObject* kwds
 
 
 
-
-
-
-

@@ -10,7 +10,7 @@
 
 import numpy
 import nose.tools
-from . import GLCM, GLCMProp
+from .. import GLCM, GLCMProp
 
 IMG_3x3_A = numpy.array([ [0, 1, 0],
                           [0, 1, 1],

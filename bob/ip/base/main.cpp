@@ -12,6 +12,12 @@
 
 static PyMethodDef module_methods[] = {
   {
+    s_maxRectInMask.name(),
+    (PyCFunction)PyBobIpBase_maxRectInMask,
+    METH_VARARGS|METH_KEYWORDS,
+    s_maxRectInMask.doc()
+  },
+  {
     s_lbphs.name(),
     (PyCFunction)PyBobIpBase_lbphs,
     METH_VARARGS|METH_KEYWORDS,
@@ -63,6 +69,7 @@ static PyObject* create_module (void) {
   auto module_ = make_safe(module); ///< protects against early returns
 
   if (PyModule_AddStringConstant(module, "__version__", BOB_EXT_MODULE_VERSION) < 0) return 0;
+  if (!init_BobIpBaseGeomNorm(module)) return 0;
   if (!init_BobIpBaseLBP(module)) return 0;
   if (!init_BobIpBaseLBPTop(module)) return 0;
 

@@ -97,12 +97,16 @@ setup(
         ),
       Extension("bob.ip.base._library",
         [
+          "bob/ip/base/cpp/GeomNorm.cpp",
+          "bob/ip/base/cpp/Affine.cpp",
           "bob/ip/base/cpp/LBP.cpp",
           "bob/ip/base/cpp/LBPTop.cpp",
 
           "bob/ip/base/lbp.cpp",
           "bob/ip/base/lbp_top.cpp",
           "bob/ip/base/auxiliary.cpp",
+          "bob/ip/base/geom_norm.cpp",
+          "bob/ip/base/affine.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
           ],

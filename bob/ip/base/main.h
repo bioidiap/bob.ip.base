@@ -18,6 +18,7 @@
 #include "cpp/LBP.h"
 #include "cpp/LBPTop.h"
 #include "cpp/LBPHS.h"
+#include "cpp/GeomNorm.h"
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -47,6 +48,23 @@
   }
 
 static inline char* c(const char* o){return const_cast<char*>(o);}  /* converts const char* to char* */
+
+
+// GeomNorm
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::GeomNorm> cxx;
+} PyBobIpBaseGeomNormObject;
+
+extern PyTypeObject PyBobIpBaseGeomNormType;
+bool init_BobIpBaseGeomNorm(PyObject* module);
+int PyBobIpBaseGeomNorm_Check(PyObject* o);
+
+// affine functions
+PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_maxRectInMask;
+
+
 
 // LBP
 typedef struct {

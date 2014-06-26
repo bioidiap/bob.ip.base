@@ -16,7 +16,7 @@ import bob.io.base
 import bob.io.image
 from bob.io.base.test_utils import datafile
 
-from . import histogram, histogram_, histogram_equalization
+from .. import histogram, histogram_, histogram_equalization
 
 def load_gray(relative_filename):
   # Please note our PNG loader will always load in RGB, but since that is a

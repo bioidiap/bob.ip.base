@@ -15,7 +15,7 @@ import nose.tools
 import bob.io.base
 from bob.io.base.test_utils import datafile
 
-from . import SIFT, BorderType, GSSKeypoint, BorderType
+from .. import SIFT, BorderType, GSSKeypoint, BorderType
 
 eps = 1e-4
 

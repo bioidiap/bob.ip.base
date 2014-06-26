@@ -12,6 +12,7 @@ Classes
 -------
 
 .. autosummary::
+   bob.ip.base.GeomNorm
    bob.ip.base.LBP
    bob.ip.base.LBPTop
 
@@ -19,7 +20,9 @@ Functions
 ---------
 
 .. autosummary::
+   bob.ip.base.max_rect_in_mask
    bob.ip.base.lbphs
+   bob.ip.base.lbphs_output_shape
    bob.ip.base.integral
    bob.ip.base.zigzag
 

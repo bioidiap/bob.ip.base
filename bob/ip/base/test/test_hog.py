@@ -11,7 +11,7 @@
 import numpy
 import math
 
-from . import HOG, GradientMaps, GradientMagnitudeType, \
+from .. import HOG, GradientMaps, GradientMagnitudeType, \
     hog_compute_histogram, hog_compute_histogram_, BlockNorm, \
     normalize_block, normalize_block_
 

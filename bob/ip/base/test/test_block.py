@@ -10,7 +10,7 @@
 """
 
 import numpy
-from . import block, get_block_3d_output_shape, get_block_4d_output_shape
+from .. import block, get_block_3d_output_shape, get_block_4d_output_shape
 
 A_org    = numpy.array(range(1,17), 'float64').reshape((4,4))
 A_ans_0_3D  = numpy.array([[[1, 2], [5, 6]], [[3, 4], [7, 8]], [[9, 10], [13, 14]], [[11, 12], [15, 16]]], 'float64')

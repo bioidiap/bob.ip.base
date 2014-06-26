@@ -11,7 +11,7 @@
 import numpy
 import nose.tools
 
-from . import SelfQuotientImage, BorderType
+from .. import SelfQuotientImage, BorderType
 
 eps = 1e-4
 

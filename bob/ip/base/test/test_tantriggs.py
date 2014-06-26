@@ -9,7 +9,7 @@
 """
 
 import nose.tools
-from . import TanTriggs, BorderType
+from .. import TanTriggs, BorderType
 
 eps = 1e-4
 
