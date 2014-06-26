@@ -775,6 +775,10 @@ def test_lbphs():
   )
 
   lbp = bob.ip.base.LBP(4, border_handling='wrap')
+
+  shape = bob.ip.base.lbphs_output_shape(src, lbp, block_size = (5,5), block_overlap=(0,0))
+  assert numpy.allclose(lbphs.shape, shape)
+
   result = bob.ip.base.lbphs(src, lbp, block_size = (5,5), block_overlap=(0,0))
 
   assert numpy.allclose(result, lbphs)

@@ -55,9 +55,7 @@ typedef struct {
 } PyBobIpBaseLBPObject;
 
 extern PyTypeObject PyBobIpBaseLBPType;
-
 bool init_BobIpBaseLBP(PyObject* module);
-
 int PyBobIpBaseLBP_Check(PyObject* o);
 
 
@@ -68,15 +66,15 @@ typedef struct {
 } PyBobIpBaseLBPTopObject;
 
 extern PyTypeObject PyBobIpBaseLBPTopType;
-
 bool init_BobIpBaseLBPTop(PyObject* module);
-
 int PyBobIpBaseLBPTop_Check(PyObject* o);
 
 
 // LBPHS
 PyObject* PyBobIpBase_lbphs(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_lbphs;
+PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_lbphsOutputShape;
 
 
 // integral

@@ -18,6 +18,12 @@ static PyMethodDef module_methods[] = {
     s_lbphs.doc()
   },
   {
+    s_lbphsOutputShape.name(),
+    (PyCFunction)PyBobIpBase_lbphsOutputShape,
+    METH_VARARGS|METH_KEYWORDS,
+    s_lbphsOutputShape.doc()
+  },
+  {
     s_integral.name(),
     (PyCFunction)PyBobIpBase_integral,
     METH_VARARGS|METH_KEYWORDS,

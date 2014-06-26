@@ -209,18 +209,22 @@ bob::extension::FunctionDoc s_lbphs = bob::extension::FunctionDoc(
   "Now, the LBP's are extracted first, and then the image is split into blocks.\n\n"
   "This function computes the LBP features for the whole image, using the given :py:class:`bob.ip.base.LBP` instance. "
   "Afterwards, the resulting image is split into several blocks with the given block size and overlap, and local LBH histograms are extracted from each region.\n\n"
-  ".. note:: To get the required number of output blocks, you can use the first element of the :py_func:bob.ip.base.get_block_3d_output_shape` function: ``bob.ip.base.get_block_3d_output_shape(input, block_size, block_overlap)``. "
-  "** Important: This works only, when the :py:attr:`bob.ip.base.LBP.border_handling` flag is set to ``'wrap'``.\n\n"
-  "For the number of bins per block, please use :py:attr:`bob.ip.base.LBP.max_label`."
+  ".. note:: To get the required output shape, you can use :py:func:`lbphs_output_shape` function."
 )
 .add_prototype("input, lbp, block_size, [block_overlap], [output]", "output")
 .add_parameter("input", "array_like (2D)", "The source image to compute the LBPHS for")
 .add_parameter("lbp", ":py:class:`bob.ip.base.LBP`", "The LBP class to be used for feature extraction")
 .add_parameter("block_size", "(int, int)", "The size of the blocks in which the LBP histograms are split")
 .add_parameter("block_overlap", "(int, int)", "[default: ``(0, 0)``] The overlap of the blocks in which the LBP histograms are split")
-.add_parameter("output", "array_like(2D, uint64)", "If given, the resulting LBPHS features will be written to this array; must have the size #output-blocks, #LBP-labels")
+.add_parameter("output", "array_like(2D, uint64)", "If given, the resulting LBPHS features will be written to this array; must have the size #output-blocks, #LBP-labels (see :py:func:`lbphs_output_shape`)")
 .add_return("output", "array_like(2D, uint64)", "The resulting LBPHS features of the size #output-blocks, #LBP-labels; the same array as the ``output`` parameter, when given.")
 ;
+
+// helper function to compute the output shape
+static inline blitz::TinyVector<int,2> lbphs_shape(PyBlitzArrayObject* input, PyBobIpBaseLBPObject* lbp, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap){
+  auto res = lbp->cxx->getLBPShape(blitz::TinyVector<int,2>(input->shape[0], input->shape[1]));
+  return blitz::TinyVector<int,2>(bob::ip::getBlock3DOutputShape(res[0], res[1], block_size[0], block_size[1], block_overlap[0], block_overlap[1])[0], lbp->cxx->getMaxLabel());
+}
 
 template <typename T>
 static inline PyObject* lbphs_inner(PyBlitzArrayObject* input, PyBobIpBaseLBPObject* lbp, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap, PyBlitzArrayObject* output){
@@ -251,8 +255,8 @@ PyObject* PyBobIpBase_lbphs(PyObject*, PyObject* args, PyObject* kwds) {
   }
   if (!output){
     // generate output in the desired shape
-    auto res = lbp->cxx->getLBPShape(blitz::TinyVector<int,2>(input->shape[0], input->shape[1]));
-    Py_ssize_t osize[] = {bob::ip::getBlock3DOutputShape(res[0], res[1], size[0], size[1], overlap[0], overlap[1])[0], lbp->cxx->getMaxLabel()};
+    auto res = lbphs_shape(input, lbp, size, overlap);
+    Py_ssize_t osize[] = {res[0], res[1]};
     output = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(NPY_UINT64, 2, osize);
     output_ = make_safe(output);
   }
@@ -268,6 +272,48 @@ PyObject* PyBobIpBase_lbphs(PyObject*, PyObject* args, PyObject* kwds) {
 
   CATCH_("in lbphs", 0)
 }
+
+
+bob::extension::FunctionDoc s_lbphsOutputShape = bob::extension::FunctionDoc(
+  "lbphs_output_shape",
+  "Returns the shape of the output image that is required to compute the :py:func:`bob.ip.base.lbphs` function",
+  0
+)
+.add_prototype("input, lbp, block_size, [block_overlap]", "shape")
+.add_parameter("input", "array_like (2D)", "The source image to compute the LBPHS for")
+.add_parameter("lbp", ":py:class:`bob.ip.base.LBP`", "The LBP class to be used for feature extraction")
+.add_parameter("block_size", "(int, int)", "The size of the blocks in which the LBP histograms are split")
+.add_parameter("block_overlap", "(int, int)", "[default: ``(0, 0)``] The overlap of the blocks in which the LBP histograms are split")
+.add_return("shape", "(int, int)", "The shape of the LBP histogram sequences, which is ``(#blocks, #labels)``.")
+;
+
+PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject* args, PyObject* kwds) {
+  TRY
+  /* Parses input arguments in a single shot */
+  static char* kwlist[] = {c("input"), c("lbp"), c("block_size"), c("block_overlap"), NULL};
+
+  PyBlitzArrayObject* input = 0;
+  PyBobIpBaseLBPObject* lbp;
+  blitz::TinyVector<int,2> size, overlap(0,0);
+
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&O!(ii)|(ii)", kwlist, &PyBlitzArray_Converter, &input, &PyBobIpBaseLBPType, &lbp, &size[0], &size[1], &overlap[0], &overlap[1])) return 0;
+
+  auto input_ = make_safe(input);
+
+  if (input->ndim != 2) {
+    PyErr_Format(PyExc_TypeError, "lbphs images can only be computed from and to 2D arrays");
+    return 0;
+  }
+
+  auto shape = lbphs_shape(input, lbp, size, overlap);
+
+  return Py_BuildValue("(ii)", shape[0], shape[1]);
+
+  CATCH_("in lbphs_output_shape", 0)
+}
+
+
+
 
 
 
