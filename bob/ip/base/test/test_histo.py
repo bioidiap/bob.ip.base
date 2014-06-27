@@ -18,10 +18,9 @@ from bob.io.base.test_utils import datafile
 
 from .. import histogram, histogram_, histogram_equalization
 
-def load_gray(relative_filename):
+def load_gray(filename):
   # Please note our PNG loader will always load in RGB, but since that is a
   # grayscaled version of the image, I just select one of the planes.
-  filename = os.path.join('histo', relative_filename)
   array = bob.io.base.load(datafile(filename, "bob.ip.base", "data/histo"))
   return array[0,:,:]
 
