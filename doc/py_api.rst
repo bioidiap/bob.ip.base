@@ -20,6 +20,8 @@ Functions
 ---------
 
 .. autosummary::
+   bob.ip.base.scale
+   bob.ip.base.get_scaled_output_shape
    bob.ip.base.max_rect_in_mask
    bob.ip.base.lbphs
    bob.ip.base.lbphs_output_shape

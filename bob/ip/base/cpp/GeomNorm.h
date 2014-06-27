@@ -14,6 +14,7 @@
 #include "bob/core/assert.h"
 #include "bob/core/check.h"
 
+#include "Affine.h"
 
 namespace bob { namespace ip { namespace base {
 
@@ -104,12 +105,6 @@ namespace bob { namespace ip { namespace base {
 
     private:
       /**
-        * @brief Process a 2D blitz Array/Image
-        */
-      template <typename T, bool mask>
-      void processNoCheck(const blitz::Array<T,2>& src, const blitz::Array<bool,2>& src_mask, blitz::Array<double,2>& dst, blitz::Array<bool,2>& dst_mask, const blitz::TinyVector<double,2>& center) const;
-
-      /**
         * Attributes
         */
       double m_rotation_angle;
@@ -131,7 +126,7 @@ namespace bob { namespace ip { namespace base {
 
     // Process
     blitz::Array<bool,2> src_mask, dst_mask;
-    processNoCheck<T,false>(src, src_mask, dst, dst_mask, center);
+    bob::ip::base::transform<T,false>(src, src_mask, center, dst, dst_mask, m_crop_offset, blitz::TinyVector<double,2>(m_scaling_factor, m_scaling_factor), m_rotation_angle);
   }
 
   template <typename T>
@@ -150,107 +145,7 @@ namespace bob { namespace ip { namespace base {
     bob::core::array::assertSameDimensionLength(dst.extent(1), m_crop_size[1]);
 
     // Process
-    processNoCheck<T,true>(src, src_mask, dst, dst_mask, center);
-  }
-
-  template <typename T, bool mask>
-  void GeomNorm::processNoCheck(const blitz::Array<T,2>& source, const blitz::Array<bool,2>& source_mask, blitz::Array<double,2>& target, blitz::Array<bool,2>& target_mask, const blitz::TinyVector<double,2>& center) const
-  {
-    // This is the fastest version of the function that I can imagine...
-    // It handles two different coordinate systems: original image and new image
-
-    // transformation center in original image
-    const double original_center_y = center[0],
-                 original_center_x = center[1];
-    // transformation center in new image:
-    const double new_center_y = m_crop_offset[0],
-                 new_center_x = m_crop_offset[1];
-
-    // With these positions, we can define a mapping from the new image to the original image
-    const double sin_angle = -sin(m_rotation_angle * M_PI / 180.),
-                 cos_angle = cos(m_rotation_angle * M_PI / 180.);
-    // we compute the distance in the source image, when going 1 pixel in the new image
-    const double dx = cos_angle / m_scaling_factor,
-                 dy = -sin_angle / m_scaling_factor;
-
-    // Now, we iterate through the target image, and compute pixel positions in the source.
-    // For this purpose, get the (0,0) position of the target image in source image coordinates:
-    double origin_x = original_center_x - (cos_angle * new_center_x + sin_angle * new_center_y) / m_scaling_factor;
-    double origin_y = original_center_y - (cos_angle * new_center_y - sin_angle * new_center_x) / m_scaling_factor;
-
-    // some helpers for the interpolation
-    int ox, oy;
-    double mx, my;
-    int h = source.extent(0)-1;
-    int w = source.extent(1)-1;
-
-    // Ok, so let's do it.
-    for (int y = 0; y < m_crop_size[0]; ++y){
-      // set the source image point to first point in row
-      double source_x = origin_x, source_y = origin_y;
-      // iterate over the row
-      for (int x = 0; x < m_crop_size[1]; ++x){
-
-        // We are at the desired pixel in the new image. Interpolate the old image's pixels:
-        double& res = target(y,x) = 0.;
-
-        // split each source x and y in integral and decimal digits
-        ox = std::floor(source_x);
-        oy = std::floor(source_y);
-        mx = source_x - ox;
-        my = source_y - oy;
-
-        // add the four values bi-linearly interpolated
-        if (mask){
-          bool& new_mask = target_mask(y,x) = false;
-          // upper left
-          if (ox >= 0 && oy >= 0 && ox <= w && oy <= h && source_mask(oy,ox)){
-            res += (1.-mx) * (1.-my) * source(oy,ox);
-            new_mask = true;
-          }
-          // upper right
-          if (ox >= -1 && oy >= 0 && ox < w && oy <= h && source_mask(oy,ox+1)){
-            res += mx * (1.-my) * source(oy,ox+1);
-            new_mask = true;
-          }
-          // lower left
-          if (ox >= 0 && oy >= -1 && ox <= w && oy < h && source_mask(oy+1,ox)){
-            res += (1.-mx) * my * source(oy+1,ox);
-            new_mask = true;
-          }
-          // lower right
-          if (ox >= -1 && oy >= -1 && ox < w && oy < h && source_mask(oy+1,ox+1)){
-            res += mx * my * source(oy+1,ox+1);
-            new_mask = true;
-          }
-        } else {
-          // upper left
-          if (ox >= 0 && oy >= 0 && ox <= w && oy <= h)
-            res += (1.-mx) * (1.-my) * source(oy,ox);
-
-          // upper right
-          if (ox >= -1 && oy >= 0 && ox < w && oy <= h)
-            res += mx * (1.-my) * source(oy,ox+1);
-
-          // lower left
-          if (ox >= 0 && oy >= -1 && ox <= w && oy < h)
-            res += (1.-mx) * my * source(oy+1,ox);
-
-          // lower right
-          if (ox >= -1 && oy >= -1 && ox < w && oy < h)
-            res += mx * my * source(oy+1,ox+1);
-        }
-
-        // done with this pixel...
-        // go to the next source pixel in the row
-        source_x += dx;
-        source_y += dy;
-      }
-      // at the end of the row, we shift the origin to the next line
-      origin_x -= dy;
-      origin_y += dx;
-    }
-    // done!
+    bob::ip::base::transform<T,true>(src, src_mask, center, dst, dst_mask, m_crop_offset, blitz::TinyVector<double,2>(m_scaling_factor, m_scaling_factor), m_rotation_angle);
   }
 
   template <typename T>

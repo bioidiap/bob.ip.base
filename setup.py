@@ -70,7 +70,6 @@ setup(
           "bob/ip/base/old/Median.cc",
           "bob/ip/base/old/MultiscaleRetinex.cc",
           "bob/ip/base/old/rotate.cc",
-          "bob/ip/base/old/scale.cc",
           "bob/ip/base/old/SelfQuotientImage.cc",
           "bob/ip/base/old/shear.cc",
           "bob/ip/base/old/SIFT.cc",

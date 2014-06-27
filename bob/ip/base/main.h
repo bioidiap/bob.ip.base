@@ -66,6 +66,11 @@ int PyBobIpBaseGeomNorm_Check(PyObject* o);
 // affine functions
 PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_maxRectInMask;
+// .. scaling
+PyObject* PyBobIpBase_scale(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_scale;
+PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_getScaledOutputShape;
 
 
 

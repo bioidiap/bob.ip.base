@@ -21,7 +21,10 @@ import bob.ip.base
 
 regenerate_reference = False
 
-# test the GeomNorm class
+###############################################
+########## GeomNorm ###########################
+###############################################
+
 def test_geom_norm_simple():
   # tests the geom-norm functionality (copied from old C++ tests)
 
@@ -32,7 +35,7 @@ def test_geom_norm_simple():
   # * rotation angle: 10 degrees
   # * scaling factor: 0.65
   # * Cropping area: 40x40
-  geom_norm = bob.ip.base.GeomNorm(-10., 0.65, (40, 40), (0, 0));
+  geom_norm = bob.ip.base.GeomNorm(-10., 0.65, (40, 40), (0, 0))
 
   # Process giving the upper left corner as the rotation center (and the offset of the cropping area)
   geom_norm(test_image, processed, (54, 27));
@@ -64,10 +67,10 @@ def test_geom_norm_with_mask():
   # * scaling factor: 1.2
   # * Cropping area: 160x160
   # cropping offset: 80x80
-  geom_norm = bob.ip.base.GeomNorm(-70., 1.2, (160, 160), (80, 80));
+  geom_norm = bob.ip.base.GeomNorm(-70., 1.2, (160, 160), (80, 80))
 
   # Process giving the masks and the center of the eye positions
-  geom_norm(test_image, test_mask, processed, processed_mask, (64, 69));
+  geom_norm(test_image, test_mask, processed, processed_mask, (64, 69))
 
   # compute normalized image
   normalized = numpy.round(processed).astype(numpy.uint8)
@@ -104,5 +107,73 @@ def test_geom_norm_position():
   # new y-value should be 0 plus offset
   # new x value is the length of the centered vector (i.e. 5*sqrt(2)) times the scaling factor 2 plus offset
   assert numpy.allclose(rotated, (40, 80. + 5. * math.sqrt(2.) * 2))
+
+
+
+###############################################
+########## scaling ############################
+###############################################
+
+scale_src = numpy.array([
+    [  0,   2,   4,   6],
+    [  2,   4,   8,  12],
+    [  4,   8,  16,  24],
+    [  8,  16,  32,  48]],
+    dtype=numpy.uint8)
+
+# Reference values
+scaled_ref_2by2 = numpy.array([[0, 6], [8, 48]], dtype=numpy.float64)
+scaled_ref_8by8 = numpy.array([
+    [  0.        ,  0.85714286,  1.71428571,  2.57142857,  3.42857143,  4.28571429,  5.14285714,  6.        ],
+    [  0.85714286,  1.71428571,  2.57142857,  3.67346939,  4.89795918,  6.12244898,  7.34693878,  8.57142857],
+    [  1.71428571,  2.57142857,  3.42857143,  4.7755102 ,  6.36734694,  7.95918367,  9.55102041, 11.14285714],
+    [  2.57142857,  3.67346939,  4.7755102 ,  6.6122449 ,  8.81632653, 11.02040816, 13.2244898 , 15.42857143],
+    [  3.42857143,  4.89795918,  6.36734694,  8.81632653, 11.75510204, 14.69387755, 17.63265306, 20.57142857],
+    [  4.57142857,  6.53061224,  8.48979592, 11.75510204, 15.67346939, 19.59183673, 23.51020408, 27.42857143],
+    [  6.28571429,  8.97959184, 11.67346939, 16.16326531, 21.55102041, 26.93877551, 32.32653061, 37.71428571],
+    [  8.        , 11.42857143, 14.85714286, 20.57142857, 27.42857143, 34.28571429, 41.14285714, 48.        ]],
+    dtype=numpy.float64)
+
+
+def test_scale_regular():
+  # Use scaling where both output and input are arguments
+  scaled_2by2 = numpy.ndarray((2,2))
+  bob.ip.base.scale(scale_src, scaled_2by2)
+  assert numpy.allclose(scaled_2by2, scaled_ref_2by2, atol=1e-7)
+
+  scaled_8by8 = numpy.ndarray((8,8))
+  bob.ip.base.scale(scale_src, scaled_8by8)
+  assert numpy.allclose(scaled_8by8, scaled_ref_8by8, atol=1e-7)
+
+  scaled_2by8 = numpy.ndarray((2,8))
+  bob.ip.base.scale(scale_src, scaled_2by8)
+  assert numpy.allclose(scaled_2by8, scaled_ref_8by8[(0,-1),:])
+
+
+def test_scale_mask():
+  # TODO: implement
+  raise SkipTest("This functionality is (yet) untested")
+
+
+def test_scale_factor():
+  # Use scaling where the output size is provided as a scaling factor
+  scaled_2by2 = bob.ip.base.scale(scale_src, 0.5)
+  assert numpy.allclose(scaled_2by2, scaled_ref_2by2, atol=1e-7)
+
+  scaled_8by8 = bob.ip.base.scale(scale_src, 2.)
+  assert numpy.allclose(scaled_8by8, scaled_ref_8by8, atol=1e-7)
+
+
+def test_get_scaled_output_shape():
+  shape_2by2 = bob.ip.base.get_scaled_output_shape(scale_src, 0.5)
+  assert shape_2by2 == (2,2)
+
+  shape_8by8 = bob.ip.base.get_scaled_output_shape(scale_src, 2.)
+  assert shape_8by8 == (8,8)
+
+def test_scale_non_round():
+  i = numpy.ones((285,193))
+  scaled = bob.ip.base.scale(i, 3.18467)
+  assert numpy.allclose(scaled, 1.)
 
 

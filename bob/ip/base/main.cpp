@@ -12,6 +12,18 @@
 
 static PyMethodDef module_methods[] = {
   {
+    s_scale.name(),
+    (PyCFunction)PyBobIpBase_scale,
+    METH_VARARGS|METH_KEYWORDS,
+    s_scale.doc()
+  },
+  {
+    s_getScaledOutputShape.name(),
+    (PyCFunction)PyBobIpBase_getScaledOutputShape,
+    METH_VARARGS|METH_KEYWORDS,
+    s_getScaledOutputShape.doc()
+  },
+  {
     s_maxRectInMask.name(),
     (PyCFunction)PyBobIpBase_maxRectInMask,
     METH_VARARGS|METH_KEYWORDS,

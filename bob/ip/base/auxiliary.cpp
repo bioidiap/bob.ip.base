@@ -37,8 +37,8 @@ bob::extension::FunctionDoc s_zigzag = bob::extension::FunctionDoc(
     " \n"
     " .. code-block:: python\n"
     " \n"
-    " >> import numpy\n"
-    " >> input_righttype = input_wrongtype.astype(numpy.float64)"
+    "   >> import numpy\n"
+    "   >> input_righttype = input_wrongtype.astype(numpy.float64)"
     )
 
     .add_prototype("src, dst, right_first")
