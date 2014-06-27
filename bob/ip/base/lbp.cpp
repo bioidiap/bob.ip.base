@@ -671,6 +671,13 @@ static PyGetSetDef PyBobIpBaseLBP_getseters[] = {
       0
     },
     {
+      borderHandling.name(),
+      (getter)PyBobIpBaseLBP_getBorderHandling,
+      (setter)PyBobIpBaseLBP_setBorderHandling,
+      borderHandling.doc(),
+      0
+    },
+    {
       lookUpTable.name(),
       (getter)PyBobIpBaseLBP_getLUT,
       (setter)PyBobIpBaseLBP_setLUT,

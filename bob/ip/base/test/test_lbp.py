@@ -774,7 +774,11 @@ def test_lbphs():
       dtype = numpy.uint64
   )
 
-  lbp = bob.ip.base.LBP(4, border_handling='wrap')
+  lbp = bob.ip.base.LBP(4)
+  lbp.border_handling = 'wrap'
+  assert lbp.border_handling == 'wrap'
+  lbp.elbp_type = 'regular'
+  assert lbp.elbp_type == 'regular'
 
   shape = bob.ip.base.lbphs_output_shape(src, lbp, block_size = (5,5), block_overlap=(0,0))
   assert numpy.allclose(lbphs.shape, shape)
