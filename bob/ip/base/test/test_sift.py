@@ -49,7 +49,7 @@ def test_parametrization():
 
 def test_processing():
   # Processing tests
-  A = bob.io.base.load(datafile(os.path.join("sift", "vlimg_ref.pgm"), __name__))
+  A = bob.io.base.load(datafile("vlimg_ref.pgm", 'bob.ip.base', 'data/sift'))
   No = 3
   Ns = 3
   sigma0 = 1.6
@@ -63,7 +63,7 @@ def test_processing():
   B=op.compute_descriptor(A,kp)
   C=B[0]
   #bob.io.base.save(C, datafile(os.path.join("sift","vlimg_ref_cmp.hdf5"), __name__)) # Generated using initial bob version
-  C_ref = bob.io.base.load(datafile(os.path.join("sift", "vlimg_ref_cmp.hdf5"), __name__))
+  C_ref = bob.io.base.load(datafile("vlimg_ref_cmp.hdf5", 'bob.ip.base', 'data/sift'))
   assert numpy.allclose(C, C_ref, 1e-5, 1e-5)
   """
   Descriptor returned by vlfeat 0.9.14.

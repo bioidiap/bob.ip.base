@@ -50,7 +50,7 @@ def test_parametrization():
 
 def test_processing():
   # Processing tests
-  A = bob.io.base.load(datafile(os.path.join("sift", "vlimg_ref.pgm"), __name__))
+  A = bob.io.base.load(datafile("vlimg_ref.pgm", "bob.ip.base", "data/sift"))
   No = 3
   Ns = 3
   sigma0 = 1.6

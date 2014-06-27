@@ -22,7 +22,7 @@ def load_gray(relative_filename):
   # Please note our PNG loader will always load in RGB, but since that is a
   # grayscaled version of the image, I just select one of the planes.
   filename = os.path.join('histo', relative_filename)
-  array = bob.io.base.load(datafile(filename, __name__))
+  array = bob.io.base.load(datafile(filename, "bob.ip.base", "data/histo"))
   return array[0,:,:]
 
 def random_int(array, min_value, max_value):
@@ -59,7 +59,7 @@ def test_uint8_histoPython():
   # Save the computed data
   #bob.io.base.save(histo1, os.path.join('histo','image_histo.hdf5'))
 
-  histo_ref = bob.io.base.load(datafile(os.path.join('histo','image_histo.hdf5'), __name__))
+  histo_ref = bob.io.base.load(datafile('image_histo.hdf5', 'bob.ip.base', 'data/histo'))
 
   assert input_image.size == histo1.sum()
   assert input_image.size == histo2.sum()
@@ -87,7 +87,7 @@ def test_uint16_histoPython():
   #random_int(input_array, 0, 65535)
   #bob.io.base.save(input_array, os.path.join('histo','input_uint16.hdf5'))
 
-  input_array = bob.io.base.load(datafile(os.path.join('histo','input_uint16.hdf5'), __name__))
+  input_array = bob.io.base.load(datafile('input_uint16.hdf5', 'bob.ip.base', 'data/histo'))
 
   histo1 = histogram(input_array)
   histo2 = histogram(input_array, 65535)
@@ -107,7 +107,7 @@ def test_uint16_histoPython():
   # Save computed data
   #bob.io.base.save(histo1, os.path.join('histo','input_uint16.histo.hdf5'))
 
-  histo_ref = bob.io.base.load(datafile(os.path.join('histo','input_uint16.histo.hdf5'), __name__))
+  histo_ref = bob.io.base.load(datafile('input_uint16.histo.hdf5', 'bob.ip.base', 'data/histo'))
 
   assert input_array.size == histo1.sum()
   assert input_array.size == histo2.sum()
@@ -135,7 +135,7 @@ def test_float_histoPython():
   #random_float(input_array, 0, 1)
   #bob.io.base.save(input_array, os.path.join('histo','input_float.hdf5'))
 
-  input_array = bob.io.base.load(datafile(os.path.join('histo','input_float.hdf5'), __name__))
+  input_array = bob.io.base.load(datafile('input_float.hdf5', 'bob.ip.base', 'data/histo'))
 
   histo2 = numpy.ndarray((10,), 'uint64')
 
@@ -145,7 +145,7 @@ def test_float_histoPython():
   # Save computed data
   #bob.io.base.save(histo1,os.path.join('histo','input_float.histo.hdf5'))
 
-  histo_ref = bob.io.base.load(datafile(os.path.join('histo','input_float.histo.hdf5'), __name__))
+  histo_ref = bob.io.base.load(datafile('input_float.histo.hdf5', 'bob.ip.base', 'data/histo'))
 
   assert input_array.size == histo1.sum()
   assert input_array.size == histo2.sum()
@@ -161,7 +161,7 @@ def test_int32_histoPython():
   #random_int(input_array, -20,20)
   #bob.io.base.save(input_array,os.path.join('histo','input_int32.hdf5'))
 
-  input_array = bob.io.base.load(datafile(os.path.join('histo','input_int32.hdf5'), __name__))
+  input_array = bob.io.base.load(datafile('input_int32.hdf5', 'bob.ip.base', 'data/histo'))
 
   histo2 = numpy.ndarray((41,), 'uint64')
 
@@ -171,7 +171,7 @@ def test_int32_histoPython():
   # Save computed data
   #bob.io.base.save(histo, os.path.join('histo','input_int32.histo.hdf5'))
 
-  histo_ref = bob.io.base.load(datafile(os.path.join('histo','input_int32.histo.hdf5'), __name__))
+  histo_ref = bob.io.base.load(datafile('input_int32.histo.hdf5', 'bob.ip.base', 'data/histo'))
 
   assert input_array.size == histo1.sum()
   assert input_array.size == histo2.sum()
@@ -182,13 +182,13 @@ def test_uint32_accumulate_histoPython():
 
   # Accumulate the histogram of a int32 random array
 
-  input_array = bob.io.base.load(datafile(os.path.join('histo','input_int32.hdf5'), __name__))
+  input_array = bob.io.base.load(datafile('input_int32.hdf5', 'bob.ip.base', 'data/histo'))
 
   histo = histogram(input_array, -20, 20, 41)
 
   histogram_(input_array, histo, -20, 20, 41, True)
 
-  histo_ref = bob.io.base.load(datafile(os.path.join('histo','input_int32.histo.hdf5'), __name__))
+  histo_ref = bob.io.base.load(datafile('input_int32.histo.hdf5', 'bob.ip.base', 'data/histo'))
 
   assert input_array.size * 2 == histo.sum()
   assert (histo_ref * 2 == histo).all()

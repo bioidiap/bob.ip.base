@@ -13,7 +13,7 @@
   import bob.ip.base
   from bob.io.base.test_utils import datafile
 
-  image_path = datafile('image_r10.pgm', 'bob.ip.base')
+  image_path = datafile('image_r10.pgm', 'bob.ip.base', 'data/affine')
   image = bob.io.base.load(image_path)
 
   numpy.set_printoptions(precision=3, suppress=True)
