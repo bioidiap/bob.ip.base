@@ -36,7 +36,7 @@ bob::extension::FunctionDoc s_scale = bob::extension::FunctionDoc(
 ;
 
 template <typename T, int D>
-static inline void scale_inner(PyBlitzArrayObject* input, PyBlitzArrayObject* input_mask, PyBlitzArrayObject* output, PyBlitzArrayObject* output_mask) {
+static void scale_inner(PyBlitzArrayObject* input, PyBlitzArrayObject* input_mask, PyBlitzArrayObject* output, PyBlitzArrayObject* output_mask) {
   if (input_mask && output_mask){
     bob::ip::base::scale<T>(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<bool,D>(input_mask), *PyBlitzArrayCxx_AsBlitz<double,D>(output), *PyBlitzArrayCxx_AsBlitz<bool,D>(output_mask));
   } else {
@@ -134,7 +134,8 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   if (!isnan(scale_factor)){
-    return Py_BuildValue("O", dst);
+    Py_INCREF(dst);
+    return PyBlitzArray_AsNumpyArray(dst,0);
   }
 
   Py_RETURN_NONE;

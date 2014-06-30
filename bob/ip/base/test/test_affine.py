@@ -163,6 +163,12 @@ def test_scale_factor():
   scaled_8by8 = bob.ip.base.scale(scale_src, 2.)
   assert numpy.allclose(scaled_8by8, scaled_ref_8by8, atol=1e-7)
 
+  color_src = numpy.array((scale_src, scale_src, scale_src))
+  scaled_3by8by8 = bob.ip.base.scale(color_src, 2.)
+  for i in range(3):
+    assert numpy.allclose(scaled_3by8by8[i], scaled_ref_8by8, atol=1e-7)
+
+
 
 def test_get_scaled_output_shape():
   shape_2by2 = bob.ip.base.get_scaled_output_shape(scale_src, 0.5)
