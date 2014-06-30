@@ -205,7 +205,6 @@ you need to get the required shape of the output image:
   (126, 126)
   >>> lbp_output_image = numpy.ndarray ( lbp_output_image_shape, dtype = numpy.uint16 )
   >>> lbp_extractor ( cropped_image,  lbp_output_image )
-  bob.blitz.array((126,126),'uint16')
   >>> # print the binary representation of the pixel at the same location as above;
   >>> # note that the index is shifted by 1 since the lbp image is smaller than the original
   >>> print(bin ( lbp_output_image [ 68, 61 ] ))

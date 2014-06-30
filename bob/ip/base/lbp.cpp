@@ -830,10 +830,14 @@ static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* i
   return Py_BuildValue("H", v);
 }
 template <typename T>
-static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output, bool iii){
+static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output, bool iii, bool ret_img){
   self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<uint16_t,2>(output), iii);
-  Py_INCREF(output);
-  return PyBlitzArray_AsNumpyArray(output, 0);
+  if (ret_img){
+    Py_INCREF(output);
+    return PyBlitzArray_AsNumpyArray(output, 0);
+  } else {
+    Py_RETURN_NONE;
+  }
 }
 
 static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
@@ -876,7 +880,7 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
   auto output_ = make_xsafe(output);
   int y, x;
 
-  // get the command line paramters
+  // get the command line parameters
   switch (how){
     case 1:
       // input image only
@@ -928,9 +932,9 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
 
   // finally, extract the features
   switch (input->type_num){
-    case NPY_UINT8:   return how == 2 ? extract_inner<uint8_t>(self, input, y, x, f(iii))  : extract_inner<uint8_t>(self, input, output, f(iii));
-    case NPY_UINT16:  return how == 2 ? extract_inner<uint16_t>(self, input, y, x, f(iii)) : extract_inner<uint16_t>(self, input, output, f(iii));
-    case NPY_FLOAT64: return how == 2 ? extract_inner<double>(self, input, y, x, f(iii))   : extract_inner<double>(self, input, output, f(iii));
+    case NPY_UINT8:   return how == 2 ? extract_inner<uint8_t>(self, input, y, x, f(iii))  : extract_inner<uint8_t>(self, input, output, f(iii), how == 1);
+    case NPY_UINT16:  return how == 2 ? extract_inner<uint16_t>(self, input, y, x, f(iii)) : extract_inner<uint16_t>(self, input, output, f(iii), how == 1);
+    case NPY_FLOAT64: return how == 2 ? extract_inner<double>(self, input, y, x, f(iii))   : extract_inner<double>(self, input, output, f(iii), how == 1);
     default:
       extract.print_usage();
       PyErr_Format(PyExc_TypeError, "`%s' extracts only from images of types uint8, uint16 or float, and not from %s", Py_TYPE(self)->tp_name, PyBlitzArray_TypenumAsString(input->type_num));

@@ -161,10 +161,9 @@ namespace bob { namespace ip { namespace base {
 
 
     /** helper function to compute the scale required by bob.ip.base.GeomNorm for the given image shapes */
-    template <int D>
-    static inline blitz::TinyVector<double,2> _get_scale_factor(const blitz::TinyVector<int,D>& src_shape, const blitz::TinyVector<int,D>& dst_shape){
-      double y_scale = (dst_shape[D-2]-1.) / (src_shape[D-2]-1.);
-      double x_scale = (dst_shape[D-1]-1.) / (src_shape[D-1]-1.);
+    static inline blitz::TinyVector<double,2> _get_scale_factor(const blitz::TinyVector<int,2>& src_shape, const blitz::TinyVector<int,2>& dst_shape){
+      double y_scale = (dst_shape[0]-1.) / (src_shape[0]-1.);
+      double x_scale = (dst_shape[1]-1.) / (src_shape[1]-1.);
       return blitz::TinyVector<double,2>(y_scale, x_scale);
     }
 
@@ -270,11 +269,11 @@ namespace bob { namespace ip { namespace base {
     template <typename T>
     void rotate(const blitz::Array<T,2>& src, blitz::Array<double,2>& dst, const double rotation_angle){
       // rotation offset is the center of the image
-      blitz::TinyVector<double,2> src_offset(src.extent(0)/2.,src.extent(1)/2.);
-      blitz::TinyVector<double,2> dst_offset(dst.extent(0)/2.,dst.extent(1)/2.);
+      blitz::TinyVector<double,2> src_offset((src.extent(0)-1.)/2.,(src.extent(1)-1.)/2.);
+      blitz::TinyVector<double,2> dst_offset((dst.extent(0)-1.)/2.,(dst.extent(1)-1.)/2.);
       blitz::Array<bool,2> src_mask, dst_mask;
       // .. apply scale with (0,0) as offset and 0 as rotation angle
-      transform<T,false>(src, src_mask, src_offset, dst, dst_mask, dst_offset, blitz::TinyVector<double,2>(0.,0.), rotation_angle);
+      transform<T,false>(src, src_mask, src_offset, dst, dst_mask, dst_offset, blitz::TinyVector<double,2>(1., 1.), rotation_angle);
     }
 
     /**
@@ -290,10 +289,10 @@ namespace bob { namespace ip { namespace base {
     template <typename T>
     void rotate(const blitz::Array<T,2>& src, const blitz::Array<bool,2>& src_mask, blitz::Array<double,2>& dst, blitz::Array<bool,2>& dst_mask, const double rotation_angle){
       // rotation offset is the center of the image
-      blitz::TinyVector<double,2> src_offset(src.extent(0)/2.,src.extent(1)/2.);
-      blitz::TinyVector<double,2> dst_offset(dst.extent(0)/2.,dst.extent(1)/2.);
+      blitz::TinyVector<double,2> src_offset((src.extent(0)-1.)/2.,(src.extent(1)-1.)/2.);
+      blitz::TinyVector<double,2> dst_offset((dst.extent(0)-1.)/2.,(dst.extent(1)-1.)/2.);
       // .. apply scale with (0,0) as offset and 0 as rotation angle
-      transform<T,true>(src, src_mask, src_offset, dst, dst_mask, dst_offset, blitz::TinyVector<double,2>(0.,0.), rotation_angle);
+      transform<T,true>(src, src_mask, src_offset, dst, dst_mask, dst_offset, blitz::TinyVector<double,2>(1., 1.), rotation_angle);
     }
 
     /**
