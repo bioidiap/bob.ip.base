@@ -94,6 +94,7 @@ static PyObject* create_module (void) {
 
   if (PyModule_AddStringConstant(module, "__version__", BOB_EXT_MODULE_VERSION) < 0) return 0;
   if (!init_BobIpBaseGeomNorm(module)) return 0;
+  if (!init_BobIpBaseFaceEyesNorm(module)) return 0;
   if (!init_BobIpBaseLBP(module)) return 0;
   if (!init_BobIpBaseLBPTop(module)) return 0;
 

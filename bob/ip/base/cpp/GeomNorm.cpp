@@ -1,11 +1,10 @@
 /**
- * @file ip/cxx/GeomNorm.cc
- * @date Mon Apr 11 22:17:04 2011 +0200
- * @author Laurent El Shafey <Laurent.El-Shafey@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
+ * @date MThu Jun 26 09:33:10 CEST 2014
  *
- * @brief This file provides a class to perform geometric normalization.
+ * This file defines a class for geometrically normalizing images
  *
- * Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
+ * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
 #include "GeomNorm.h"

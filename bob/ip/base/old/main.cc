@@ -22,7 +22,6 @@ void bind_ip_extrapolate_mask();
 void bind_ip_gamma_correction();
 void bind_ip_shear();
 void bind_ip_dctfeatures();
-void bind_ip_faceeyesnorm();
 void bind_ip_tantriggs();
 void bind_ip_histogram();
 void bind_ip_gaussian();
@@ -61,7 +60,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_ip_gamma_correction();
   bind_ip_shear();
   bind_ip_dctfeatures();
-  bind_ip_faceeyesnorm();
   bind_ip_tantriggs();
   bind_ip_histogram();
   bind_ip_gaussian();

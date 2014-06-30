@@ -13,6 +13,7 @@ Classes
 
 .. autosummary::
    bob.ip.base.GeomNorm
+   bob.ip.base.FaceEyesNorm
    bob.ip.base.LBP
    bob.ip.base.LBPTop
 

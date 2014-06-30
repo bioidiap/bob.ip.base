@@ -80,13 +80,13 @@ def test_scale_factor():
     assert numpy.allclose(scaled_3by8by8[i], scaled_ref_8by8, atol=1e-7)
 
 
-
 def test_get_scaled_output_shape():
   shape_2by2 = bob.ip.base.get_scaled_output_shape(scale_src, 0.5)
   assert shape_2by2 == (2,2)
 
   shape_8by8 = bob.ip.base.get_scaled_output_shape(scale_src, 2.)
   assert shape_8by8 == (8,8)
+
 
 def test_scale_non_round():
   i = numpy.ones((285,193))
@@ -218,4 +218,29 @@ def test_geom_norm_position():
   # new y-value should be 0 plus offset
   # new x value is the length of the centered vector (i.e. 5*sqrt(2)) times the scaling factor 2 plus offset
   assert numpy.allclose(rotated, (40, 80. + 5. * math.sqrt(2.) * 2))
+
+
+###############################################
+########## FaceEyesNorm #######################
+###############################################
+
+def test_face_eyes_norm():
+  # load test image
+  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.pgm", "bob.ip.base", "data/affine"))
+  processed = numpy.ndarray((40, 40))
+
+  fen = bob.ip.base.FaceEyesNorm((40, 40), 20, (5/19.*40, 20))
+
+  # Process giving the coordinates of the eyes
+  fen(test_image, processed, (67,47), (62,71))
+  normalized = numpy.round(processed).astype(numpy.uint8)
+
+  reference_file = bob.io.base.test_utils.datafile("image_r10_face_eyes_norm.pgm", "bob.ip.base", "data/affine")
+  if regenerate_reference:
+    bob.io.base.save(normalized, reference_file)
+
+  reference_image = bob.io.base.load(reference_file)
+
+  assert numpy.allclose(normalized, reference_image)
+
 

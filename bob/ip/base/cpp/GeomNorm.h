@@ -1,8 +1,8 @@
 /**
- * @author Manuel Günther <manuel.guenther@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Thu Jun 26 09:33:10 CEST 2014
  *
- * This file defines functions and classes for affine image transformations
+ * This file defines a class for affine image transformations
  *
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
@@ -69,8 +69,8 @@ namespace bob { namespace ip { namespace base {
         */
       double getRotationAngle() const { return m_rotation_angle; }
       double getScalingFactor() const { return m_scaling_factor; }
-      blitz::TinyVector<int,2> getCropSize() const { return m_crop_size; }
-      blitz::TinyVector<double,2> getCropOffset() const { return m_crop_offset; }
+      const blitz::TinyVector<int,2>& getCropSize() const { return m_crop_size; }
+      const blitz::TinyVector<double,2>& getCropOffset() const { return m_crop_offset; }
 
       /**
         * @brief Mutators

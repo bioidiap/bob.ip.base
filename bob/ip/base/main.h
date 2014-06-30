@@ -19,6 +19,7 @@
 #include "cpp/LBPTop.h"
 #include "cpp/LBPHS.h"
 #include "cpp/GeomNorm.h"
+#include "cpp/FaceEyesNorm.h"
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -62,6 +63,16 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseGeomNormType;
 bool init_BobIpBaseGeomNorm(PyObject* module);
 int PyBobIpBaseGeomNorm_Check(PyObject* o);
+
+// FaceEyesNorm
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::FaceEyesNorm> cxx;
+} PyBobIpBaseFaceEyesNormObject;
+
+extern PyTypeObject PyBobIpBaseFaceEyesNormType;
+bool init_BobIpBaseFaceEyesNorm(PyObject* module);
+int PyBobIpBaseFaceEyesNorm_Check(PyObject* o);
 
 // affine functions
 PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject*, PyObject*);

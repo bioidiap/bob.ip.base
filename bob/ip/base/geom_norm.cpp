@@ -172,7 +172,7 @@ int PyBobIpBaseGeomNorm_setCropSize(PyBobIpBaseGeomNormObject* self, PyObject* v
 static auto cropOffset = bob::extension::VariableDoc(
   "crop_offset",
   "(float, float)",
-  "The size of the processed image, with read and write access"
+  "The transformation center in the processed image, with read and write access"
 );
 PyObject* PyBobIpBaseGeomNorm_getCropOffset(PyBobIpBaseGeomNormObject* self, void*){
   TRY
