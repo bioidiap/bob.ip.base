@@ -9,7 +9,7 @@
 """
 
 import numpy
-from .. import crop, shift
+import bob.ip.base
 
 A_org           = numpy.array(range(0,100), numpy.float64).reshape((10,10))
 A_crop_2x2_2x2  = numpy.array([[22, 23], [32, 33]], numpy.float64)
@@ -22,28 +22,28 @@ B3_shift_1x1    = numpy.array([B_shift_1x1, B_shift_1x1, B_shift_1x1])
 
 def test_crop_2D():
   B = numpy.ndarray((2,2), numpy.float64)
-  crop(A_org, B, 2, 2, 2, 2)
+  bob.ip.base.crop(A_org, (2,2), (2,2), dst=B)
   assert (B == A_crop_2x2_2x2).all()
-  C = crop(A_org, 2, 2, 2, 2)
+  C = bob.ip.base.crop(A_org, (2, 2), (2, 2))
   assert (C == A_crop_2x2_2x2).all()
 
 def test_shift_2D():
   B = numpy.ndarray((2,2), numpy.float64)
-  shift(B_org, B, -1, -1, True, True)
+  bob.ip.base.shift(B_org, (-1,-1), B)
   assert (B == B_shift_1x1).all()
-  C = shift(B_org, -1, -1, True, True)
+  C = bob.ip.base.shift(B_org, (-1, -1))
   assert (C == B_shift_1x1).all()
 
 def test_crop_3D():
   B = numpy.ndarray((3,2,2), numpy.float64)
-  crop(A3_org, B, 2, 2, 2, 2)
+  bob.ip.base.crop(A3_org, (2, 2), (2, 2), dst=B)
   assert (B == A3_crop_2x2_2x2).all()
-  C = crop(A3_org, 2, 2, 2, 2)
+  C = bob.ip.base.crop(A3_org, (2, 2), (2, 2))
   assert (C == A3_crop_2x2_2x2).all()
 
 def test_shift_3D():
   B = numpy.ndarray((3,2,2), numpy.float64)
-  shift(B3_org, B, -1, -1, True, True)
+  bob.ip.base.shift(B3_org, (-1, -1), B)
   assert (B == B3_shift_1x1).all()
-  C = shift(B_org, -1, -1, True, True)
+  C = bob.ip.base.shift(B_org, (-1, -1))
   assert (C == B3_shift_1x1).all()
