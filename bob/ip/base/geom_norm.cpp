@@ -26,7 +26,7 @@ static auto GeomNorm_doc = bob::extension::ClassDoc(
   )
   .add_prototype("rotation_angle, scaling_factor, crop_size, crop_offset", "")
   .add_prototype("other", "")
-  .add_parameter("rotation_angle", "float", "The rotation angle **in degrees** that sould be applied")
+  .add_parameter("rotation_angle", "float", "The rotation angle **in degrees** that should be applied")
   .add_parameter("scaling_factor", "float", "The scale factor to apply")
   .add_parameter("crop_size", "(int, int)", "The resolution of the processed images")
   .add_parameter("crop_offset", "(float, float)", "The transformation offset in the processed images")

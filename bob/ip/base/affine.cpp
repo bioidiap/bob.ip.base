@@ -190,6 +190,176 @@ PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject* args, PyObject* 
 }
 
 
+bob::extension::FunctionDoc s_rotate = bob::extension::FunctionDoc(
+  "rotate",
+  "Rotates an image.",
+  "This function rotates an image using bi-linear interpolation. "
+  "It supports 2D and 3D input array/image (NumPy array) of type numpy.uint8, numpy.uint16 and numpy.float64. "
+  "Basically, this function can be called in three different ways:\n\n"
+  "1. Given a source image and a rotation angle, the rotated image is returned in the size :py:func:`bob.ip.base.get_rotated_output_shape`\n\n"
+  "2. Given source and destination image and the rotation angle, the source image is rotated and filled into the destination image.\n\n"
+  "3. Same as 2., but additionally boolean masks will be read and filled with according values.\n\n"
+  ".. note:: Since the implementation uses a different interpolation style than before, results might *slightly* differ."
+)
+.add_prototype("src, rotation_angle", "dst")
+.add_prototype("src, dst, rotation_angle")
+.add_prototype("src, src_mask, dst, dst_mask, rotation_angle")
+.add_parameter("src", "array_like (2D or 3D)", "The input image (gray or colored) that should be rotated")
+.add_parameter("dst", "array_like (2D or 3D, float)", "The resulting scaled gray or color image, should be in size :py:func:`bob.ip.base.get_rotated_output_shape`")
+.add_parameter("src_mask", "array_like (bool, 2D or 3D)", "An input mask of valid pixels before geometric normalization, must be of same size as ``src``")
+.add_parameter("dst_mask", "array_like (bool, 2D or 3D)", "The output mask of valid pixels after geometric normalization, must be of same size as ``dst``")
+.add_parameter("rotation_angle", "float", "the rotation angle that should be applied to the image")
+.add_return("dst", "array_like (2D, float)", "The resulting rotated image")
+;
+
+template <typename T, int D>
+static void rotate_inner(PyBlitzArrayObject* input, PyBlitzArrayObject* input_mask, PyBlitzArrayObject* output, PyBlitzArrayObject* output_mask, double angle) {
+  if (input_mask && output_mask){
+    bob::ip::base::rotate<T>(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<bool,D>(input_mask), *PyBlitzArrayCxx_AsBlitz<double,D>(output), *PyBlitzArrayCxx_AsBlitz<bool,D>(output_mask), angle);
+  } else {
+    bob::ip::base::rotate<T>(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<double,D>(output), angle);
+  }
+}
+
+PyObject* PyBobIpBase_rotate(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+  /* Parses input arguments in a single shot */
+  static char* kwlist1[] = {c("src"), c("angle"), NULL};
+  static char* kwlist2[] = {c("src"), c("dst"), c("angle"), NULL};
+  static char* kwlist3[] = {c("src"), c("src_mask"), c("dst"), c("dst_mask"), c("angle"), NULL};
+
+  // get the number of command line arguments
+  Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
+
+  PyBlitzArrayObject* src,* src_mask = 0,* dst = 0,* dst_mask = 0;
+  double angle = 0.;
+  switch (nargs){
+    case 2: // src and angle; create the destination afterwards
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&d", kwlist1, &PyBlitzArray_Converter, &src, &angle)) return 0;
+      break;
+    case 3: // src, dst and angle
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&d", kwlist2, &PyBlitzArray_Converter, &src, &PyBlitzArray_OutputConverter, &dst, &angle)) return 0;
+      break;
+    case 5: // src, dst and angle
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&O&O&d", kwlist3, &PyBlitzArray_Converter, &src, &PyBlitzArray_Converter, &src_mask, &PyBlitzArray_OutputConverter, &dst, &PyBlitzArray_OutputConverter, &dst_mask, &angle)) return 0;
+      break;
+    default:
+      PyErr_Format(PyExc_ValueError, "rotate was called with a wrong number of arguments");
+      return 0;
+  }
+
+  auto src_ = make_safe(src), src_mask_ = make_xsafe(src_mask), dst_ = make_xsafe(dst), dst_mask_ = make_xsafe(dst_mask);
+
+  if (src->ndim != 2 && src->ndim != 3){
+    PyErr_Format(PyExc_TypeError, "only 2D and 3D images can be scaled");
+    return 0;
+  }
+
+  if (dst){
+    // check that data type is correct and dimensions fit
+    if (dst->ndim != src->ndim){
+      PyErr_Format(PyExc_TypeError, "rotate: the src and dst array must have the same number of dimensions");
+      return 0;
+    }
+    if (dst->type_num != NPY_FLOAT64){
+      PyErr_Format(PyExc_TypeError, "rotate: the dst array must be of type float64");
+      return 0;
+    }
+  } else {
+    assert (!isnan(scale_factor));
+    // create output in the same dimensions as input
+    switch (src->ndim){
+      case 2:{
+        blitz::TinyVector<int,2> orig_shape(src->shape[0], src->shape[1]);
+        auto new_shape = bob::ip::base::getRotatedShape(orig_shape, angle);
+        Py_ssize_t n[] = {new_shape[0], new_shape[1]};
+        dst = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_FLOAT64, 2, n));
+        break;
+      }
+      case 3:{
+        blitz::TinyVector<int,3> orig_shape(src->shape[0], src->shape[1], src->shape[2]);
+        auto new_shape = bob::ip::base::getRotatedShape(orig_shape, angle);
+        Py_ssize_t n[] = {new_shape[0], new_shape[1], new_shape[2]};
+        dst = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, n));
+        break;
+      }
+      default:
+        PyErr_Format(PyExc_TypeError, "only 2D and 3D images can be rotated");
+        return 0;
+    }
+    dst_ = make_safe(dst);
+  }
+
+  if (src_mask && dst_mask && ((src_mask->ndim != src->ndim || src_mask->type_num != NPY_BOOL) || dst_mask->ndim != dst->ndim || dst_mask->type_num != NPY_BOOL)) {
+    PyErr_Format(PyExc_TypeError, "rotate: the masks must be of boolean type and have the same dimensions as src or dst images.");
+    return 0;
+  }
+
+  switch (src->type_num){
+    case NPY_UINT8:   if (src->ndim == 2) rotate_inner<uint8_t,2>(src, src_mask, dst, dst_mask, angle);  else rotate_inner<uint8_t,3>(src, src_mask, dst, dst_mask, angle); break;
+    case NPY_UINT16:  if (src->ndim == 2) rotate_inner<uint16_t,2>(src, src_mask, dst, dst_mask, angle); else rotate_inner<uint16_t,3>(src, src_mask, dst, dst_mask, angle); break;
+    case NPY_FLOAT64: if (src->ndim == 2) rotate_inner<double,2>(src, src_mask, dst, dst_mask, angle);   else rotate_inner<double,3>(src, src_mask, dst, dst_mask, angle); break;
+    default:
+      PyErr_Format(PyExc_TypeError, "rotate: src arrays of type %s are currently not supported", PyBlitzArray_TypenumAsString(src->type_num));
+      return 0;
+  }
+
+  if (nargs == 2){
+    Py_INCREF(dst);
+    return PyBlitzArray_AsNumpyArray(dst,0);
+  }
+
+  Py_RETURN_NONE;
+  CATCH_("rotate", 0)
+}
+
+
+bob::extension::FunctionDoc s_getRotatedOutputShape = bob::extension::FunctionDoc(
+  "get_rotated_output_shape",
+  "This function returns the shape of the rotated image for the given image and angle",
+  0,
+  true
+)
+.add_prototype("src, angle", "rotated_shape")
+//.add_prototype("shape, scale", "scaled_shape")
+.add_parameter("src", "array_like (2D,3D)", "The src image which which should be scaled")
+.add_parameter("angle", "float", "The rotation angle **in degrees** to rotate the src image with")
+//.add_parameter("shape", "(int, int) or (int, int, int)", "The shape of the input image which which should be scaled")
+.add_return("rotated_shape", "(int, int) or (int, int, int)", "The shape of the rotated ``dst`` image required in a call to :py:func:`bob.ip.base.rotate`")
+;
+
+PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+
+  static char* kwlist1[] = {c("src"), c("angle"), 0};
+// TODO: implement from shape
+//  static char* kwlist2[] = {c("shape"), c("scale"), 0};
+
+  PyBlitzArrayObject* image = 0;
+  double angle;
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&d", kwlist1, &PyBlitzArray_Converter, &image, &angle)) return 0;
+
+  auto image_ = make_safe(image);
+  switch (image->ndim){
+    case 2:{
+      blitz::TinyVector<int,2> src_shape(image->shape[0], image->shape[1]);
+      auto scaled_shape = bob::ip::base::getRotatedShape(src_shape, angle);
+      return Py_BuildValue("(ii)", scaled_shape[0], scaled_shape[1]);
+    }
+    case 3:{
+      blitz::TinyVector<int,3> src_shape(image->shape[0], image->shape[1], image->shape[2]);
+      auto scaled_shape = bob::ip::base::getRotatedShape(src_shape, angle);
+      return Py_BuildValue("(iii)", scaled_shape[0], scaled_shape[1], scaled_shape[2]);
+    }
+    default:
+      PyErr_Format(PyExc_TypeError, "'get_rotated_output_shape' only accepts 2D or 3D arrays (not %" PY_FORMAT_SIZE_T "dD arrays)", image->ndim);
+  }
+
+  return 0;
+  CATCH_("cannot get rotated output shape", 0)
+}
+
+
 bob::extension::FunctionDoc s_maxRectInMask = bob::extension::FunctionDoc(
   "max_rect_in_mask",
   "Given a 2D mask (a 2D blitz array of booleans), compute the maximum rectangle which only contains true values.",

@@ -154,6 +154,12 @@ namespace bob { namespace ip { namespace base {
     const blitz::TinyVector<int,4> maxRectInMask(const blitz::Array<bool,2>& mask);
 
 
+
+/************************************************************************
+**************  Scaling functionality  **********************************
+************************************************************************/
+
+
     /** helper function to compute the scale required by bob.ip.base.GeomNorm for the given image shapes */
     template <int D>
     static inline blitz::TinyVector<double,2> _get_scale_factor(const blitz::TinyVector<int,D>& src_shape, const blitz::TinyVector<int,D>& dst_shape){
@@ -233,7 +239,6 @@ namespace bob { namespace ip { namespace base {
       }
     }
 
-
     /**
      * @brief Function which returns the shape of an output blitz::array
      *   when rescaling an input image with the given scale factor.
@@ -249,6 +254,104 @@ namespace bob { namespace ip { namespace base {
       return dst_shape;
     }
 
+
+/************************************************************************
+**************  Rotating functionality  *********************************
+************************************************************************/
+
+    /**
+     * @brief Function which rotates a 2D blitz::array/image of a given type with the given angle in degrees.
+     *   The first dimension is the height (y-axis), whereas the second
+     *   one is the width (x-axis).
+     * @param src The input blitz array
+     * @param dst The output blitz array
+     * @param rotation_angle The angle in degrees to rotate the image with
+     */
+    template <typename T>
+    void rotate(const blitz::Array<T,2>& src, blitz::Array<double,2>& dst, const double rotation_angle){
+      // rotation offset is the center of the image
+      blitz::TinyVector<double,2> src_offset(src.extent(0)/2.,src.extent(1)/2.);
+      blitz::TinyVector<double,2> dst_offset(dst.extent(0)/2.,dst.extent(1)/2.);
+      blitz::Array<bool,2> src_mask, dst_mask;
+      // .. apply scale with (0,0) as offset and 0 as rotation angle
+      transform<T,false>(src, src_mask, src_offset, dst, dst_mask, dst_offset, blitz::TinyVector<double,2>(0.,0.), rotation_angle);
+    }
+
+    /**
+     * @brief Function which rotates a 2D blitz::array/image of a given type with the given angle in degrees.
+     *   The first dimension is the height (y-axis), whereas the second
+     *   one is the width (x-axis).
+     * @param src The input blitz array
+     * @param src_mask The input blitz boolean mask array
+     * @param dst The output blitz array
+     * @param dst_mask The output blitz boolean mask array
+     * @param rotation_angle The angle in degrees to rotate the image with
+     */
+    template <typename T>
+    void rotate(const blitz::Array<T,2>& src, const blitz::Array<bool,2>& src_mask, blitz::Array<double,2>& dst, blitz::Array<bool,2>& dst_mask, const double rotation_angle){
+      // rotation offset is the center of the image
+      blitz::TinyVector<double,2> src_offset(src.extent(0)/2.,src.extent(1)/2.);
+      blitz::TinyVector<double,2> dst_offset(dst.extent(0)/2.,dst.extent(1)/2.);
+      // .. apply scale with (0,0) as offset and 0 as rotation angle
+      transform<T,true>(src, src_mask, src_offset, dst, dst_mask, dst_offset, blitz::TinyVector<double,2>(0.,0.), rotation_angle);
+    }
+
+    /**
+     * @brief Function which rotates a 3D blitz::array/image of a given type.
+     *   The first dimension is the number of color plane, the second is the
+     * height (y-axis), whereas the third one is the width (x-axis).
+     * @param src The input blitz array
+     * @param dst The output blitz array
+     * @param rotation_angle The angle in degrees to rotate the image with
+     */
+    template <typename T>
+    void rotate(const blitz::Array<T,3>& src, blitz::Array<double,3>& dst, const double rotation_angle)
+    {
+      // Check number of planes
+      bob::core::array::assertSameDimensionLength(src.extent(0), dst.extent(0));
+      for (int p = 0; p < dst.extent(0); ++p){
+        const blitz::Array<T,2> src_slice = src(p, blitz::Range::all(), blitz::Range::all());
+        blitz::Array<double,2> dst_slice = dst(p, blitz::Range::all(), blitz::Range::all());
+        // Process one plane
+        rotate(src_slice, dst_slice, rotation_angle);
+      }
+    }
+
+    template <typename T>
+    void rotate(const blitz::Array<T,3>& src, const blitz::Array<bool,3>& src_mask, blitz::Array<double,3>& dst, blitz::Array<bool,3>& dst_mask, const double rotation_angle)
+    {
+      // Check number of planes
+      bob::core::array::assertSameDimensionLength(src.extent(0), dst.extent(0));
+      bob::core::array::assertSameDimensionLength(src.extent(0), src_mask.extent(0));
+      bob::core::array::assertSameDimensionLength(src_mask.extent(0), dst_mask.extent(0));
+      for (int p = 0; p < dst.extent(0); ++p){
+        const blitz::Array<T,2> src_slice = src(p, blitz::Range::all(), blitz::Range::all());
+        const blitz::Array<bool,2> src_mask_slice = src_mask(p, blitz::Range::all(), blitz::Range::all());
+        blitz::Array<double,2> dst_slice = dst(p, blitz::Range::all(), blitz::Range::all());
+        blitz::Array<bool,2> dst_mask_slice = dst_mask(p, blitz::Range::all(), blitz::Range::all());
+        // Process one plane
+        rotate(src_slice, src_mask_slice, dst_slice, dst_mask_slice, rotation_angle);
+      }
+    }
+
+    /**
+     * @brief Function which returns the shape of an output blitz::array
+     *   when rotating an input image with the given rotation angle.
+     * @param src_shape The input blitz array shape
+     * @param rotation_angle The angle in degrees to rotate the image with
+     * @return A blitz::TinyVector containing the shape of the rotated image
+     */
+    template <int D>
+    blitz::TinyVector<int, D> getRotatedShape(const blitz::TinyVector<int, D> src_shape, const double rotation_angle){
+      blitz::TinyVector<int, D> dst_shape = src_shape;
+      // compute rotation shape
+      double rad_angle = rotation_angle * M_PI / 180.;
+      const double absCos = std::abs(cos(rad_angle));
+      const double absSin = std::abs(sin(rad_angle));
+      dst_shape(D-2) = floor(src_shape[D-2] * absCos + src_shape[D-1] * absSin + 0.5);
+      dst_shape(D-1) = floor(src_shape[D-1] * absCos + src_shape[D-2] * absSin + 0.5);
+      return dst_shape;
+    }
 
 } } } // namespaces
 

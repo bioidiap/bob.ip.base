@@ -71,6 +71,11 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_scale;
 PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_getScaledOutputShape;
+// .. rotating
+PyObject* PyBobIpBase_rotate(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_rotate;
+PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_getRotatedOutputShape;
 
 
 
