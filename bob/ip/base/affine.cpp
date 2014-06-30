@@ -125,9 +125,9 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   switch (src->type_num){
-    case NPY_UINT8:   (src->ndim == 2 ? scale_inner<uint8_t,2> : scale_inner<uint8_t,3>) (src, src_mask, dst, dst_mask); break;
-    case NPY_UINT16:  (src->ndim == 2 ? scale_inner<uint16_t,2> : scale_inner<uint16_t,3>) (src, src_mask, dst, dst_mask); break;
-    case NPY_FLOAT64: (src->ndim == 2 ? scale_inner<double,2> : scale_inner<double,3>) (src, src_mask, dst, dst_mask); break;
+    case NPY_UINT8:   if (src->ndim == 2) scale_inner<uint8_t,2>(src, src_mask, dst, dst_mask);  else scale_inner<uint8_t,3>(src, src_mask, dst, dst_mask); break;
+    case NPY_UINT16:  if (src->ndim == 2) scale_inner<uint16_t,2>(src, src_mask, dst, dst_mask); else scale_inner<uint16_t,3>(src, src_mask, dst, dst_mask); break;
+    case NPY_FLOAT64: if (src->ndim == 2) scale_inner<double,2>(src, src_mask, dst, dst_mask);   else scale_inner<double,3>(src, src_mask, dst, dst_mask); break;
     default:
       PyErr_Format(PyExc_TypeError, "scale: src arrays of type %s are currently not supported", PyBlitzArray_TypenumAsString(src->type_num));
       return 0;

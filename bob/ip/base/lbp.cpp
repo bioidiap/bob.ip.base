@@ -833,7 +833,7 @@ template <typename T>
 static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output, bool iii){
   self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<uint16_t,2>(output), iii);
   Py_INCREF(output);
-  return Py_BuildValue("O", output);
+  return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
 static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {

@@ -230,7 +230,7 @@ template <typename T>
 static inline PyObject* lbphs_inner(PyBlitzArrayObject* input, PyBobIpBaseLBPObject* lbp, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap, PyBlitzArrayObject* output){
   bob::ip::base::lbphs(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *lbp->cxx, block_size, block_overlap, *PyBlitzArrayCxx_AsBlitz<uint64_t,2>(output));
   Py_INCREF(output);
-  return Py_BuildValue("O", output);
+  return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
 PyObject* PyBobIpBase_lbphs(PyObject*, PyObject* args, PyObject* kwds) {
