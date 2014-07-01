@@ -186,13 +186,12 @@ class Processor:
   def __init__(self, operator, generator, center, img_size):
     self.operator = operator
     self.generator = generator
-    self.x = center[0]
-    self.y = center[1]
+    self.center = center
     self.image = numpy.ndarray((img_size, img_size), 'uint8')
 
   def __call__(self, value):
     image = self.generator(self.image, value)
-    return self.operator(self.image, self.y, self.x)
+    return self.operator(self.image, self.center)
 
 
 
@@ -432,13 +431,13 @@ def test_u2_16p1r():
   res = numpy.array(((214, 1, 122), (0, 4, 32), (12, 242, 178)), dtype=int)
 
   proc1 = Processor(op, generate_5x5_image, (1,1), 5); nose.tools.eq_(proc1(values), res[0,0])
-  proc2 = Processor(op, generate_5x5_image, (2,1), 5); nose.tools.eq_(proc2(values), res[0,1])
-  proc3 = Processor(op, generate_5x5_image, (3,1), 5); nose.tools.eq_(proc3(values), res[0,2])
-  proc4 = Processor(op, generate_5x5_image, (1,2), 5); nose.tools.eq_(proc4(values), res[1,0])
+  proc2 = Processor(op, generate_5x5_image, (1,2), 5); nose.tools.eq_(proc2(values), res[0,1])
+  proc3 = Processor(op, generate_5x5_image, (1,3), 5); nose.tools.eq_(proc3(values), res[0,2])
+  proc4 = Processor(op, generate_5x5_image, (2,1), 5); nose.tools.eq_(proc4(values), res[1,0])
   proc5 = Processor(op, generate_5x5_image, (2,2), 5); nose.tools.eq_(proc5(values), res[1,1])
-  proc6 = Processor(op, generate_5x5_image, (3,2), 5); nose.tools.eq_(proc6(values), res[1,2])
-  proc7 = Processor(op, generate_5x5_image, (1,3), 5); nose.tools.eq_(proc7(values), res[2,0])
-  proc8 = Processor(op, generate_5x5_image, (2,3), 5); nose.tools.eq_(proc8(values), res[2,1])
+  proc6 = Processor(op, generate_5x5_image, (2,3), 5); nose.tools.eq_(proc6(values), res[1,2])
+  proc7 = Processor(op, generate_5x5_image, (3,1), 5); nose.tools.eq_(proc7(values), res[2,0])
+  proc8 = Processor(op, generate_5x5_image, (3,2), 5); nose.tools.eq_(proc8(values), res[2,1])
   proc9 = Processor(op, generate_5x5_image, (3,3), 5); nose.tools.eq_(proc9(values), res[2,2])
 
 def test_u2_16p2r():
@@ -456,13 +455,13 @@ def test_riu2_16p1r():
   res[1,0]=0; res[1,1]=2; res[1,2]=3;
   res[2,0]=2; res[2,1]=17; res[2,2]=13;
   proc1 = Processor(op, generate_5x5_image, (1,1), 5); nose.tools.eq_(proc1(values), res[0,0])
-  proc2 = Processor(op, generate_5x5_image, (2,1), 5); nose.tools.eq_(proc2(values), res[0,1])
-  proc3 = Processor(op, generate_5x5_image, (3,1), 5); nose.tools.eq_(proc3(values), res[0,2])
-  proc4 = Processor(op, generate_5x5_image, (1,2), 5); nose.tools.eq_(proc4(values), res[1,0])
+  proc2 = Processor(op, generate_5x5_image, (1,2), 5); nose.tools.eq_(proc2(values), res[0,1])
+  proc3 = Processor(op, generate_5x5_image, (1,3), 5); nose.tools.eq_(proc3(values), res[0,2])
+  proc4 = Processor(op, generate_5x5_image, (2,1), 5); nose.tools.eq_(proc4(values), res[1,0])
   proc5 = Processor(op, generate_5x5_image, (2,2), 5); nose.tools.eq_(proc5(values), res[1,1])
-  proc6 = Processor(op, generate_5x5_image, (3,2), 5); nose.tools.eq_(proc6(values), res[1,2])
-  proc7 = Processor(op, generate_5x5_image, (1,3), 5); nose.tools.eq_(proc7(values), res[2,0])
-  proc8 = Processor(op, generate_5x5_image, (2,3), 5); nose.tools.eq_(proc8(values), res[2,1])
+  proc6 = Processor(op, generate_5x5_image, (2,3), 5); nose.tools.eq_(proc6(values), res[1,2])
+  proc7 = Processor(op, generate_5x5_image, (3,1), 5); nose.tools.eq_(proc7(values), res[2,0])
+  proc8 = Processor(op, generate_5x5_image, (3,2), 5); nose.tools.eq_(proc8(values), res[2,1])
   proc9 = Processor(op, generate_5x5_image, (3,3), 5); nose.tools.eq_(proc9(values), res[2,2])
 
 def test_eLBP_8p1r():

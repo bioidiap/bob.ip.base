@@ -814,10 +814,10 @@ static auto extract = bob::extension::FunctionDoc(
   true
 )
 .add_prototype("input, [is_integral_image]", "output")
-.add_prototype("input, y, x, [is_integral_image]", "code")
+.add_prototype("input, position, [is_integral_image]", "code")
 .add_prototype("input, output, [is_integral_image]")
 .add_parameter("input", "array_like (2D)", "The input image for which LBP features should be extracted")
-.add_parameter("y, x", "int", "The position in the ``input`` image, where the LBP code should be extracted; assure that you don't try to provide positions outside of the :py:attr:`offset`")
+.add_parameter("position", "(int, int)", "The position in the ``input`` image, where the LBP code should be extracted; assure that you don't try to provide positions outside of the :py:attr:`offset`")
 .add_parameter("output", "array_like (2D, uint16)", "The output image that need to be of shape :py:func:`get_lbp_shape`")
 .add_parameter("is_integral_image", "bool", "[default: ``False``] Is the given ``input`` image an integral image?")
 .add_return("output", "array_like (2D, uint16)", "The resulting image of LBP codes")
@@ -825,8 +825,8 @@ static auto extract = bob::extension::FunctionDoc(
 ;
 
 template <typename T>
-static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* input, int y, int x, bool iii){
-  uint16_t v = self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), y, x, iii);
+static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* input, const blitz::TinyVector<int,2>& position, bool iii){
+  uint16_t v = self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), position[0], position[1], iii);
   return Py_BuildValue("H", v);
 }
 template <typename T>
@@ -843,7 +843,7 @@ static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* i
 static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
   TRY
   static char* kwlist1[] = {c("input"), c("is_integral_image"), 0};
-  static char* kwlist2[] = {c("input"), c("y"), c("x"), c("is_integral_image"), 0};
+  static char* kwlist2[] = {c("input"), c("position"), c("is_integral_image"), 0};
   static char* kwlist3[] = {c("input"), c("output"), c("is_integral_image"), 0};
 
   // get the number of command line arguments
@@ -858,19 +858,20 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
 
   int how = 0;
 
-  PyObject* k1 = Py_BuildValue("s", kwlist1[1]),* k2 = Py_BuildValue("s", kwlist2[2]);
+  PyObject* k1 = Py_BuildValue("s", kwlist1[1]),* k2 = Py_BuildValue("s", kwlist2[1]);
   auto k1_ = make_safe(k1), k2_ = make_safe(k2);
-  if (nargs == 4) how = 2;
-  else if (nargs == 3){
-    if ((args && PyTuple_Size(args) == 3 && PyInt_Check(PyTuple_GET_ITEM(args,2))) || (kwargs && PyDict_Contains(kwargs, k2))) how = 2;
-    else how = 3;
-  } else if (nargs == 2){
+  if (nargs == 1) how = 1;
+  else if (nargs == 2){
     if ((args && PyTuple_Size(args) == 2 && PyBool_Check(PyTuple_GET_ITEM(args,1))) || (kwargs && PyDict_Contains(kwargs, k1))) how = 1;
+    else if ((args && PyTuple_Size(args) == 2 && (PyTuple_Check(PyTuple_GET_ITEM(args,1)) || PyList_Check(PyTuple_GET_ITEM(args,1)))) || (kwargs && PyDict_Contains(kwargs, k2))) how = 2;
     else how = 3;
-  } else if (nargs == 1) how = 1;
-  else{
+  } else if (nargs == 3){
+    if ((args && PyTuple_Size(args) >= 2 && (PyTuple_Check(PyTuple_GET_ITEM(args,1)) || PyList_Check(PyTuple_GET_ITEM(args,1)))) || (kwargs && PyDict_Contains(kwargs, k2))) how = 2;
+    else how = 3;
+  }
+  else {
     extract.print_usage();
-    PyErr_Format(PyExc_TypeError, "`%s' extract has maximum 4 parameters", Py_TYPE(self)->tp_name);
+    PyErr_Format(PyExc_TypeError, "`%s' extract has maximum 3 parameters", Py_TYPE(self)->tp_name);
     return 0;
   }
 
@@ -878,7 +879,7 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
   PyObject* iii = 0; // is_integral_image
   auto input_ = make_xsafe(input);
   auto output_ = make_xsafe(output);
-  int y, x;
+  blitz::TinyVector<int,2> position;
 
   // get the command line parameters
   switch (how){
@@ -891,7 +892,7 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
       break;
     case 2:
       // with position
-      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&ii|O!", kwlist2, &PyBlitzArray_Converter, &input, &y, &x, &PyBool_Type, &iii)){
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&(ii)|O!", kwlist2, &PyBlitzArray_Converter, &input, &position[0], &position[1], &PyBool_Type, &iii)){
         extract.print_usage();
         return 0;
       }
@@ -932,9 +933,9 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
 
   // finally, extract the features
   switch (input->type_num){
-    case NPY_UINT8:   return how == 2 ? extract_inner<uint8_t>(self, input, y, x, f(iii))  : extract_inner<uint8_t>(self, input, output, f(iii), how == 1);
-    case NPY_UINT16:  return how == 2 ? extract_inner<uint16_t>(self, input, y, x, f(iii)) : extract_inner<uint16_t>(self, input, output, f(iii), how == 1);
-    case NPY_FLOAT64: return how == 2 ? extract_inner<double>(self, input, y, x, f(iii))   : extract_inner<double>(self, input, output, f(iii), how == 1);
+    case NPY_UINT8:   return how == 2 ? extract_inner<uint8_t>(self, input, position, f(iii))  : extract_inner<uint8_t>(self, input, output, f(iii), how == 1);
+    case NPY_UINT16:  return how == 2 ? extract_inner<uint16_t>(self, input, position, f(iii)) : extract_inner<uint16_t>(self, input, output, f(iii), how == 1);
+    case NPY_FLOAT64: return how == 2 ? extract_inner<double>(self, input, position, f(iii))   : extract_inner<double>(self, input, output, f(iii), how == 1);
     default:
       extract.print_usage();
       PyErr_Format(PyExc_TypeError, "`%s' extracts only from images of types uint8, uint16 or float, and not from %s", Py_TYPE(self)->tp_name, PyBlitzArray_TypenumAsString(input->type_num));

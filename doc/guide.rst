@@ -155,7 +155,7 @@ applying the object):
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> face_eyes_norm = bob.ip.base.FaceEyesNorm(eyes_distance = 65, crop_height = 128, crop_width = 128, crop_eyecenter_offset_h = 32, crop_eyecenter_offset_w = 63.5)
+  >>> face_eyes_norm = bob.ip.base.FaceEyesNorm(eyes_distance = 65, crop_size = (128, 128), eyes_center = (32, 63.5))
 
 Now, we have set up our object to generate images of size (128, 128) that will
 put the left eye at the pixel position (32, 31) and the right eye at the
@@ -168,7 +168,7 @@ left eye usually has a higher x-coordinate than the right eye:
 
   >>> face_image = bob.io.base.load( image_path )
   >>> cropped_image = numpy.ndarray( (128, 128), dtype = numpy.float64 )
-  >>> face_eyes_norm( face_image, cropped_image, re_y = 67, re_x = 47, le_y = 62, le_x = 71)
+  >>> face_eyes_norm( face_image, cropped_image, right_eye = (67, 47), left_eye = (62, 71) )
 
 
 Simple feature extraction
@@ -189,7 +189,7 @@ position:
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> lbp_local = lbp_extractor ( cropped_image, 69, 62 )
+  >>> lbp_local = lbp_extractor ( cropped_image, (69, 62) )
   >>> # print the binary representation of the LBP
   >>> print(bin ( lbp_local ))
   0b11110000
