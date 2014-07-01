@@ -63,7 +63,7 @@ static auto LBP_doc = bob::extension::ClassDoc(
     "This clustering is done using a look-up-table, which you can also set yourself using the :py:attr:`look_up_table` attribute. "
     "The maximum code that will be generated can be read from the :py:attr:`max_label` attribute.\n\n"
     "Finally, the border handling of the image can be selected. "
-    "With the ``'shrink'`` option, no LBP code is computed for the border pixels and the resulting image is :math:`2\\times` ``radius`` or :math:`3\\times` ``block_size`` :math:`-1` pixels smaller in both directions, see :py:func:`get_lbp_shape`. "
+    "With the ``'shrink'`` option, no LBP code is computed for the border pixels and the resulting image is :math:`2\\times` ``radius`` or :math:`3\\times` ``block_size`` :math:`-1` pixels smaller in both directions, see :py:func:`lbp_shape`. "
     "The ``'wrap'`` option will wrap around the border and no truncation is performed.\n\n"
     ".. note:: To compute MB-LBP features, it is possible to compute an integral image before to speed up the calculation.",
     true
@@ -749,7 +749,7 @@ static PyObject* PyBobIpBaseLBP_setBlockSizeAndOverlap(PyBobIpBaseLBPObject* sel
 }
 
 static auto getShape = bob::extension::FunctionDoc(
-  "get_lbp_shape",
+  "lbp_shape",
   "This function returns the shape of the LBP image for the given image",
   "In case the :py:attr:`border_handling` is ``'shrink'`` the image resolution will be reduced, depending on the LBP configuration. "
   "This function will return the desired output shape for the given input image or input shape.",
@@ -818,7 +818,7 @@ static auto extract = bob::extension::FunctionDoc(
 .add_prototype("input, output, [is_integral_image]")
 .add_parameter("input", "array_like (2D)", "The input image for which LBP features should be extracted")
 .add_parameter("position", "(int, int)", "The position in the ``input`` image, where the LBP code should be extracted; assure that you don't try to provide positions outside of the :py:attr:`offset`")
-.add_parameter("output", "array_like (2D, uint16)", "The output image that need to be of shape :py:func:`get_lbp_shape`")
+.add_parameter("output", "array_like (2D, uint16)", "The output image that need to be of shape :py:func:`lbp_shape`")
 .add_parameter("is_integral_image", "bool", "[default: ``False``] Is the given ``input`` image an integral image?")
 .add_return("output", "array_like (2D, uint16)", "The resulting image of LBP codes")
 .add_return("code", "uint16", "The resulting LBP code at the given position in the image")

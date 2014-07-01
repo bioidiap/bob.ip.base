@@ -418,11 +418,11 @@ def test_riu2_8p1r():
 def test_shape():
   lbp = bob.ip.base.LBP(8)
   image = numpy.ndarray((3,3), dtype='uint8')
-  sh = lbp.get_lbp_shape(image)
+  sh = lbp.lbp_shape(image)
   nose.tools.eq_(sh, (1,1))
 
   lbp = bob.ip.base.LBP(8, border_handling="wrap")
-  sh = lbp.get_lbp_shape(image)
+  sh = lbp.lbp_shape(image)
   nose.tools.eq_(sh, (3,3))
 
 def test_u2_16p1r():
@@ -594,14 +594,14 @@ def test_mb_lbp():
   nose.tools.eq_(op.block_overlap, (0,0))
 
   values = numpy.array([[3,5,12], [1,3,4], [5,2,10], [13,14,0], [10,3,1], [20,12,0]], dtype=numpy.uint8)
-  nose.tools.eq_(op.get_lbp_shape(values), (1,1))
+  nose.tools.eq_(op.lbp_shape(values), (1,1))
   # get the multi-block code for this image
   nose.tools.eq_(op(values)[0,0], 0x23)
 
   # generate integral image
   ii = numpy.ndarray((7,4), dtype = numpy.uint16)
   bob.ip.base.integral(values, ii, add_zero_border = True)
-  nose.tools.eq_(op.get_lbp_shape(ii, True), (1,1))
+  nose.tools.eq_(op.lbp_shape(ii, True), (1,1))
   # get the multi-block code for this image
   nose.tools.eq_(op(ii, True)[0,0], 0x23)
 
@@ -635,14 +635,14 @@ def test_omb_lbp():
   nose.tools.eq_(op.block_overlap, (2,1))
 
   values = numpy.array([[0,0,1,1,1,2,2], [1,1,2,2,2,3,3], [1,1,3,3,3,5,5], [3,3,5,5,5,7,7], [5,5,7,7,7,9,9]], dtype=numpy.uint8)
-  nose.tools.eq_(op.get_lbp_shape(values), (1,1))
+  nose.tools.eq_(op.lbp_shape(values), (1,1))
   # get the offset multi-block code for this image
   nose.tools.eq_(op(values)[0,0], 0x1e)
 
   # generate integral image
   ii = numpy.ndarray((6,8), dtype = numpy.uint16)
   bob.ip.base.integral(values, ii, add_zero_border = True)
-  nose.tools.eq_(op.get_lbp_shape(ii, True), (1,1))
+  nose.tools.eq_(op.lbp_shape(ii, True), (1,1))
   # get the offset multi-block code for this image
   nose.tools.eq_(op(ii, True)[0,0], 0x1e)
 

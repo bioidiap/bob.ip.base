@@ -300,7 +300,7 @@ bob::extension::FunctionDoc s_blockOutputShape = bob::extension::FunctionDoc(
   "Returns the shape of the output image that is required to compute the :py:func:`bob.ip.base.block` function",
   0
 )
-.add_prototype("input, block_size, [block_overlap]", "shape")
+.add_prototype("input, block_size, [block_overlap], [flat]", "shape")
 .add_parameter("input", "array_like (2D)", "The source image to decompose into blocks")
 .add_parameter("block_size", "(int, int)", "The size of the blocks in which the image is decomposed")
 .add_parameter("block_overlap", "(int, int)", "[default: ``(0, 0)``] The overlap of the blocks")

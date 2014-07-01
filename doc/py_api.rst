@@ -22,15 +22,15 @@ Functions
 
 .. autosummary::
    bob.ip.base.scale
-   bob.ip.base.get_scaled_output_shape
+   bob.ip.base.scaled_output_shape
    bob.ip.base.rotate
-   bob.ip.base.get_rotated_output_shape
+   bob.ip.base.rotated_output_shape
    bob.ip.base.block
    bob.ip.base.block_output_shape
    bob.ip.base.crop
    bob.ip.base.shift
    bob.ip.base.max_rect_in_mask
-   bob.ip.base.get_angle_to_horizontal
+   bob.ip.base.angle_to_horizontal
    bob.ip.base.lbphs
    bob.ip.base.lbphs_output_shape
    bob.ip.base.integral

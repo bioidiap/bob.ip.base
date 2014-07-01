@@ -76,7 +76,7 @@ Rotating images
 
 The rotation of an image is slightly more difficult since the resulting image
 size has to be computed in advance. To facilitate this there is a function
-:py:func:`bob.ip.base.get_rotated_output_shape` which can be used:
+:py:func:`bob.ip.base.rotated_output_shape` which can be used:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
@@ -85,7 +85,7 @@ size has to be computed in advance. To facilitate this there is a function
   >>> print(A)
   [[1 2 3]
    [4 5 6]]
-  >>> rotated_shape = bob.ip.base.get_rotated_output_shape( A, 90 )
+  >>> rotated_shape = bob.ip.base.rotated_output_shape( A, 90 )
   >>> print(rotated_shape)
   (3, 2)
 
@@ -200,7 +200,7 @@ you need to get the required shape of the output image:
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> lbp_output_image_shape = lbp_extractor.get_lbp_shape(cropped_image)
+  >>> lbp_output_image_shape = lbp_extractor.lbp_shape(cropped_image)
   >>> print(lbp_output_image_shape)
   (126, 126)
   >>> lbp_output_image = numpy.ndarray ( lbp_output_image_shape, dtype = numpy.uint16 )

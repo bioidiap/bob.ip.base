@@ -80,11 +80,11 @@ def test_scale_factor():
     assert numpy.allclose(scaled_3by8by8[i], scaled_ref_8by8, atol=1e-7)
 
 
-def test_get_scaled_output_shape():
-  shape_2by2 = bob.ip.base.get_scaled_output_shape(scale_src, 0.5)
+def test_scaled_output_shape():
+  shape_2by2 = bob.ip.base.scaled_output_shape(scale_src, 0.5)
   assert shape_2by2 == (2,2)
 
-  shape_8by8 = bob.ip.base.get_scaled_output_shape(scale_src, 2.)
+  shape_8by8 = bob.ip.base.scaled_output_shape(scale_src, 2.)
   assert shape_8by8 == (8,8)
 
 
@@ -115,7 +115,7 @@ def test_rotate():
   assert numpy.allclose(normalized_r10, reference_r10)
 
   # rotate the face with 70 degree
-  image_r70 = numpy.ndarray(bob.ip.base.get_rotated_output_shape(image, 70))
+  image_r70 = numpy.ndarray(bob.ip.base.rotated_output_shape(image, 70))
   bob.ip.base.rotate(image, image_r70, 70)
   normalized_r70 = numpy.round(image_r70).astype(numpy.uint8)
 

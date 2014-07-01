@@ -9,7 +9,6 @@
 
 
 #include "main.h"
-#include "cpp/Affine.h"
 
 bob::extension::FunctionDoc s_scale = bob::extension::FunctionDoc(
   "scale",
@@ -17,7 +16,7 @@ bob::extension::FunctionDoc s_scale = bob::extension::FunctionDoc(
   "This function scales an image using bi-linear interpolation. "
   "It supports 2D and 3D input array/image (NumPy array) of type numpy.uint8, numpy.uint16 and numpy.float64. "
   "Basically, this function can be called in three different ways:\n\n"
-  "1. Given a source image and a scale factor, the scaled image is returned in the size :py:func:`bob.ip.base.get_scaled_output_shape`\n\n"
+  "1. Given a source image and a scale factor, the scaled image is returned in the size :py:func:`bob.ip.base.scaled_output_shape`\n\n"
   "2. Given source and destination image, the source image is scaled such that it fits into the destination image.\n\n"
   "3. Same as 2., but additionally boolean masks will be read and filled with according values.\n\n"
   ".. note:: For 2. and 3., scale factors are computed for both directions independently. "
@@ -144,7 +143,7 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
 
 
 bob::extension::FunctionDoc s_getScaledOutputShape = bob::extension::FunctionDoc(
-  "get_scaled_output_shape",
+  "scaled_output_shape",
   "This function returns the shape of the scaled image for the given image and scale",
   "The function tries its best to compute an integral-valued shape given the shape of the input image and the given scale factor. "
   "Nevertheless, for non-round scale factors this might not work out perfectly.",
@@ -182,7 +181,7 @@ PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject* args, PyObject* 
       return Py_BuildValue("(iii)", scaled_shape[0], scaled_shape[1], scaled_shape[2]);
     }
     default:
-      PyErr_Format(PyExc_TypeError, "'get_scaled_output_shape' only accepts 2D or 3D arrays (not %" PY_FORMAT_SIZE_T "dD arrays)", image->ndim);
+      PyErr_Format(PyExc_TypeError, "'scaled_output_shape' only accepts 2D or 3D arrays (not %" PY_FORMAT_SIZE_T "dD arrays)", image->ndim);
   }
 
   return 0;
@@ -196,7 +195,7 @@ bob::extension::FunctionDoc s_rotate = bob::extension::FunctionDoc(
   "This function rotates an image using bi-linear interpolation. "
   "It supports 2D and 3D input array/image (NumPy array) of type numpy.uint8, numpy.uint16 and numpy.float64. "
   "Basically, this function can be called in three different ways:\n\n"
-  "1. Given a source image and a rotation angle, the rotated image is returned in the size :py:func:`bob.ip.base.get_rotated_output_shape`\n\n"
+  "1. Given a source image and a rotation angle, the rotated image is returned in the size :py:func:`bob.ip.base.rotated_output_shape`\n\n"
   "2. Given source and destination image and the rotation angle, the source image is rotated and filled into the destination image.\n\n"
   "3. Same as 2., but additionally boolean masks will be read and filled with according values.\n\n"
   ".. note:: Since the implementation uses a different interpolation style than before, results might *slightly* differ."
@@ -205,7 +204,7 @@ bob::extension::FunctionDoc s_rotate = bob::extension::FunctionDoc(
 .add_prototype("src, dst, rotation_angle")
 .add_prototype("src, src_mask, dst, dst_mask, rotation_angle")
 .add_parameter("src", "array_like (2D or 3D)", "The input image (gray or colored) that should be rotated")
-.add_parameter("dst", "array_like (2D or 3D, float)", "The resulting scaled gray or color image, should be in size :py:func:`bob.ip.base.get_rotated_output_shape`")
+.add_parameter("dst", "array_like (2D or 3D, float)", "The resulting scaled gray or color image, should be in size :py:func:`bob.ip.base.rotated_output_shape`")
 .add_parameter("src_mask", "array_like (bool, 2D or 3D)", "An input mask of valid pixels before geometric normalization, must be of same size as ``src``")
 .add_parameter("dst_mask", "array_like (bool, 2D or 3D)", "The output mask of valid pixels after geometric normalization, must be of same size as ``dst``")
 .add_parameter("rotation_angle", "float", "the rotation angle that should be applied to the image")
@@ -315,7 +314,7 @@ PyObject* PyBobIpBase_rotate(PyObject*, PyObject* args, PyObject* kwargs) {
 
 
 bob::extension::FunctionDoc s_getRotatedOutputShape = bob::extension::FunctionDoc(
-  "get_rotated_output_shape",
+  "rotated_output_shape",
   "This function returns the shape of the rotated image for the given image and angle",
   0,
   true
@@ -352,7 +351,7 @@ PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject* args, PyObject*
       return Py_BuildValue("(iii)", scaled_shape[0], scaled_shape[1], scaled_shape[2]);
     }
     default:
-      PyErr_Format(PyExc_TypeError, "'get_rotated_output_shape' only accepts 2D or 3D arrays (not %" PY_FORMAT_SIZE_T "dD arrays)", image->ndim);
+      PyErr_Format(PyExc_TypeError, "'rotated_output_shape' only accepts 2D or 3D arrays (not %" PY_FORMAT_SIZE_T "dD arrays)", image->ndim);
   }
 
   return 0;

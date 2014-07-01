@@ -1,8 +1,8 @@
 import math
 import numpy
 
-def get_angle_to_horizontal(right, left):
-  """get_angle_to_horizontal(right, left) -> angle
+def angle_to_horizontal(right, left):
+  """angle_to_horizontal(right, left) -> angle
 
   Get the angle needed to level out (horizontally) two points.
 
