@@ -25,6 +25,8 @@ Functions
    bob.ip.base.get_scaled_output_shape
    bob.ip.base.rotate
    bob.ip.base.get_rotated_output_shape
+   bob.ip.base.block
+   bob.ip.base.block_output_shape
    bob.ip.base.crop
    bob.ip.base.shift
    bob.ip.base.max_rect_in_mask

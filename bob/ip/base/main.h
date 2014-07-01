@@ -20,6 +20,7 @@
 #include "cpp/LBPHS.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
+#include "cpp/Block.h"
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -111,6 +112,12 @@ extern PyTypeObject PyBobIpBaseLBPTopType;
 bool init_BobIpBaseLBPTop(PyObject* module);
 int PyBobIpBaseLBPTop_Check(PyObject* o);
 
+
+// block
+PyObject* PyBobIpBase_block(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_block;
+PyObject* PyBobIpBase_blockOutputShape(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_blockOutputShape;
 
 // LBPHS
 PyObject* PyBobIpBase_lbphs(PyObject*, PyObject*, PyObject*);

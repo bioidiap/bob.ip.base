@@ -17,7 +17,6 @@ void bind_core_bz_numpy();
 void bind_sp_extrapolate();
 void bind_sp_convolution();
 
-void bind_ip_block();
 void bind_ip_extrapolate_mask();
 void bind_ip_gamma_correction();
 void bind_ip_shear();
@@ -55,7 +54,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_sp_extrapolate();
   bind_sp_convolution();
 
-  bind_ip_block();
   bind_ip_extrapolate_mask();
   bind_ip_gamma_correction();
   bind_ip_shear();

@@ -14,10 +14,10 @@
 #include <bob/core/array_index.h>
 
 // TODO: replace by local versions...
-#include <bob/ip/block.h>
 #include <bob/ip/histo.h>
 
 #include "LBP.h"
+#include "Block.h"
 
 namespace bob { namespace ip { namespace base {
 
@@ -35,22 +35,16 @@ namespace bob { namespace ip { namespace base {
     const blitz::TinyVector<int,2>& block_overlap,
     blitz::Array<uint64_t,2> dst)
   {
-//    if (lbp.getBorderHandling() != LBP_BORDER_WRAP){
-//      throw std::runtime_error("Please set the lbp.border_handling flag to 'wrap' for this function to work properly!");
-//    }
-
     // extract LBP features
     blitz::Array<uint16_t, 2> lbp_image(lbp.getLBPShape(src.shape()));
     lbp.extract_(src, lbp_image);
 
     // get all the blocks
-    std::list<blitz::Array<uint16_t,2> > blocks;
-    blockReference(lbp_image, blocks, block_size[0], block_size[1], block_overlap[0], block_overlap[1]);
+    auto blocks = blockReference(lbp_image, block_size[0], block_size[1], block_overlap[0], block_overlap[1]);
 
     if (dst.extent(0) != (int)blocks.size() || dst.extent(1) != (int)lbp.getMaxLabel()){
       throw std::runtime_error((boost::format("The given output image needs to be of size (%d, %d), but has shape (%d, %d)") % blocks.size() % lbp.getMaxLabel() % dst.extent(0) % dst.extent(1)).str());
     }
-
 
     // compute an lbp histogram for each block
     int i = 0;
@@ -61,7 +55,6 @@ namespace bob { namespace ip { namespace base {
       histogram<uint16_t>(*it, block_histogram, 0, lbp.getMaxLabel()-1, lbp.getMaxLabel());
     }
   }
-
 
 } } } // namespaces
 

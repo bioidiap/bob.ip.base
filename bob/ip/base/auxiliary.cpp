@@ -13,6 +13,9 @@
 #include "cpp/IntegralImage.h"
 #include "cpp/LBPHS.h"
 
+static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
+
+
 bob::extension::FunctionDoc s_zigzag = bob::extension::FunctionDoc(
     "zigzag",
 
@@ -200,6 +203,142 @@ PyObject* PyBobIpBase_integral(PyObject*, PyObject* args, PyObject* kwds) {
   CATCH_("in integral", 0)
 }
 
+bob::extension::FunctionDoc s_block = bob::extension::FunctionDoc(
+  "block",
+  "Performs a block decomposition of a 2D array/image",
+  "If given, the output 3D or 4D destination array should be allocated and of the correct size, see :py:func:`bob.ip.base.block_output_shape`.",
+  "Blocks are extracted such that they fit into the given image. "
+  "The blocks can be split into either a 3D array of shape ``(block_index, block_height, block_width)``, or into a 4D array of shape ``(block_index, block_height, block_width)``. "
+  "To toggle between both ways, select the ``flat`` parameter accordingly."
+)
+.add_prototype("input, block_size, [block_overlap], [output], [flat]", "output")
+.add_parameter("input", "array_like (2D)", "The source image to decompose into blocks")
+.add_parameter("block_size", "(int, int)", "The size of the blocks in which the image is decomposed")
+.add_parameter("block_overlap", "(int, int)", "[default: ``(0, 0)``] The overlap of the blocks")
+.add_parameter("output", "array_like(3D or 4D)", "[default: ``None``] If given, the resulting blocks will be saved into this parameter; must be initialized in the correct size (see :py:func:`block_output_shape`)")
+.add_parameter("flat", "bool", "[default: ``False``] If ``output`` is not specified, the ``flat`` parameter is used to decide whether 3D (``flat = True``) or 4D (``flat = False``) output is generated")
+.add_return("output", "array_like(3D or 4D)", "The resulting blocks that the image is decomposed into; the same array as the ``output`` parameter, when given.")
+;
+
+// helper function to compute the output shape
+static inline blitz::TinyVector<int,3> block_shape3(PyBlitzArrayObject* input, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap){
+  return bob::ip::base::getBlock3DOutputShape(input->shape[0], input->shape[1], block_size[0], block_size[1], block_overlap[0], block_overlap[1]);
+}
+static inline blitz::TinyVector<int,4> block_shape4(PyBlitzArrayObject* input, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap){
+  return bob::ip::base::getBlock4DOutputShape(input->shape[0], input->shape[1], block_size[0], block_size[1], block_overlap[0], block_overlap[1]);
+}
+
+template <typename T, int D>
+static inline void block_inner(PyBlitzArrayObject* input, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap, PyBlitzArrayObject* output){
+  bob::ip::base::block(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<T,D>(output), block_size[0], block_size[1], block_overlap[0], block_overlap[1]);
+}
+
+PyObject* PyBobIpBase_block(PyObject*, PyObject* args, PyObject* kwds) {
+  TRY
+  /* Parses input arguments in a single shot */
+  static char* kwlist[] = {c("input"), c("block_size"), c("block_overlap"), c("output"), c("flat"), NULL};
+
+  PyBlitzArrayObject* input = 0,* output = 0;
+  blitz::TinyVector<int,2> size, overlap(0,0);
+  PyObject* flat_ = 0;
+
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&(ii)|(ii)O&O!", kwlist, &PyBlitzArray_Converter, &input, &size[0], &size[1], &overlap[0], &overlap[1], &PyBlitzArray_OutputConverter, &output, &PyBool_Type, &flat_)) return 0;
+
+  auto input_ = make_safe(input), output_ = make_xsafe(output);
+  bool flat = f(flat_);
+
+  if (input->ndim != 2) {
+    PyErr_Format(PyExc_TypeError, "blocks can only be extracted from and to 2D arrays");
+    return 0;
+  }
+  bool return_out = false;
+  if (output){
+    if (output->type_num != input->type_num){
+      PyErr_Format(PyExc_TypeError, "``input`` and ``output`` must have the same data type");
+      return 0;
+    }
+    if (output->ndim != 3 && output->ndim != 4){
+      PyErr_Format(PyExc_TypeError, "``output`` must have either three or four dimensions, not %" PY_FORMAT_SIZE_T "d", output->ndim);
+      return 0;
+    }
+    flat = output->ndim == 3;
+  } else {
+    return_out = true;
+    // generate output in the desired shape
+    if (flat){
+      auto res = block_shape3(input, size, overlap);
+      Py_ssize_t osize[] = {res[0], res[1], res[2]};
+      output = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(input->type_num, 3, osize);
+    } else {
+      auto res = block_shape4(input, size, overlap);
+      Py_ssize_t osize[] = {res[0], res[1], res[2], res[3]};
+      output = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(input->type_num, 4, osize);
+    }
+    output_ = make_safe(output);
+  }
+
+  switch (input->type_num){
+    case NPY_UINT8:   if (flat) block_inner<uint8_t,3>(input, size, overlap, output);  else block_inner<uint8_t,4>(input, size, overlap, output); break;
+    case NPY_UINT16:  if (flat) block_inner<uint16_t,3>(input, size, overlap, output); else block_inner<uint16_t,4>(input, size, overlap, output); break;
+    case NPY_FLOAT64: if (flat) block_inner<double,3>(input, size, overlap, output);   else block_inner<double,4>(input, size, overlap, output); break;
+    default:
+      PyErr_Format(PyExc_TypeError, "block does not work on 'input' images of type %s", PyBlitzArray_TypenumAsString(input->type_num));
+  }
+
+  if (return_out){
+    Py_INCREF(output);
+    return PyBlitzArray_AsNumpyArray(output, 0);
+  } else
+    Py_RETURN_NONE;
+
+  CATCH_("in block", 0)
+}
+
+
+bob::extension::FunctionDoc s_blockOutputShape = bob::extension::FunctionDoc(
+  "block_output_shape",
+  "Returns the shape of the output image that is required to compute the :py:func:`bob.ip.base.block` function",
+  0
+)
+.add_prototype("input, block_size, [block_overlap]", "shape")
+.add_parameter("input", "array_like (2D)", "The source image to decompose into blocks")
+.add_parameter("block_size", "(int, int)", "The size of the blocks in which the image is decomposed")
+.add_parameter("block_overlap", "(int, int)", "[default: ``(0, 0)``] The overlap of the blocks")
+.add_parameter("flat", "bool", "[default: ``False``] The ``flat`` parameter is used to decide whether 3D (``flat = True``) or 4D (``flat = False``) output is generated")
+.add_return("shape", "(int, int, int) or (int, int, int, int)", "The shape of the blocks.")
+;
+
+PyObject* PyBobIpBase_blockOutputShape(PyObject*, PyObject* args, PyObject* kwds) {
+  TRY
+  /* Parses input arguments in a single shot */
+  static char* kwlist[] = {c("input"),  c("block_size"), c("block_overlap"), c("flat"), NULL};
+
+  PyBlitzArrayObject* input = 0;
+  blitz::TinyVector<int,2> size, overlap(0,0);
+  PyObject* flat_ = 0;
+
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&(ii)|(ii)O!", kwlist, &PyBlitzArray_Converter, &input, &size[0], &size[1], &overlap[0], &overlap[1], &PyBool_Type, &flat_)) return 0;
+
+  auto input_ = make_safe(input);
+
+  if (input->ndim != 2) {
+    PyErr_Format(PyExc_TypeError, "block shape can only be computed from and to 2D arrays");
+    return 0;
+  }
+
+  if (f(flat_)){
+    auto shape = block_shape3(input, size, overlap);
+    return Py_BuildValue("(iii)", shape[0], shape[1], shape[2]);
+  } else {
+    auto shape = block_shape4(input, size, overlap);
+    return Py_BuildValue("(iiii)", shape[0], shape[1], shape[2], shape[3]);
+  }
+
+  CATCH_("in block_output_shape", 0)
+}
+
+
+
 bob::extension::FunctionDoc s_lbphs = bob::extension::FunctionDoc(
   "lbphs",
   "Computes an local binary pattern histogram sequences from the given image",
@@ -223,7 +362,7 @@ bob::extension::FunctionDoc s_lbphs = bob::extension::FunctionDoc(
 // helper function to compute the output shape
 static inline blitz::TinyVector<int,2> lbphs_shape(PyBlitzArrayObject* input, PyBobIpBaseLBPObject* lbp, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap){
   auto res = lbp->cxx->getLBPShape(blitz::TinyVector<int,2>(input->shape[0], input->shape[1]));
-  return blitz::TinyVector<int,2>(bob::ip::getBlock3DOutputShape(res[0], res[1], block_size[0], block_size[1], block_overlap[0], block_overlap[1])[0], lbp->cxx->getMaxLabel());
+  return blitz::TinyVector<int,2>(bob::ip::base::getBlock3DOutputShape(res[0], res[1], block_size[0], block_size[1], block_overlap[0], block_overlap[1])[0], lbp->cxx->getMaxLabel());
 }
 
 template <typename T>

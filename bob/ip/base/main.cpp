@@ -42,6 +42,18 @@ static PyMethodDef module_methods[] = {
     s_maxRectInMask.doc()
   },
   {
+    s_block.name(),
+    (PyCFunction)PyBobIpBase_block,
+    METH_VARARGS|METH_KEYWORDS,
+    s_block.doc()
+  },
+  {
+    s_blockOutputShape.name(),
+    (PyCFunction)PyBobIpBase_blockOutputShape,
+    METH_VARARGS|METH_KEYWORDS,
+    s_blockOutputShape.doc()
+  },
+  {
     s_lbphs.name(),
     (PyCFunction)PyBobIpBase_lbphs,
     METH_VARARGS|METH_KEYWORDS,
