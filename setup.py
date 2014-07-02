@@ -4,17 +4,18 @@
 # Thu 30 Jan 08:45:49 2014 CET
 
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base']))
+dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base', 'bob.sp']))
 from bob.blitz.extension import Extension
 
 import bob.io.base
+import bob.sp
 
 import os
 package_dir = os.path.dirname(os.path.realpath(__file__))
 package_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
-include_dirs = [package_dir, bob.io.base.get_include()]
+include_dirs = [package_dir, bob.io.base.get_include(), bob.sp.get_include()]
 
-packages = ['bob-ip >= 1.2.2', 'bob-io >= 1.2.2', 'boost']
+packages = ['bob-ip >= 1.2.2', 'bob-io >= 1.2.2', 'bob-sp >= 1.2.2', 'boost']
 version = '2.0.0a0'
 
 setup(
@@ -35,6 +36,7 @@ setup(
     install_requires=[
       'setuptools',
       'bob.blitz',
+      'bob.sp',
       'bob.io.base',
       'bob.io.image',
     ],
@@ -66,7 +68,6 @@ setup(
           "bob/ip/base/old/shear.cc",
           "bob/ip/base/old/SIFT.cc",
           "bob/ip/base/old/Sobel.cc",
-          "bob/ip/base/old/TanTriggs.cc",
           "bob/ip/base/old/vldsift.cc",
           "bob/ip/base/old/vlsift.cc",
           "bob/ip/base/old/WeightedGaussian.cc",
@@ -94,6 +95,7 @@ setup(
           "bob/ip/base/cpp/LBP.cpp",
           "bob/ip/base/cpp/LBPTop.cpp",
           "bob/ip/base/cpp/DCTFeatures.cpp",
+          "bob/ip/base/cpp/TanTriggs.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -103,6 +105,7 @@ setup(
           "bob/ip/base/lbp.cpp",
           "bob/ip/base/lbp_top.cpp",
           "bob/ip/base/dct_features.cpp",
+          "bob/ip/base/tan_triggs.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
           ],

@@ -17,6 +17,7 @@ Classes
    bob.ip.base.LBP
    bob.ip.base.LBPTop
    bob.ip.base.DCTFeatures
+   bob.ip.base.TanTriggs
 
 Functions
 ---------

@@ -173,7 +173,7 @@ def test_scale_non_round():
 
 def test_rotate():
   # load input image
-  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.pgm", "bob.ip.base", "data/affine"))
+  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.pgm", "bob.ip.base"))
 
   # rotate the face with 10 degree
   image_r10 = bob.ip.base.rotate(image, 10.)

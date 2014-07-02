@@ -128,10 +128,12 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseLBP(module)) return 0;
   if (!init_BobIpBaseLBPTop(module)) return 0;
   if (!init_BobIpBaseDCTFeatures(module)) return 0;
+  if (!init_BobIpBaseTanTriggs(module)) return 0;
 
   /* imports bob.blitz C-API + dependencies */
   if (import_bob_blitz() < 0) return 0;
   if (import_bob_io_base() < 0) return 0;
+  if (import_bob_sp() < 0) return 0;
 
   Py_INCREF(module);
   return module;

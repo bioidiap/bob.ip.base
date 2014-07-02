@@ -51,7 +51,7 @@ static int PyBobIpBaseDCTFeatures_init(PyBobIpBaseDCTFeaturesObject* self, PyObj
 
   PyObject* k = Py_BuildValue("s", kwlist2[0]);
   auto k_ = make_safe(k);
-  if (nargs == 1 && (args && PyTuple_Size(args) == 1 && PyBobIpBaseDCTFeatures_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k))){
+  if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseDCTFeatures_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseDCTFeaturesObject* dct;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseDCTFeaturesType, &dct)) return -1;
