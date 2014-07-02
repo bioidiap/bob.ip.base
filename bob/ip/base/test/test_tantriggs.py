@@ -52,12 +52,11 @@ def _normalize(image):
   a = numpy.min(image)
   b = numpy.max(image)
   scale = 255./(b-a)
-  print scale
   return numpy.round((image - a) * scale).astype(numpy.uint8)
+
 
 def test_processing():
   # Processing tests, as copied performed in the C++ part)
-
   # Load original image
   image = bob.io.base.load(bob.io.base.test_utils.datafile("image.pgm", "bob.ip.base"))
 
@@ -74,7 +73,6 @@ def test_processing():
   # Second test (comparison with matlab implementation from X. Tan)
   tt2 = bob.ip.base.TanTriggs(0.2, 1., 2., 6, 10., 0.1, bob.sp.BorderType.Mirror)
   tt2(image, processed)
-  bob.io.base.save(processed, "/scratch/mguenther/mine.hdf5")
   normalized = _normalize(processed)
   reference_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_tantriggs_MATLABREF.hdf5", "bob.ip.base", "data/preprocessing"))
   assert numpy.mean(numpy.abs(normalized.astype(numpy.float64) - reference_image.astype(numpy.float64))) / 255. < 6e-2

@@ -136,7 +136,6 @@ namespace bob { namespace ip { namespace base {
         */
       template <typename T> void process(const blitz::Array<T,2>& src, blitz::Array<double,2>& dst)
       {
-        std::cout << "Border type is " << m_border_type << std::endl;
         // Check input and output arrays
         bob::core::array::assertZeroBase(src);
         bob::core::array::assertZeroBase(dst);
