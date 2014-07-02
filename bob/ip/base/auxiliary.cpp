@@ -32,7 +32,7 @@ bob::extension::FunctionDoc s_histogram = bob::extension::FunctionDoc(
 .add_parameter("src", "array_like (2D)", "The source image to compute the histogram for")
 .add_parameter("hist", "array_like (1D, uint64)", "The histogram with the desired number of bins; the histogram will be cleaned before running the extraction")
 .add_parameter("min_max", "(scalar, scalar)", "The minimum value and the maximum value in the source image")
-.add_parameter("n_bins", "int", "[default: 256 or 65536] The number of bins in the histogram to create, defaults to the maximum number of values")
+.add_parameter("bin_count", "int", "[default: 256 or 65536] The number of bins in the histogram to create, defaults to the maximum number of values")
 .add_return("hist", "array_like(2D, uint64)", "The histogram with the desired number of bins, which is filled with the histogrammed source data")
 ;
 
@@ -434,7 +434,7 @@ bob::extension::FunctionDoc s_block = bob::extension::FunctionDoc(
   "Performs a block decomposition of a 2D array/image",
   "If given, the output 3D or 4D destination array should be allocated and of the correct size, see :py:func:`bob.ip.base.block_output_shape`.",
   "Blocks are extracted such that they fit into the given image. "
-  "The blocks can be split into either a 3D array of shape ``(block_index, block_height, block_width)``, or into a 4D array of shape ``(block_index, block_height, block_width)``. "
+  "The blocks can be split into either a 3D array of shape ``(block_index, block_height, block_width)``, or into a 4D array of shape ``(block_index_y, block_index_x, block_height, block_width)``. "
   "To toggle between both ways, select the ``flat`` parameter accordingly."
 )
 .add_prototype("input, block_size, [block_overlap], [output], [flat]", "output")

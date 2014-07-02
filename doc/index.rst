@@ -26,7 +26,8 @@ Documentation
 References
 ----------
 
-.. [Atanasoaei2012]  *Cosmin Atanasoaei*. **Multivariate Boosting with Look-up Tables for Face Processing,** PhD thesis, EPFL, 2012.
+.. [Atanasoaei2012]  *Cosmin Atanasoaei*. **Multivariate Boosting with Look-up Tables for Face Processing,** PhD thesis, EPFL, 2012. `pdf <http://publications.idiap.ch/index.php/publications/show/2315>`__
+.. [Sanderson2002]   *Conrad Sanderson and Kuldip K. Paliwal*. **Polynomial Features for Robust Face Authentication,** In Proceedings of the IEEE International Conference on Image Processing, 2002. `pdf <http://maxwell.me.gu.edu.au/spl/publications/papers/icip02_conrad2.pdf>`__
 
 
 Indices and tables

@@ -121,6 +121,7 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseFaceEyesNorm(module)) return 0;
   if (!init_BobIpBaseLBP(module)) return 0;
   if (!init_BobIpBaseLBPTop(module)) return 0;
+  if (!init_BobIpBaseDCTFeatures(module)) return 0;
 
   /* imports bob.blitz C-API + dependencies */
   if (import_bob_blitz() < 0) return 0;

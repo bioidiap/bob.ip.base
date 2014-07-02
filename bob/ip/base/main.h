@@ -17,10 +17,9 @@
 
 #include "cpp/LBP.h"
 #include "cpp/LBPTop.h"
-#include "cpp/LBPHS.h"
+#include "cpp/DCTFeatures.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
-#include "cpp/Block.h"
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -111,6 +110,17 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseLBPTopType;
 bool init_BobIpBaseLBPTop(PyObject* module);
 int PyBobIpBaseLBPTop_Check(PyObject* o);
+
+
+// DCTFeatures
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::DCTFeatures> cxx;
+} PyBobIpBaseDCTFeaturesObject;
+
+extern PyTypeObject PyBobIpBaseDCTFeaturesType;
+bool init_BobIpBaseDCTFeatures(PyObject* module);
+int PyBobIpBaseDCTFeatures_Check(PyObject* o);
 
 
 // block

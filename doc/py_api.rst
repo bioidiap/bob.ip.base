@@ -16,6 +16,7 @@ Classes
    bob.ip.base.FaceEyesNorm
    bob.ip.base.LBP
    bob.ip.base.LBPTop
+   bob.ip.base.DCTFeatures
 
 Functions
 ---------

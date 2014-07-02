@@ -9,7 +9,7 @@
 """
 
 import numpy
-from .. import DCTFeatures
+import bob.ip.base
 
 A_org    = numpy.array(range(1,17), 'float64').reshape((4,4))
 A_ans_0_3D  = numpy.array([[[1, 2], [5, 6]], [[3, 4], [7, 8]], [[9, 10], [13, 14]], [[11, 12], [15, 16]]], 'float64')
@@ -40,19 +40,19 @@ dstB_tt = numpy.array([[-0.89931199, -1.39685855], [1.00866019, 0.60685661],
 
 
 def test_extract():
-  dct_op = DCTFeatures( 3, 4, 0, 0, 6)
+  dct_op = bob.ip.base.DCTFeatures(6, (3, 4), (0, 0))
   # Pythonic way (2D)
   dst = dct_op(src)
   assert dst.shape[0] == len(dst_mat)
   for i in range(len(dst_mat)):
     assert numpy.allclose(dst[i,:], dst_mat[i], 1e-5, 1e-4)
-  # Pythonic way (3D)
-  dst = dct_op(src, True)
+  # extract (3D)
+  dst = dct_op(src, flat=False)
   assert dst.shape[0]*dst.shape[1] == len(dst_mat)
   for i in range(dst.shape[0]):
     for j in range(dst.shape[1]):
       assert numpy.allclose(dst[i,j,:], dst_mat[i*dst.shape[1]+j], 1e-5, 1e-4)
-  # C-API way (2D)
+  # extract (2D)
   dst_c = numpy.ndarray(shape=(4,6), dtype=numpy.float64)
   dct_op(src, dst_c)
   for i in range(len(dst_mat)):
@@ -65,50 +65,47 @@ def test_extract():
       assert numpy.allclose(dst_c[i,j,:], dst_mat[i*dst.shape[1]+j], 1e-5, 1e-4)
 
 def test_extract_normalize():
-  dct_op = DCTFeatures( 2, 2, 0, 0, 3)
+  dct_op = bob.ip.base.DCTFeatures(3, (2, 2), (0, 0))
   dst = dct_op(srcB);
   assert numpy.allclose(dst, dstB_ff, 1e-5, 1e-8)
 
-  dct_op.norm_block = True
+  dct_op.normalize_block = True
   dst = dct_op(srcB);
   assert numpy.allclose(dst, dstB_tf, 1e-5, 1e-8)
 
-  dct_op.norm_block = False
-  dct_op.norm_dct = True
+  dct_op.normalize_block = False
+  dct_op.normalize_dct = True
   dst = dct_op(srcB);
   assert numpy.allclose(dst, dstB_ft, 1e-5, 1e-8)
 
-  dct_op.norm_block = True
+  dct_op.normalize_block = True
   dst = dct_op(srcB);
   assert numpy.allclose(dst, dstB_tt, 1e-5, 1e-8)
 
 def test_attributes():
-  dct_op = DCTFeatures( 2, 2, 0, 0, 3)
-  dct_op2 = DCTFeatures(dct_op)
+  dct_op = bob.ip.base.DCTFeatures(3, (2, 2), (0, 0))
+  dct_op2 = bob.ip.base.DCTFeatures(dct_op)
   assert dct_op == dct_op2
   assert (dct_op != dct_op2) == False
-  dct_op.block_h = 3
-  assert dct_op.block_h == 3
+  dct_op.block_size = (3,3)
+  assert dct_op.block_size == (3,3)
   assert (dct_op == dct_op2) == False
   assert dct_op != dct_op2
-  dct_op.block_w = 3
-  assert dct_op.block_w == 3
-  dct_op.overlap_h = 1
-  assert dct_op.overlap_h == 1
-  dct_op.overlap_w = 1
-  assert dct_op.overlap_w == 1
-  dct_op.n_dct_coefs = 4
-  assert dct_op.n_dct_coefs == 4
-  dct_op.norm_block = True
-  assert dct_op.norm_block == True
-  dct_op.norm_dct = True
-  assert dct_op.norm_dct == True
+
+  dct_op.block_overlap = (1,1)
+  assert dct_op.block_overlap == (1,1)
+  dct_op.coefficients = 4
+  assert dct_op.coefficients == 4
+  dct_op.normalize_block = True
+  assert dct_op.normalize_block == True
+  dct_op.normalize_dct = True
+  assert dct_op.normalize_dct == True
   dct_op.square_pattern = True
   assert dct_op.square_pattern == True
-  dct_op.norm_epsilon = 1e-15
-  assert dct_op.norm_epsilon <= 2e-15
+  dct_op.normalization_epsilon = 1e-15
+  assert dct_op.normalization_epsilon <= 2e-15
 
 def test04_output_shape():
-  dct_op = DCTFeatures( 3, 4, 0, 0, 6)
-  assert dct_op.get_2d_output_shape(src) == (4,6)
-  assert dct_op.get_3d_output_shape(src) == (2,2,6)
+  dct_op = bob.ip.base.DCTFeatures(6, (3, 4), (0, 0))
+  assert dct_op.output_shape(src, flat=True) == (4,6)
+  assert dct_op.output_shape(src, flat=False) == (2,2,6)

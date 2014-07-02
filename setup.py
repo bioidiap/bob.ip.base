@@ -54,7 +54,6 @@ setup(
         ),
       Extension("bob.ip.base._old_library",
         [
-          "bob/ip/base/old/DCTFeatures.cc",
           "bob/ip/base/old/extrapolate_mask.cc",
           "bob/ip/base/old/gamma_correction.cc",
           "bob/ip/base/old/gaussian.cc",
@@ -95,14 +94,16 @@ setup(
           "bob/ip/base/cpp/Affine.cpp",
           "bob/ip/base/cpp/LBP.cpp",
           "bob/ip/base/cpp/LBPTop.cpp",
+          "bob/ip/base/cpp/DCTFeatures.cpp",
 
           # Python bindings
-          "bob/ip/base/lbp.cpp",
-          "bob/ip/base/lbp_top.cpp",
           "bob/ip/base/auxiliary.cpp",
           "bob/ip/base/geom_norm.cpp",
           "bob/ip/base/face_eyes_norm.cpp",
           "bob/ip/base/affine.cpp",
+          "bob/ip/base/lbp.cpp",
+          "bob/ip/base/lbp_top.cpp",
+          "bob/ip/base/dct_features.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
           ],
