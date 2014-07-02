@@ -54,7 +54,6 @@ setup(
         ),
       Extension("bob.ip.base._old_library",
         [
-          "bob/ip/base/old/extrapolate_mask.cc",
           "bob/ip/base/old/gamma_correction.cc",
           "bob/ip/base/old/gaussian.cc",
           "bob/ip/base/old/GaussianScaleSpace.cc",

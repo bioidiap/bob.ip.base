@@ -22,6 +22,78 @@ import bob.ip.base
 regenerate_reference = False
 
 ###############################################
+########## extrapolate mask ###################
+###############################################
+
+def test_extrapolate_mask():
+  # copied from C++ tests
+  i2_5 = numpy.array([
+    [ 0,  1,  2,  3,  4],
+    [ 5,  6,  7,  8,  9],
+    [10, 11, 12, 13, 14],
+    [15, 16, 17, 18, 19],
+    [20, 21, 22, 23, 24]],
+    dtype = numpy.uint8)
+
+  a2_5_1 = numpy.array([
+    [True, True, True, True, True],
+    [True, True, True, True, False],
+    [True, True, True, False, False],
+    [True, True, False, False, False],
+    [True, False, False, False, False]],
+    dtype = numpy.bool)
+  s2_5_1 = numpy.array([
+    [ 0,  1,  2,  3,  4],
+    [ 5,  6,  7,  8,  4],
+    [10, 11, 12,  8,  4],
+    [15, 16, 12,  8,  4],
+    [20, 16, 12,  8,  4]],
+    dtype = numpy.uint8)
+
+  a2_5_2 = numpy.array([
+    [False, False, True, False, False],
+    [False, True, True, True, False],
+    [True, True, True, True, True],
+    [False, True, True, True, False],
+    [False, False, True, False, False]],
+    dtype = numpy.bool)
+  s2_5_2 = numpy.array([
+    [10,  6,  2,  8, 14],
+    [10,  6,  7,  8, 14],
+    [10, 11, 12, 13, 14],
+    [10, 16, 17, 18, 14],
+    [10, 16, 22, 18, 14]],
+    dtype = numpy.uint8)
+
+  a2_5_3 = numpy.array([
+    [True, True, True, True, True],
+    [False, True, True, False, False],
+    [False, True, True, False, False],
+    [False, True, True, False, False],
+    [False, True, True, False, False]],
+    dtype = numpy.bool)
+  s2_5_3 = numpy.array([
+    [0,  1,  2,  3,  4],
+    [0,  6,  7,  3,  4],
+    [0, 11, 12,  3,  4],
+    [0, 16, 17,  3,  4],
+    [0, 21, 22,  3,  4]],
+    dtype = numpy.uint8)
+
+  i2_5_1 = numpy.copy(i2_5)
+  bob.ip.base.extrapolate_mask(a2_5_1, i2_5_1)
+  assert numpy.allclose(i2_5_1, s2_5_1)
+
+  i2_5_2 = numpy.copy(i2_5)
+  bob.ip.base.extrapolate_mask(a2_5_2, i2_5_2)
+  assert numpy.allclose(i2_5_2, s2_5_2)
+
+  i2_5_3 = numpy.copy(i2_5)
+  bob.ip.base.extrapolate_mask(a2_5_3, i2_5_3)
+  assert numpy.allclose(i2_5_3, s2_5_3)
+
+
+###############################################
 ########## scaling ############################
 ###############################################
 

@@ -74,9 +74,6 @@ extern PyTypeObject PyBobIpBaseFaceEyesNormType;
 bool init_BobIpBaseFaceEyesNorm(PyObject* module);
 int PyBobIpBaseFaceEyesNorm_Check(PyObject* o);
 
-// affine functions
-PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject*, PyObject*);
-extern bob::extension::FunctionDoc s_maxRectInMask;
 // .. scaling
 PyObject* PyBobIpBase_scale(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_scale;
@@ -88,6 +85,11 @@ extern bob::extension::FunctionDoc s_rotate;
 PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_getRotatedOutputShape;
 
+// mask functions (in Affine.h)
+PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_maxRectInMask;
+PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_extrapolateMask;
 
 
 // LBP

@@ -373,13 +373,13 @@ bob::extension::FunctionDoc s_maxRectInMask = bob::extension::FunctionDoc(
 .add_return("rect", "(int, int, int, int)", "The resulting rectangle: (top, left, height, width)")
 ;
 
-PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject* args, PyObject* kwds) {
+PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject* args, PyObject* kwargs) {
   TRY
   /* Parses input arguments in a single shot */
   static char* kwlist[] = {c("mask"), NULL};
 
   PyBlitzArrayObject* mask = 0;
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kwlist, &PyBlitzArray_Converter, &mask)) return 0;
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&", kwlist, &PyBlitzArray_Converter, &mask)) return 0;
 
   auto mask_ = make_safe(mask);
 
@@ -393,5 +393,53 @@ PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject* args, PyObject* kwds) {
   return Py_BuildValue("(iiii)", rect[0], rect[1], rect[2], rect[3]);
 
   CATCH_("in max_rect_in_mask", 0)
+}
+
+
+bob::extension::FunctionDoc s_extrapolateMask = bob::extension::FunctionDoc(
+  "extrapolate_mask",
+  "Extrapolate a 2D array/image, taking a boolean mask into account",
+  "This function extracts an image with a nearest neighbor technique, a boolean mask being given:\n\n"
+  "1. The columns of the image are firstly extrapolated wrt. to the nearest neighbour on the same column.\n"
+  "2. The rows of the image are the extrapolate wrt. to the closest neighbour on the same row.\n\n"
+  "The first dimension is the height (y-axis), whereas the second one is the width (x-axis).\n\n"
+  "The ``img`` argument is used both as an input and an output. "
+  "Only values where the mask is set to false are extrapolated.\n\n"
+)
+.add_prototype("mask, img")
+// TODO: document mask and img parameters
+;
+
+PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+  /* Parses input arguments in a single shot */
+  static char* kwlist[] = {c("mask"), c("img"), NULL};
+
+  PyBlitzArrayObject* mask,* img;
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&", kwlist, &PyBlitzArray_Converter, &mask, &PyBlitzArray_OutputConverter, &img)) return 0;
+
+  auto mask_ = make_safe(mask), img_ = make_safe(img);
+
+  if (mask->ndim != 2 || mask->type_num != NPY_BOOL) {
+    PyErr_Format(PyExc_TypeError, "extrapolate_mask: the mask must be 2D and of boolean type");
+    return 0;
+  }
+  if (img->ndim != 2) {
+    PyErr_Format(PyExc_TypeError, "extrapolate_mask: the img must be 2D");
+    return 0;
+  }
+
+  switch (img->type_num){
+    case NPY_UINT8:   bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint8_t, 2>(img)); break;
+    case NPY_UINT16:  bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint16_t, 2>(img)); break;
+    case NPY_FLOAT64: bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<double, 2>(img)); break;
+    default:
+      PyErr_Format(PyExc_TypeError, "extrapolate_mask: img arrays of type %s are currently not supported", PyBlitzArray_TypenumAsString(img->type_num));
+      return 0;
+  }
+
+  Py_RETURN_NONE;
+
+  CATCH_("in extrapolate_mask", 0)
 }
 
