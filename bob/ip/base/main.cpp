@@ -72,6 +72,18 @@ static PyMethodDef module_methods[] = {
     s_integral.doc()
   },
   {
+    s_histogram.name(),
+    (PyCFunction)PyBobIpBase_histogram,
+    METH_VARARGS|METH_KEYWORDS,
+    s_histogram.doc()
+  },
+  {
+    s_histogramEqualization.name(),
+    (PyCFunction)PyBobIpBase_histogramEqualization,
+    METH_VARARGS|METH_KEYWORDS,
+    s_histogramEqualization.doc()
+  },
+  {
     s_zigzag.name(),
     (PyCFunction)PyBobIpBase_zigzag,
     METH_VARARGS|METH_KEYWORDS,

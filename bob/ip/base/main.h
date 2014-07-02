@@ -131,6 +131,12 @@ PyObject* PyBobIpBase_integral(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_integral;
 
 
+// histogram
+PyObject* PyBobIpBase_histogram(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_histogram;
+PyObject* PyBobIpBase_histogramEqualization(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_histogramEqualization;
+
 // zigzag
 PyObject* PyBobIpBase_zigzag(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_zigzag;

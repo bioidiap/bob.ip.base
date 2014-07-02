@@ -61,7 +61,6 @@ setup(
           "bob/ip/base/old/GaussianScaleSpace.cc",
           "bob/ip/base/old/GLCM.cc",
           "bob/ip/base/old/GLCMProp.cc",
-          "bob/ip/base/old/histo.cc",
           "bob/ip/base/old/HOG.cc",
           "bob/ip/base/old/Median.cc",
           "bob/ip/base/old/MultiscaleRetinex.cc",

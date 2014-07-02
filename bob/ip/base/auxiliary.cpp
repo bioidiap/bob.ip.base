@@ -12,8 +12,234 @@
 #include <bob/ip/zigzag.h>
 #include "cpp/IntegralImage.h"
 #include "cpp/LBPHS.h"
+#include "cpp/Histogram.h"
 
 static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
+
+
+bob::extension::FunctionDoc s_histogram = bob::extension::FunctionDoc(
+  "histogram",
+  "Computes an histogram of the given input image",
+  "This function computes a histogram of the given input image, in several ways.\n\n"
+  "* (version 1 and 2, only valid for uint8 and uint16 types -- and uint32 and uint64 when ``bin_count`` is specified or ``hist`` is given as parameter): For each pixel value of the ``src`` image, a histogram bin is computed, using a fast implementation. "
+  "The number of bins can be limited, and there will be a check that the source image pixels are actually in the desired range ``(0, bin_count-1)``\n\n"
+  "* (version 3 and 4, valid for many data types): The histogram is computed by defining regular bins between the provided minimum and maximum values."
+)
+.add_prototype("src, [bin_count]", "hist")
+.add_prototype("src, hist")
+.add_prototype("src, min_max, bin_count", "hist")
+.add_prototype("src, min_max, hist")
+.add_parameter("src", "array_like (2D)", "The source image to compute the histogram for")
+.add_parameter("hist", "array_like (1D, uint64)", "The histogram with the desired number of bins; the histogram will be cleaned before running the extraction")
+.add_parameter("min_max", "(scalar, scalar)", "The minimum value and the maximum value in the source image")
+.add_parameter("n_bins", "int", "[default: 256 or 65536] The number of bins in the histogram to create, defaults to the maximum number of values")
+.add_return("hist", "array_like(2D, uint64)", "The histogram with the desired number of bins, which is filled with the histogrammed source data")
+;
+
+template <typename T, char C> bool inner_histogram(PyBlitzArrayObject* src, PyBlitzArrayObject* hist, PyObject* min_max) {
+  if (min_max){
+    std::string format = (boost::format("%1%%1%") % C).str();
+    T min, max;
+    if (!PyArg_ParseTuple(min_max, format.c_str(), &min, &max)) {
+      std::cout << "failed here" << std::endl;
+      return false;
+    }
+    bob::ip::base::histogram(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<uint64_t, 1>(hist), min, max);
+  } else {
+    bob::ip::base::histogram(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<uint64_t, 1>(hist));
+  }
+  return true;
+}
+
+PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+  static char* kwlist1[] = {c("src"), c("bin_count"), NULL};
+  static char* kwlist2[] = {c("src"), c("hist"), NULL};
+  static char* kwlist3[] = {c("src"), c("min_max"), c("bin_count"), NULL};
+  static char* kwlist4[] = {c("src"), c("min_max"), c("hist"), NULL};
+
+  PyBlitzArrayObject* src = 0,* hist = 0;
+  PyObject* min_max = 0;
+  int bins = 0;
+
+  auto src_ = make_xsafe(src), hist_ = make_xsafe(hist);
+
+  // get the number of command line arguments
+  Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
+
+  switch (nargs){
+    case 1:{
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&|i", kwlist1, &PyBlitzArray_Converter, &src, &bins)) return 0;
+      // get the number of bins
+      src_ = make_safe(src);
+      break;
+    }
+    case 2:{
+      PyObject* k = Py_BuildValue("s", kwlist1[1]);
+      auto k_ = make_safe(k);
+      if ((args && PyTuple_Size(args) == 2 && PyInt_Check(PyTuple_GET_ITEM(args,1))) || (kwargs && PyDict_Contains(kwargs, k))){
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&|i", kwlist1, &PyBlitzArray_Converter, &src, &bins)) return 0;
+      } else {
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&", kwlist2, &PyBlitzArray_Converter, &src, &PyBlitzArray_OutputConverter, &hist)) return 0;
+      }
+      // get the number of bins
+      src_ = make_safe(src);
+      hist_ = make_xsafe(hist);
+      break;
+    }
+    case 3:{
+      // get values for min and max
+      PyObject* k = Py_BuildValue("s", kwlist3[2]);
+      auto k_ = make_safe(k);
+      if ((args && PyTuple_Size(args) == 3 && PyInt_Check(PyTuple_GET_ITEM(args,2))) || (kwargs && PyDict_Contains(kwargs, k))){
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&Oi", kwlist3, &PyBlitzArray_Converter, &src, &min_max, &bins)) return 0;
+      } else {
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&OO&", kwlist4, &PyBlitzArray_Converter, &src, &min_max, &PyBlitzArray_OutputConverter, &hist)) return 0;
+      }
+      break;
+    }
+    default:
+      PyErr_Format(PyExc_ValueError, "'histogram' called with an unsupported number of arguments");
+      return 0;
+  }
+
+  // allocate the output, if needed
+  bool return_out = false;
+  if (!hist){
+    return_out = true;
+    // first, get the number of bins
+    if (!bins){
+      if (src->type_num == NPY_UINT8) bins = std::numeric_limits<uint8_t>::max() + 1;
+      else if (src->type_num == NPY_UINT16) bins = std::numeric_limits<uint16_t>::max() + 1;
+      else {
+        PyErr_Format(PyExc_TypeError, "'histogram' : The given input data type %s is not supported, when no bin count is specified.", PyBlitzArray_TypenumAsString(src->type_num));
+        return 0;
+      }
+    }
+    Py_ssize_t n[] = {bins};
+    hist = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_UINT64, 1, n));
+    hist_ = make_safe(hist);
+  } else {
+    if (hist->type_num != NPY_UINT64){
+      PyErr_Format(PyExc_TypeError, "'histogram' : The given hist data type %s is not supported, only uint64 is allowed.", PyBlitzArray_TypenumAsString(src->type_num));
+      return 0;
+    }
+  }
+
+  // now, get the histogram running
+  bool res = true;
+  switch (src->type_num){
+    case NPY_UINT8:    res = inner_histogram<uint8_t, 'B'>(src, hist, min_max); break;
+    case NPY_UINT16:   res = inner_histogram<uint16_t, 'H'>(src, hist, min_max); break;
+    case NPY_UINT32:   res = inner_histogram<uint32_t, 'I'>(src, hist, min_max); break;
+    case NPY_UINT64:   res = inner_histogram<uint64_t, 'K'>(src, hist, min_max); break;
+    case NPY_INT8:     res = inner_histogram<int8_t, 'b'>(src, hist, min_max); break;
+    case NPY_INT16:    res = inner_histogram<int16_t, 'h'>(src, hist, min_max); break;
+    case NPY_INT32:    res = inner_histogram<int32_t, 'i'>(src, hist, min_max); break;
+    case NPY_INT64:    res = inner_histogram<int64_t, 'L'>(src, hist, min_max); break;
+    case NPY_FLOAT32:  res = inner_histogram<float, 'f'>(src, hist, min_max); break;
+    case NPY_FLOAT64:  res = inner_histogram<double, 'd'>(src, hist, min_max); break;
+    default:
+      PyErr_Format(PyExc_TypeError, "'histogram' : The given input data type %s is not supported.", PyBlitzArray_TypenumAsString(src->type_num));
+      return 0;
+  }
+  if (!res) return 0;
+
+  // return the histogram, if wanted
+  if (return_out){
+    Py_INCREF(hist);
+    return PyBlitzArray_AsNumpyArray(hist, 0);
+  } else {
+    Py_RETURN_NONE;
+  }
+
+  CATCH_("in histogram", 0)
+}
+
+
+bob::extension::FunctionDoc s_histogramEqualization = bob::extension::FunctionDoc(
+  "histogram_equalization",
+  "Performs a histogram equalization of a given 2D image",
+  "The first version computes the normalization **in-place** (in opposition to the old implementation, which returned a equalized image), while the second version fills the given ``dst`` array and leaves the input untouched."
+)
+.add_prototype("src")
+.add_prototype("src, dst")
+.add_parameter("src", "array_like (2D, uint8 or uint16)", "The source image to compute the histogram for")
+.add_parameter("dst", "array_like (2D, uint8, uint16, uint32 or float)", "The histogram-equalized image to write; if not specified, the equalization is computed **in-place**.")
+;
+
+template <typename T1, typename T2> PyObject* inner_histogramEq(PyBlitzArrayObject* src, PyBlitzArrayObject* dst) {
+  bob::ip::base::histogramEqualize(*PyBlitzArrayCxx_AsBlitz<T1, 2>(src), *PyBlitzArrayCxx_AsBlitz<T2, 2>(dst));
+  Py_RETURN_NONE;
+}
+
+PyObject* PyBobIpBase_histogramEqualization(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+  static char* kwlist1[] = {c("src"), NULL};
+  static char* kwlist2[] = {c("src"), c("dst"), NULL};
+
+  PyBlitzArrayObject* src = 0,* dst = 0;
+
+  // get the number of command line arguments
+  Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
+
+  switch (nargs){
+    case 1:{
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&", kwlist1, &PyBlitzArray_OutputConverter, &src)) return 0;
+      break;
+    }
+    case 2:{
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&", kwlist2, &PyBlitzArray_Converter, &src, &PyBlitzArray_OutputConverter, &dst)) return 0;
+      break;
+    }
+    default:
+      PyErr_Format(PyExc_ValueError, "'histogram_equalization' called with an unsupported number of arguments");
+      return 0;
+  }
+
+  auto src_ = make_safe(src), dst_ = make_xsafe(dst);
+
+  // perform some checks
+  if (src->ndim != 2 || (dst && dst->ndim != 2)){
+    PyErr_Format(PyExc_ValueError, "'histogram_equalization' can be performed on 2D arrays only");
+    return 0;
+  }
+
+  // in-place
+  switch (src->type_num){
+    case NPY_UINT8:{
+      if (!dst) return inner_histogramEq<uint8_t, uint8_t>(src, src);
+      switch (dst->type_num){
+        case NPY_UINT8:  return inner_histogramEq<uint8_t, uint8_t>(src, dst);
+        case NPY_UINT16: return inner_histogramEq<uint8_t, uint16_t>(src, dst);
+        case NPY_UINT32: return inner_histogramEq<uint8_t, uint32_t>(src, dst);
+        case NPY_FLOAT32: return inner_histogramEq<uint8_t, float>(src, dst);
+        case NPY_FLOAT64: return inner_histogramEq<uint8_t, double>(src, dst);
+        default:
+          PyErr_Format(PyExc_ValueError, "'histogram_equalization' can be performed to uint8, uint16, uint32, float32 or float64 arrays, but not to %s", PyBlitzArray_TypenumAsString(dst->type_num));
+          return 0;
+      }
+    }
+    case NPY_UINT16:{
+      if (!dst) return inner_histogramEq<uint16_t, uint16_t>(src, src);
+      switch (dst->type_num){
+        case NPY_UINT8:  return inner_histogramEq<uint16_t, uint8_t>(src, dst);
+        case NPY_UINT16: return inner_histogramEq<uint16_t, uint16_t>(src, dst);
+        case NPY_UINT32: return inner_histogramEq<uint16_t, uint32_t>(src, dst);
+        case NPY_FLOAT32: return inner_histogramEq<uint16_t, float>(src, dst);
+        case NPY_FLOAT64: return inner_histogramEq<uint16_t, double>(src, dst);
+        default:
+          PyErr_Format(PyExc_ValueError, "'histogram_equalization' can be performed to uint8, uint16, uint32, float32 or float64 arrays, but not to %s", PyBlitzArray_TypenumAsString(dst->type_num));
+          return 0;
+      }
+    }
+    default:
+      PyErr_Format(PyExc_ValueError, "'histogram_equalization' can be performed on uint8 or uint16 images, but not on %s",  PyBlitzArray_TypenumAsString(src->type_num));
+  }
+
+  return 0;
+  CATCH_("in histogram_equalization", 0)
+}
 
 
 bob::extension::FunctionDoc s_zigzag = bob::extension::FunctionDoc(
