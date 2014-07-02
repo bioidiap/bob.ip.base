@@ -9,10 +9,10 @@
 
 
 #include "main.h"
-#include <bob/ip/zigzag.h>
 #include "cpp/IntegralImage.h"
 #include "cpp/LBPHS.h"
 #include "cpp/Histogram.h"
+#include "cpp/ZigZag.h"
 
 static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
 
@@ -283,7 +283,7 @@ template <typename T> PyObject* inner_zigzag(PyBlitzArrayObject* src, PyBlitzArr
     c_bf = PyBlitzArrayCxx_AsCScalar<bool>(bf);
     if (PyErr_Occurred()) return 0;
   }
-  bob::ip::zigzag(*PyBlitzArrayCxx_AsBlitz<T,2>(src), *PyBlitzArrayCxx_AsBlitz<T,1>(dst), c_bf);
+  bob::ip::base::zigzag(*PyBlitzArrayCxx_AsBlitz<T,2>(src), *PyBlitzArrayCxx_AsBlitz<T,1>(dst), c_bf);
   Py_RETURN_NONE;
 }
 
