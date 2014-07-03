@@ -7,8 +7,8 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#ifndef BOB_IP_GAUSSIAN_H
-#define BOB_IP_GAUSSIAN_H
+#ifndef BOB_IP_BASE_GAUSSIAN_H
+#define BOB_IP_BASE_GAUSSIAN_H
 
 #include "bob/core/assert.h"
 #include "bob/core/cast.h"
@@ -158,5 +158,5 @@ namespace bob { namespace ip { namespace base {
 
 } } } // namespaces
 
-#endif // BOB_IP_BASE_GAUSSIAN
+#endif // BOB_IP_BASE_GAUSSIAN_H
 

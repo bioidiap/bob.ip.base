@@ -21,6 +21,7 @@
 #include "cpp/DCTFeatures.h"
 #include "cpp/TanTriggs.h"
 #include "cpp/Gaussian.h"
+#include "cpp/WeightedGaussian.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
 
@@ -152,6 +153,17 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseGaussianType;
 bool init_BobIpBaseGaussian(PyObject* module);
 int PyBobIpBaseGaussian_Check(PyObject* o);
+
+
+// WeightedGaussian
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::WeightedGaussian> cxx;
+} PyBobIpBaseWeightedGaussianObject;
+
+extern PyTypeObject PyBobIpBaseWeightedGaussianType;
+bool init_BobIpBaseWeightedGaussian(PyObject* module);
+int PyBobIpBaseWeightedGaussian_Check(PyObject* o);
 
 
 // block

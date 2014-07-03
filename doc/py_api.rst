@@ -21,6 +21,7 @@ Classes
 
    bob.ip.base.TanTriggs
    bob.ip.base.Gaussian
+   bob.ip.base.WeightedGaussian
 
 
 Functions

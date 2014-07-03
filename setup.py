@@ -67,7 +67,6 @@ setup(
           "bob/ip/base/old/Sobel.cc",
           "bob/ip/base/old/vldsift.cc",
           "bob/ip/base/old/vlsift.cc",
-          "bob/ip/base/old/WeightedGaussian.cc",
 
           # external requirements as boost::python bindings
           "bob/ip/base/old/blitz_numpy.cc",
@@ -94,6 +93,7 @@ setup(
           "bob/ip/base/cpp/DCTFeatures.cpp",
           "bob/ip/base/cpp/TanTriggs.cpp",
           "bob/ip/base/cpp/Gaussian.cpp",
+          "bob/ip/base/cpp/WeightedGaussian.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -105,6 +105,7 @@ setup(
           "bob/ip/base/dct_features.cpp",
           "bob/ip/base/tan_triggs.cpp",
           "bob/ip/base/gaussian.cpp",
+          "bob/ip/base/weighted_gaussian.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",

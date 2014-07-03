@@ -9,9 +9,6 @@
 
 #include "main.h"
 
-static inline bool t(PyObject* o){return o == 0 || PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns true if object is NULL */
-static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
-
 /******************************************************************/
 /************ Constructor Section *********************************/
 /******************************************************************/
@@ -242,7 +239,7 @@ static PyGetSetDef PyBobIpBaseGaussian_getseters[] = {
 
 static auto filter = bob::extension::FunctionDoc(
   "filter",
-  "Smooths an image (2D/grayscale or color 3D/color)",
+  "Smooths an image (2D/grayscale or 3D/color)",
   "If given, the dst array should have the expected type (numpy.float64) and the same size as the src array.\n\n"
   ".. note:: The :py:func:`__call__` function is an alias for this method.",
   true
