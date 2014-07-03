@@ -90,6 +90,12 @@ static PyMethodDef module_methods[] = {
     s_histogramEqualization.doc()
   },
   {
+    s_gammaCorrection.name(),
+    (PyCFunction)PyBobIpBase_gammaCorrection,
+    METH_VARARGS|METH_KEYWORDS,
+    s_gammaCorrection.doc()
+  },
+  {
     s_zigzag.name(),
     (PyCFunction)PyBobIpBase_zigzag,
     METH_VARARGS|METH_KEYWORDS,

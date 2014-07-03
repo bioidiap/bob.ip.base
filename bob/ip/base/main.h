@@ -127,6 +127,10 @@ bool init_BobIpBaseDCTFeatures(PyObject* module);
 int PyBobIpBaseDCTFeatures_Check(PyObject* o);
 
 
+
+// gamma correction
+PyObject* PyBobIpBase_gammaCorrection(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_gammaCorrection;
 // Tan-Triggs
 typedef struct {
   PyObject_HEAD

@@ -13,10 +13,36 @@
 #include "bob/core/assert.h"
 #include "bob/sp/conv.h"
 #include "bob/sp/extrapolate.h"
-// TODO: replace with local version
-#include "bob/ip/gammaCorrection.h"
 
 namespace bob { namespace ip { namespace base {
+
+  /**
+    * @brief Function which performs a gamma correction on a 2D
+    *   blitz::array/image of a given type.
+    *   The first dimension is the height (y-axis), whereas the second
+    *   one is the width (x-axis).
+    * @param src The input blitz array
+    * @param dst The output blitz array (always double)
+    * @param gamma The gamma value for power-law gamma correction
+    */
+  template<typename T>
+  void gammaCorrection(
+    const blitz::Array<T,2>& src,
+    blitz::Array<double,2>& dst,
+    const double gamma
+  ){
+    // Check input/output
+    bob::core::array::assertZeroBase(src);
+    bob::core::array::assertZeroBase(dst);
+    bob::core::array::assertSameShape(dst, src);
+
+    // Check parameters and throw exception if required
+    if( gamma < 0.)  throw std::runtime_error((boost::format("parameter `gamma' was set to %f, but should be greater or equal zero") % gamma).str());
+
+    // Perform gamma correction for the 2D array
+    dst = blitz::pow(src, gamma);
+  }
+
 
   /**
    * @brief This class can be used to perform Tan and Triggs preprocessing.
@@ -147,7 +173,7 @@ namespace bob { namespace ip { namespace base {
 
         // 1/ Perform gamma correction
         if( m_gamma > 0.)
-          bob::ip::gammaCorrection( src, m_img_tmp, m_gamma);
+          bob::ip::base::gammaCorrection( src, m_img_tmp, m_gamma);
         else
           m_img_tmp = blitz::log( 1. + src );
 

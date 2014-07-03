@@ -225,7 +225,7 @@ int PyBobIpBaseTanTriggs_setAlpha(PyBobIpBaseTanTriggsObject* self, PyObject* va
 
 static auto border = bob::extension::VariableDoc(
   "border",
-  ":py_class:`bob.sp.BorderType`",
+  ":py:class:`bob.sp.BorderType`",
   "The extrapolation method used by the convolution at the border, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getBorder(PyBobIpBaseTanTriggsObject* self, void*){

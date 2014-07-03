@@ -20,7 +20,37 @@ import bob.io.image
 
 regenerate_reference = False
 
-eps = 1e-4
+def test_gamma_correction():
+  a2 = numpy.array([
+      [0, 1, 2, 3],
+      [4, 5, 6, 7],
+      [8, 9, 10, 11],
+      [12, 13, 14, 15]],
+      dtype = numpy.uint16)
+
+  a2_g01 = numpy.array([
+      [0, 1, 1.0718, 1.1161],
+      [1.1487, 1.1746, 1.1962, 1.2148],
+      [1.2311, 1.2457, 1.2589, 1.2710],
+      [1.2821, 1.2924, 1.3020, 1.3110]],
+      dtype = numpy.float64)
+
+  a2_g11 = numpy.array([
+      [0, 1, 2.1435, 3.3484],
+      [4.5948, 5.8731, 7.1774, 8.5037],
+      [9.8492, 11.2116, 12.5893, 13.9808],
+      [15.3851, 16.8011, 18.2281, 19.6653]],
+      dtype = numpy.float64)
+
+  # gamma == 0.1
+  b2 = numpy.ndarray((4,4))
+  bob.ip.base.gamma_correction(a2, 0.1, b2);
+  assert numpy.allclose(b2, a2_g01, 1e-8, 1e-4);
+
+  # gamma == 0.1
+  b3 = bob.ip.base.gamma_correction(a2, 1.1);
+  assert numpy.allclose(b3, a2_g11, 1e-8, 1e-4);
+
 
 def test_parametrization():
   # Parametrization tests

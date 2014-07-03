@@ -242,6 +242,62 @@ PyObject* PyBobIpBase_histogramEqualization(PyObject*, PyObject* args, PyObject*
 }
 
 
+bob::extension::FunctionDoc s_gammaCorrection = bob::extension::FunctionDoc(
+  "gamma_correction",
+  "Performs a power-law gamma correction of a given 2D image",
+  ".. todo:: Explain gamma correction in more detail"
+)
+.add_prototype("src, gamma, [dst]", "dst")
+.add_parameter("src", "array_like (2D)", "The source image to compute the histogram for")
+.add_parameter("gamma", "float", "The gamma value to apply")
+.add_parameter("dst", "array_like (2D, float)", "The gamma-corrected image to write; if not specified, it will be created in the desired size")
+.add_return("dst", "array_like (2D, float)", "The gamma-corrected image; the same as the ``dst`` parameter, if specified")
+;
+
+template <typename T> PyObject* inner_gammaCorrection(PyBlitzArrayObject* src, PyBlitzArrayObject* dst, double gamma) {
+  bob::ip::base::gammaCorrection(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<double, 2>(dst), gamma);
+  Py_INCREF(dst);
+  return PyBlitzArray_AsNumpyArray(dst, 0);
+}
+
+PyObject* PyBobIpBase_gammaCorrection(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+  static char* kwlist[] = {c("src"), c("gamma"), c("dst"), NULL};
+
+  PyBlitzArrayObject* src = 0,* dst = 0;
+  double gamma;
+
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&d|O&", kwlist, &PyBlitzArray_Converter, &src, &gamma, &PyBlitzArray_OutputConverter, &dst)) return 0;
+  auto src_ = make_safe(src), dst_ = make_xsafe(dst);
+
+  // perform some checks
+  if (src->ndim != 2 || (dst && dst->ndim != 2)){
+    PyErr_Format(PyExc_ValueError, "'gamma_correction' can be performed on 2D arrays only");
+    return 0;
+  }
+
+  if (dst){
+    if (dst->ndim != 2 || dst->type_num != NPY_FLOAT64){
+      PyErr_Format(PyExc_TypeError, "'gamma_correction': ``dst`` must be a 2D array of type float");
+      return 0;
+    }
+  } else {
+    dst = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(NPY_FLOAT64, 2, src->shape);
+    dst_ = make_safe(dst);
+  }
+
+  switch (src->type_num){
+    case NPY_UINT8:  return inner_gammaCorrection<uint8_t>(src, dst, gamma);
+    case NPY_UINT16: return inner_gammaCorrection<uint16_t>(src, dst, gamma);
+    case NPY_FLOAT64: return inner_gammaCorrection<double>(src, dst, gamma);
+    default:
+      PyErr_Format(PyExc_ValueError, "'gamma_correction' of %s arrays is currently not supported, only uint8, uint16 or float64 arrays are", PyBlitzArray_TypenumAsString(dst->type_num));
+      return 0;
+  }
+  CATCH_("in gamma_correction", 0)
+}
+
+
 bob::extension::FunctionDoc s_zigzag = bob::extension::FunctionDoc(
     "zigzag",
 

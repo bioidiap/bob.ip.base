@@ -56,7 +56,6 @@ setup(
         ),
       Extension("bob.ip.base._old_library",
         [
-          "bob/ip/base/old/gamma_correction.cc",
           "bob/ip/base/old/gaussian.cc",
           "bob/ip/base/old/GaussianScaleSpace.cc",
           "bob/ip/base/old/GLCM.cc",

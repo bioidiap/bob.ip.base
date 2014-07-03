@@ -31,10 +31,17 @@ Functions
    bob.ip.base.block_output_shape
    bob.ip.base.crop
    bob.ip.base.shift
+
    bob.ip.base.max_rect_in_mask
    bob.ip.base.angle_to_horizontal
+
+   bob.ip.base.histogram
    bob.ip.base.lbphs
    bob.ip.base.lbphs_output_shape
+
+   bob.ip.base.histogram_equalization
+   bob.ip.base.gamma_correction
+
    bob.ip.base.integral
    bob.ip.base.zigzag
 
