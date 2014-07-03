@@ -101,6 +101,12 @@ static PyMethodDef module_methods[] = {
     METH_VARARGS|METH_KEYWORDS,
     s_zigzag.doc()
   },
+  {
+    s_median.name(),
+    (PyCFunction)PyBobIpBase_median,
+    METH_VARARGS|METH_KEYWORDS,
+    s_median.doc()
+  },
   {0}  // Sentinel
 };
 

@@ -170,5 +170,8 @@ extern bob::extension::FunctionDoc s_histogramEqualization;
 PyObject* PyBobIpBase_zigzag(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_zigzag;
 
+// filtering
+PyObject* PyBobIpBase_median(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_median;
 
 #endif // BOB_IP_BASE_MAIN_H

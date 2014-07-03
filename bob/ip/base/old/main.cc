@@ -23,7 +23,6 @@ void bind_ip_gaussian_scale_space();
 void bind_ip_wgaussian();
 void bind_ip_msr();
 void bind_ip_sqi();
-void bind_ip_median();
 void bind_ip_sobel();
 void bind_ip_hog();
 void bind_ip_glcm_uint8();
@@ -55,7 +54,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_ip_wgaussian();
   bind_ip_msr();
   bind_ip_sqi();
-  bind_ip_median();
   bind_ip_sobel();
   bind_ip_hog();
   bind_ip_glcm_uint8();

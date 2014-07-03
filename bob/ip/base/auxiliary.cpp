@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Wed Jun 25 18:28:03 CEST 2014
  *
  * @brief Binds auxiliary functions of bob::ip::base class to python
