@@ -123,7 +123,7 @@ image. This can be easily done by first creating an object of the
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> filter = bob.ip.base.Gaussian( radius_y = 1, radius_x = 1, sigma_y = math.sqrt(0.3*0.5), sigma_x = math.sqrt(0.3*0.5))
+  >>> filter = bob.ip.base.Gaussian(sigma = (math.sqrt(0.3*0.5), math.sqrt(0.3*0.5)), radius = (1, 1))
 
 Now, let's see what happens to a small test image:
 
@@ -131,8 +131,7 @@ Now, let's see what happens to a small test image:
   :options: +NORMALIZE_WHITESPACE
 
   >>> test_image = numpy.array([[1, 0, 0, 0, 1], [0, 1, 0, 1, 0], [0, 0, 1, 0, 0], [0, 1, 0, 1, 0], [1, 0, 0, 0, 1]], dtype = numpy.float64)
-  >>> filtered_image = numpy.ndarray(test_image.shape, dtype = numpy.float64)
-  >>> filter(test_image, filtered_image)
+  >>> filtered_image = filter(test_image)
   >>> print(filtered_image)
   [[ 0.936  0.063  0.002  0.063  0.936]
    [ 0.063  0.873  0.093  0.873  0.063]

@@ -20,6 +20,7 @@
 #include "cpp/LBPTop.h"
 #include "cpp/DCTFeatures.h"
 #include "cpp/TanTriggs.h"
+#include "cpp/Gaussian.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
 
@@ -140,6 +141,17 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseTanTriggsType;
 bool init_BobIpBaseTanTriggs(PyObject* module);
 int PyBobIpBaseTanTriggs_Check(PyObject* o);
+
+
+// Gaussian
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::Gaussian> cxx;
+} PyBobIpBaseGaussianObject;
+
+extern PyTypeObject PyBobIpBaseGaussianType;
+bool init_BobIpBaseGaussian(PyObject* module);
+int PyBobIpBaseGaussian_Check(PyObject* o);
 
 
 // block

@@ -56,7 +56,6 @@ setup(
         ),
       Extension("bob.ip.base._old_library",
         [
-          "bob/ip/base/old/gaussian.cc",
           "bob/ip/base/old/GaussianScaleSpace.cc",
           "bob/ip/base/old/GLCM.cc",
           "bob/ip/base/old/GLCMProp.cc",
@@ -94,6 +93,7 @@ setup(
           "bob/ip/base/cpp/LBPTop.cpp",
           "bob/ip/base/cpp/DCTFeatures.cpp",
           "bob/ip/base/cpp/TanTriggs.cpp",
+          "bob/ip/base/cpp/Gaussian.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -104,6 +104,7 @@ setup(
           "bob/ip/base/lbp_top.cpp",
           "bob/ip/base/dct_features.cpp",
           "bob/ip/base/tan_triggs.cpp",
+          "bob/ip/base/gaussian.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",

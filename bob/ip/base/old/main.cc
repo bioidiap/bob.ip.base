@@ -18,7 +18,6 @@ void bind_sp_extrapolate();
 void bind_sp_convolution();
 
 void bind_ip_shear();
-void bind_ip_gaussian();
 void bind_ip_gaussian_scale_space();
 void bind_ip_wgaussian();
 void bind_ip_msr();
@@ -49,7 +48,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_sp_convolution();
 
   bind_ip_shear();
-  bind_ip_gaussian();
   bind_ip_gaussian_scale_space();
   bind_ip_wgaussian();
   bind_ip_msr();

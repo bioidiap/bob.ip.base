@@ -35,7 +35,7 @@ static auto TanTriggs_doc = bob::extension::ClassDoc(
   .add_parameter("radius", "int", "[default: ``2``] The radius of the Difference of Gaussians filter along both axes (size of the kernel=2*radius+1)")
   .add_parameter("threshold", "float", "[default: ``10.``] The threshold used for the contrast equalization")
   .add_parameter("alpha", "float", "[default: ``0.1``] The alpha value used for the contrast equalization")
-  .add_parameter("border", ":py:class:`bob.sp.BorderType`", "[default: ``bob.sp.BorderType.Mirror``] TThe extrapolation method used by the convolution at the border")
+  .add_parameter("border", ":py:class:`bob.sp.BorderType`", "[default: ``bob.sp.BorderType.Mirror``] The extrapolation method used by the convolution at the border")
   .add_parameter("tan_triggs", ":py:class:`bob.ip.base.TanTriggs`", "The TanTriggs object to use for copy-construction")
 );
 
@@ -53,10 +53,10 @@ static int PyBobIpBaseTanTriggs_init(PyBobIpBaseTanTriggsObject* self, PyObject*
   auto k_ = make_safe(k);
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseTanTriggs_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
-    PyBobIpBaseTanTriggsObject* dct;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseTanTriggsType, &dct)) return -1;
+    PyBobIpBaseTanTriggsObject* tt;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseTanTriggsType, &tt)) return -1;
 
-    self->cxx.reset(new bob::ip::base::TanTriggs(*dct->cxx));
+    self->cxx.reset(new bob::ip::base::TanTriggs(*tt->cxx));
     return 0;
   }
 

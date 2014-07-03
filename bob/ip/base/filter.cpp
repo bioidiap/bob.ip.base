@@ -17,10 +17,11 @@ static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* 
 bob::extension::FunctionDoc s_median = bob::extension::FunctionDoc(
   "median",
   "Performs a median filtering of the input image with the given radius",
-  "This function computes a histogram of the given input image, in several ways.\n\n"
-  "* (version 1 and 2, only valid for uint8 and uint16 types -- and uint32 and uint64 when ``bin_count`` is specified or ``hist`` is given as parameter): For each pixel value of the ``src`` image, a histogram bin is computed, using a fast implementation. "
-  "The number of bins can be limited, and there will be a check that the source image pixels are actually in the desired range ``(0, bin_count-1)``\n\n"
-  "* (version 3 and 4, valid for many data types): The histogram is computed by defining regular bins between the provided minimum and maximum values."
+  "This function performs a median filtering of the given ``src`` image with the given radius and writes the result to the given ``dst`` image. "
+  "Both gray-level and color images are supported, and the input and output datatype must be identical.\n\n"
+  "Median filtering iterates with a mask of size ``(2*radius[0]+1, 2*radius[1]+1)`` over the input image. "
+  "For each input region, the pixels under the mask are sorted and the median value (the middle element of the sorted list) is written into the ``dst`` image. "
+  "Therefore, the ``dst`` is smaller than the ``src`` image, i.e., by ``2*radius`` pixels."
 )
 .add_prototype("src, radius, [dst]", "dst")
 .add_parameter("src", "array_like (2D or 3D)", "The source image to filter, might be a gray level image or a color image")

@@ -14,10 +14,14 @@ Classes
 .. autosummary::
    bob.ip.base.GeomNorm
    bob.ip.base.FaceEyesNorm
+
    bob.ip.base.LBP
    bob.ip.base.LBPTop
    bob.ip.base.DCTFeatures
+
    bob.ip.base.TanTriggs
+   bob.ip.base.Gaussian
+
 
 Functions
 ---------
@@ -44,6 +48,9 @@ Functions
 
    bob.ip.base.integral
    bob.ip.base.zigzag
+
+   bob.ip.base.median
+
 
 
 Detailed Information
