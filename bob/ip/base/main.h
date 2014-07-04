@@ -23,6 +23,7 @@
 #include "cpp/Gaussian.h"
 #include "cpp/WeightedGaussian.h"
 #include "cpp/SelfQuotientImage.h"
+#include "cpp/GaussianScaleSpace.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
 
@@ -176,6 +177,36 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseSelfQuotientImageType;
 bool init_BobIpBaseSelfQuotientImage(PyObject* module);
 int PyBobIpBaseSelfQuotientImage_Check(PyObject* o);
+
+
+// SIFT...
+// .. Gaussian Scale Space Keypoint
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::GSSKeypoint> cxx;
+} PyBobIpBaseGSSKeypointObject;
+
+extern PyTypeObject PyBobIpBaseGSSKeypointType;
+int PyBobIpBaseGSSKeypoint_Check(PyObject* o);
+
+// Gaussian Scale Space KeypointInfo
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::GSSKeypointInfo> cxx;
+} PyBobIpBaseGSSKeypointInfoObject;
+
+extern PyTypeObject PyBobIpBaseGSSKeypointInfoType;
+int PyBobIpBaseGSSKeypointInfo_Check(PyObject* o);
+
+// Gaussian Scale Space
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::GaussianScaleSpace> cxx;
+} PyBobIpBaseGaussianScaleSpaceObject;
+
+extern PyTypeObject PyBobIpBaseGaussianScaleSpaceType;
+bool init_BobIpBaseGaussianScaleSpace(PyObject* module);
+int PyBobIpBaseGaussianScaleSpace_Check(PyObject* o);
 
 
 // block

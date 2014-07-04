@@ -16,37 +16,37 @@ import bob.io.base
 import bob.io.image
 from bob.io.base.test_utils import datafile
 
-from .. import Gaussian, GaussianScaleSpace
+import bob.ip.base
 
 eps = 1e-4
 
 def test_parametrization():
   # Parametrization tests
-  op = GaussianScaleSpace(200,250,4,3,-1,0.5,1.6,4.)
-  nose.tools.eq_(op.height, 200)
-  nose.tools.eq_(op.width, 250)
-  nose.tools.eq_(op.n_octaves, 4)
-  nose.tools.eq_(op.n_intervals, 3)
+  op = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,4.)
+  nose.tools.eq_(op.size[0], 200)
+  nose.tools.eq_(op.size[1], 250)
+  nose.tools.eq_(op.octaves, 4)
+  nose.tools.eq_(op.scales, 3)
   nose.tools.eq_(op.octave_min, -1)
   nose.tools.eq_(op.sigma_n, 0.5)
   nose.tools.eq_(op.sigma0, 1.6)
   nose.tools.eq_(op.kernel_radius_factor, 4.)
-  op.height = 300
-  op.width = 350
-  op.n_octaves = 3
-  op.n_intervals = 4
+  op.size = (300, 350)
+  op.octaves = 3
+  op.scales = 4
   op.octave_min = 0
   op.sigma_n = 0.6
   op.sigma0 = 2.
   op.kernel_radius_factor = 3.
-  nose.tools.eq_(op.height, 300)
-  nose.tools.eq_(op.width, 350)
-  nose.tools.eq_(op.n_octaves, 3)
-  nose.tools.eq_(op.n_intervals, 4)
+  nose.tools.eq_(op.size[0], 300)
+  nose.tools.eq_(op.size[1], 350)
+  nose.tools.eq_(op.octaves, 3)
+  nose.tools.eq_(op.scales, 4)
   nose.tools.eq_(op.octave_min, 0)
   nose.tools.eq_(op.sigma_n, 0.6)
   nose.tools.eq_(op.sigma0, 2.)
   nose.tools.eq_(op.kernel_radius_factor, 3.)
+
 
 def test_processing():
   # Processing tests
@@ -56,7 +56,7 @@ def test_processing():
   sigma0 = 1.6
   sigma_n = 0.5
   f=4.
-  op = GaussianScaleSpace(A.shape[0],A.shape[1],No,Ns,0,sigma_n,sigma0,f)
+  op = bob.ip.base.GaussianScaleSpace(A.shape,No,Ns,0,sigma_n,sigma0,f)
   pyr = op(A)
 
   import math
@@ -79,12 +79,12 @@ def test_processing():
           sigma = dsigma0 * math.pow(2,s/float(Ns))
         radius = int(math.ceil(f*sigma))
         # Check values
-        assert abs(sigma - g_pyr.sigma_y) < eps
-        assert abs(sigma - g_pyr.sigma_x) < eps
-        assert abs(radius - g_pyr.radius_y) < eps
-        assert abs(radius - g_pyr.radius_x) < eps
+        assert abs(sigma - g_pyr.sigma[0]) < eps
+        assert abs(sigma - g_pyr.sigma[1]) < eps
+        assert abs(radius - g_pyr.radius[0]) < eps
+        assert abs(radius - g_pyr.radius[1]) < eps
 
-        g = Gaussian(radius, radius, sigma, sigma)
+        g = bob.ip.base.Gaussian((sigma, sigma), (radius, radius))
         B = g(Aa)
       # Downsampling step
       else:
@@ -104,16 +104,16 @@ def test_processing():
 
 def test_comparison():
   # Comparisons tests
-  op1 = GaussianScaleSpace(200,250,4,3,-1,0.5,1.6,4.)
-  op1b = GaussianScaleSpace(200,250,4,3,-1,0.5,1.6,4.)
-  op2 = GaussianScaleSpace(300,250,4,3,-1,0.5,1.6,4.)
-  op3 = GaussianScaleSpace(200,350,4,3,-1,0.5,1.6,4.)
-  op4 = GaussianScaleSpace(200,250,3,3,-1,0.5,1.6,4.)
-  op5 = GaussianScaleSpace(200,250,4,4,-1,0.5,1.6,4.)
-  op6 = GaussianScaleSpace(200,250,4,3,0,0.5,1.6,4.)
-  op7 = GaussianScaleSpace(200,250,4,3,-1,0.75,1.6,4.)
-  op8 = GaussianScaleSpace(200,250,4,3,-1,0.5,1.8,4.)
-  op9 = GaussianScaleSpace(200,250,4,3,-1,0.5,1.6,3.)
+  op1 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,4.)
+  op1b = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,4.)
+  op2 = bob.ip.base.GaussianScaleSpace((300,250),4,3,-1,0.5,1.6,4.)
+  op3 = bob.ip.base.GaussianScaleSpace((200,350),4,3,-1,0.5,1.6,4.)
+  op4 = bob.ip.base.GaussianScaleSpace((200,250),3,3,-1,0.5,1.6,4.)
+  op5 = bob.ip.base.GaussianScaleSpace((200,250),4,4,-1,0.5,1.6,4.)
+  op6 = bob.ip.base.GaussianScaleSpace((200,250),4,3,0,0.5,1.6,4.)
+  op7 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.75,1.6,4.)
+  op8 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.8,4.)
+  op9 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,3.)
   assert op1 == op1
   assert op1 == op1b
   assert (op1 == op2) is False

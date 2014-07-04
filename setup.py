@@ -56,7 +56,6 @@ setup(
         ),
       Extension("bob.ip.base._old_library",
         [
-          "bob/ip/base/old/GaussianScaleSpace.cc",
           "bob/ip/base/old/GLCM.cc",
           "bob/ip/base/old/GLCMProp.cc",
           "bob/ip/base/old/HOG.cc",
@@ -94,6 +93,7 @@ setup(
           "bob/ip/base/cpp/Gaussian.cpp",
           "bob/ip/base/cpp/WeightedGaussian.cpp",
           "bob/ip/base/cpp/SelfQuotientImage.cpp",
+          "bob/ip/base/cpp/GaussianScaleSpace.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -107,6 +107,7 @@ setup(
           "bob/ip/base/gaussian.cpp",
           "bob/ip/base/weighted_gaussian.cpp",
           "bob/ip/base/self_quotient_image.cpp",
+          "bob/ip/base/gaussian_scale_space.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",

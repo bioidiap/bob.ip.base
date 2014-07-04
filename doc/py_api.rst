@@ -24,6 +24,9 @@ Classes
    bob.ip.base.WeightedGaussian
    bob.ip.base.SelfQuotientImage
 
+   bob.ip.base.GaussianScaleSpace
+   bob.ip.base.GSSKeypoint
+   bob.ip.base.GSSKeypointInfo
 
 
 Functions

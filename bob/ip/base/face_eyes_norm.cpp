@@ -183,9 +183,9 @@ PyObject* PyBobIpBaseFaceEyesNorm_getCropSize(PyBobIpBaseFaceEyesNormObject* sel
 }
 int PyBobIpBaseFaceEyesNorm_setCropSize(PyBobIpBaseFaceEyesNormObject* self, PyObject* value, void*){
   TRY
-  blitz::TinyVector<double,2> r;
-  if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
-    PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, cropSize.name());
+  blitz::TinyVector<int,2> r;
+  if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
+    PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, cropSize.name());
     return -1;
   }
   self->cxx->setCropSize(r);

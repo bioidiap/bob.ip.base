@@ -90,8 +90,7 @@ bool bob::ip::base::SelfQuotientImage::operator==(const bob::ip::base::SelfQuoti
           this->m_conv_border == b.m_conv_border);
 }
 
-bool
-bob::ip::base::SelfQuotientImage::operator!=(const bob::ip::base::SelfQuotientImage& b) const
+bool bob::ip::base::SelfQuotientImage::operator!=(const bob::ip::base::SelfQuotientImage& b) const
 {
   return !(this->operator==(b));
 }

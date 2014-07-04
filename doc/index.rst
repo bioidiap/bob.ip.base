@@ -30,7 +30,7 @@ References
 .. [Sanderson2002]   *Conrad Sanderson and Kuldip K. Paliwal*. **Polynomial Features for Robust Face Authentication,** In Proceedings of the IEEE International Conference on Image Processing, 2002. `pdf <http://maxwell.me.gu.edu.au/spl/publications/papers/icip02_conrad2.pdf>`__
 .. [TanTriggs2007]   *Xiaoyang Tan and Bill Triggs*. **Enhanced Local Texture Feature Sets for Face Recognition Under Difficult Lighting Conditions,** In International Conference on Analysis and Modeling of Faces and Gestures, 2007. `pdf <https://lear.inrialpes.fr/pubs/2007/TT07/Tan-amfg07a.pdf>`__
 .. [Wang2004]        *H. Wang, S.Z. Li and Y. Wang*. **Face Recognition under Varying Lighting Conditions Using Self Quotient Image,** In IEEE International Conference on Image Processing, vol. 2, pp. 1397-1400, 2004.
-
+.. [Lowe2004]        *D. Lowe*. **Distinctive Image Features from Scale-Invariant Keypoints,** In International Journal of Computer Vision, 2004.
 
 Indices and tables
 ------------------
