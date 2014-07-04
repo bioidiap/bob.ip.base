@@ -36,7 +36,7 @@ static int PyBobIpBaseWeightedGaussian_init(PyBobIpBaseWeightedGaussianObject* s
   TRY
 
   char* kwlist1[] = {c("variance"), c("radius"), c("border"), NULL};
-  char* kwlist2[] = {c("gaussian"), NULL};
+  char* kwlist2[] = {c("weighted_gaussian"), NULL};
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);

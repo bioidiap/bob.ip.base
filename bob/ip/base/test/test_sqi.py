@@ -5,49 +5,49 @@
 #
 # Copyright (C) 2011-2014 Idiap Research Institute, Martigny, Switzerland
 
-"""Tests the SelfQuotientImage
+"""Tests the bob.ip.base.SelfQuotientImage
 """
 
 import numpy
 import nose.tools
 
-from .. import SelfQuotientImage, BorderType
+import bob.sp
+import bob.ip.base
 
 eps = 1e-4
 
 def test_parametrization():
   # Parametrization tests
-  op = SelfQuotientImage(2,1,1,2.)
-  nose.tools.eq_(op.n_scales, 2)
+  op = bob.ip.base.SelfQuotientImage(2,1,1,2.)
+  nose.tools.eq_(op.scales, 2)
   nose.tools.eq_(op.size_min, 1)
   nose.tools.eq_(op.size_step, 1)
-  nose.tools.eq_(op.sigma2, 2.)
-  nose.tools.eq_(op.conv_border, BorderType.Mirror)
-  op.n_scales = 3
+  nose.tools.eq_(op.variance, 2.)
+  nose.tools.eq_(op.border, bob.sp.BorderType.Mirror)
+  op.scales = 3
   op.size_min = 2
   op.size_step = 2
-  op.sigma2 = 1.
-  op.conv_border = BorderType.Circular
-  nose.tools.eq_(op.n_scales, 3)
+  op.variance = 1.
+  op.border = bob.sp.BorderType.Circular
+  nose.tools.eq_(op.scales, 3)
   nose.tools.eq_(op.size_min, 2)
   nose.tools.eq_(op.size_step, 2)
-  nose.tools.eq_(op.sigma2, 1.)
-  nose.tools.eq_(op.conv_border, BorderType.Circular)
-  op.reset(1,1,1,0.5,BorderType.Mirror)
-  nose.tools.eq_(op.n_scales, 1)
-  nose.tools.eq_(op.size_min, 1)
-  nose.tools.eq_(op.size_step, 1)
-  nose.tools.eq_(op.sigma2, 0.5)
-  nose.tools.eq_(op.conv_border, BorderType.Mirror)
+  nose.tools.eq_(op.variance, 1.)
+  nose.tools.eq_(op.border, bob.sp.BorderType.Circular)
+
 
 def test_processing():
   # Processing tests
-  op = SelfQuotientImage(1,1,1,0.5)
+  op = bob.ip.base.SelfQuotientImage(1,1,1,0.5)
   a_uint8 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.uint8)
   a_float64 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.float64)
   a_ones = numpy.ones(shape=(3,4), dtype=numpy.float64)
-  a_wg_ref = numpy.array([[1.21194, 2, 3, 3.78806], [3.79444, 7.45636,
-    8.45636, 9.20556], [9.21194, 10, 11, 11.7881]])
+  a_wg_ref = numpy.array([
+    [1.21194, 2, 3, 3.78806],
+    [3.79444, 7.45636, 8.45636, 9.20556],
+    [9.21194, 10, 11, 11.7881]],
+    dtype = numpy.float64
+  )
   a_sqi_ref = numpy.log(1.+a_float64) - numpy.log(1.+a_wg_ref)
   a_out = numpy.ndarray(dtype=numpy.float64, shape=(3,4))
 
@@ -58,15 +58,16 @@ def test_processing():
   a_out2 = op(a_float64)
   assert numpy.allclose(a_out2, a_sqi_ref, eps, eps)
 
+
 def test_comparison():
   # Comparisons tests
-  op1 = SelfQuotientImage(1,1,1,0.5)
-  op1b = SelfQuotientImage(1,1,1,0.5)
-  op2 = SelfQuotientImage(1,1,1,0.5, BorderType.Circular)
-  op3 = SelfQuotientImage(1,1,1,1.)
-  op4 = SelfQuotientImage(1,1,2,0.5)
-  op5 = SelfQuotientImage(1,2,1,0.5)
-  op6 = SelfQuotientImage(2,1,1,0.5)
+  op1 = bob.ip.base.SelfQuotientImage(1,1,1,0.5)
+  op1b = bob.ip.base.SelfQuotientImage(1,1,1,0.5)
+  op2 = bob.ip.base.SelfQuotientImage(1,1,1,0.5, bob.sp.BorderType.Circular)
+  op3 = bob.ip.base.SelfQuotientImage(1,1,1,1.)
+  op4 = bob.ip.base.SelfQuotientImage(1,1,2,0.5)
+  op5 = bob.ip.base.SelfQuotientImage(1,2,1,0.5)
+  op6 = bob.ip.base.SelfQuotientImage(2,1,1,0.5)
   assert op1 == op1
   assert op1 == op1b
   assert (op1 == op2) is False

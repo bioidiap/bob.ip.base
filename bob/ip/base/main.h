@@ -22,6 +22,7 @@
 #include "cpp/TanTriggs.h"
 #include "cpp/Gaussian.h"
 #include "cpp/WeightedGaussian.h"
+#include "cpp/SelfQuotientImage.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
 
@@ -164,6 +165,17 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseWeightedGaussianType;
 bool init_BobIpBaseWeightedGaussian(PyObject* module);
 int PyBobIpBaseWeightedGaussian_Check(PyObject* o);
+
+
+// SelfQuotientImage
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::SelfQuotientImage> cxx;
+} PyBobIpBaseSelfQuotientImageObject;
+
+extern PyTypeObject PyBobIpBaseSelfQuotientImageType;
+bool init_BobIpBaseSelfQuotientImage(PyObject* module);
+int PyBobIpBaseSelfQuotientImage_Check(PyObject* o);
 
 
 // block

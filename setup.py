@@ -61,7 +61,6 @@ setup(
           "bob/ip/base/old/GLCMProp.cc",
           "bob/ip/base/old/HOG.cc",
           "bob/ip/base/old/MultiscaleRetinex.cc",
-          "bob/ip/base/old/SelfQuotientImage.cc",
           "bob/ip/base/old/shear.cc",
           "bob/ip/base/old/SIFT.cc",
           "bob/ip/base/old/Sobel.cc",
@@ -94,6 +93,7 @@ setup(
           "bob/ip/base/cpp/TanTriggs.cpp",
           "bob/ip/base/cpp/Gaussian.cpp",
           "bob/ip/base/cpp/WeightedGaussian.cpp",
+          "bob/ip/base/cpp/SelfQuotientImage.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -106,6 +106,7 @@ setup(
           "bob/ip/base/tan_triggs.cpp",
           "bob/ip/base/gaussian.cpp",
           "bob/ip/base/weighted_gaussian.cpp",
+          "bob/ip/base/self_quotient_image.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",

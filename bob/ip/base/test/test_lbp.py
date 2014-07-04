@@ -215,10 +215,7 @@ class ProcessorLBPTop:
     xy_width  = img_size-(operator.xy.radius*2) #Square image
     xy_height = xy_width
 
-    if(operator.xt.radius>operator.yt.radius):
-      maxT_radius = operator.xt.radius
-    else:
-      maxT_radius = operator.yt.radius
+    maxT_radius = int(math.ceil(max(operator.xt.radius, operator.yt.radius)))
     tLength   = n_frames-(maxT_radius*2)
 
     self.XY = numpy.empty(shape=(tLength,xy_width,xy_height),dtype='uint16')
