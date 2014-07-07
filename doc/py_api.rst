@@ -59,6 +59,7 @@ Functions
    bob.ip.base.zigzag
 
    bob.ip.base.median
+   bob.ip.base.sobel
 
 
 

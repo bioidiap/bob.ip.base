@@ -117,7 +117,6 @@ setup(
           "bob/ip/base/old/HOG.cc",
           "bob/ip/base/old/MultiscaleRetinex.cc",
           "bob/ip/base/old/shear.cc",
-          "bob/ip/base/old/Sobel.cc",
 
           # external requirements as boost::python bindings
           "bob/ip/base/old/blitz_numpy.cc",

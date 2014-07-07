@@ -392,8 +392,8 @@ namespace bob { namespace ip { namespace base {
         */
       VLDSIFT(
         const blitz::TinyVector<int,2>& size,
-        const blitz::TinyVector<int,2>& step={5,5},
-        const blitz::TinyVector<int,2>&  block_size={5,5}
+        const blitz::TinyVector<int,2>& step=blitz::TinyVector<int,2>(5,5),
+        const blitz::TinyVector<int,2>& block_size=blitz::TinyVector<int,2>(5,5)
       );
 
       /**

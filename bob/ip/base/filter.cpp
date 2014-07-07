@@ -10,6 +10,7 @@
 
 #include "main.h"
 #include "cpp/Median.h"
+#include "cpp/Sobel.h"
 
 static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
 
@@ -79,6 +80,59 @@ PyObject* PyBobIpBase_median(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   CATCH_("in median", 0)
+}
+
+bob::extension::FunctionDoc s_sobel = bob::extension::FunctionDoc(
+  "sobel",
+  "Performs a Sobel filtering of the input image",
+  "This function will perform a Sobel filtering woth both the vertical and the horizontal filter. "
+  "A Sobel filter is an edge detector, which will detect either horizontal or vertical edges. "
+  "The two filter are given as: \n\n"
+  ".. math:: S_y =  \\left\\lgroup\\begin{array}{ccc} -1 & -2 & -1 \\\\ 0 & 0 & 0 \\\\ 1 & 2 & 1 \\end{array}\\right\\rgroup \\qquad S_x = \\left\\lgroup\\begin{array}{ccc} -1 & 0 & 1 \\\\ -2 & 0 & 2 \\\\ -1 & 0 & 1 \\end{array}\\right\\rgroup\n\n"
+  "If given, the dst array should have the expected type (numpy.float64) and two layers of the same size as the input image. "
+  "Finally, the result of the vertical filter will be put into the first layer of ``dst[0]``, while the result of the horizontal filter will be written to ``dst[1]``."
+)
+.add_prototype("src, [border], [dst]", "dst")
+.add_parameter("src", "array_like (2D, float)", "The source image to filter")
+.add_parameter("border", ":py:class:`bob.sp.BorderType`", "[default: ``bob.sp.BorderType.Mirror``] The extrapolation method used by the convolution at the border")
+.add_parameter("dst", "array_like (3D, float)", "The Sobel-filtered image to write; need to be of size ``[2] + src.shape``; if not specified, it will be created")
+.add_return("dst", "array_like (3D, float)", "The Sobel-filtered image; the same as the ``dst`` parameter, if specified")
+;
+
+PyObject* PyBobIpBase_sobel(PyObject*, PyObject* args, PyObject* kwargs) {
+  TRY
+
+  static char* kwlist[] = {c("src"), c("border"), c("dst"), NULL};
+
+  PyBlitzArrayObject* src,* dst = 0;
+  bob::sp::Extrapolation::BorderType border = bob::sp::Extrapolation::Mirror;
+
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&|O&O&", kwlist, &PyBlitzArray_Converter, &src, &PyBobSpExtrapolationBorder_Converter, &border, &PyBlitzArray_OutputConverter, &dst)) return 0;
+
+  auto src_ = make_safe(src), dst_ = make_xsafe(dst);
+
+  if (src->ndim != 2 || src->type_num != NPY_FLOAT64){
+    PyErr_Format(PyExc_TypeError, "'sobel' : 'src' must be 2D and of type float, but it is %dD and of type %s.", (int)src->ndim, PyBlitzArray_TypenumAsString(src->type_num));
+    return 0;
+  }
+  if (dst){
+    if (dst->ndim != 3 || dst->type_num != NPY_FLOAT64){
+      PyErr_Format(PyExc_TypeError, "'sobel' : 'dst' must be 3D and of type float, but it is %dD and of type %s.", (int)dst->ndim, PyBlitzArray_TypenumAsString(dst->type_num));
+      return 0;
+    }
+  } else {
+    Py_ssize_t n[] = {2, src->shape[0], src->shape[1]};
+    dst = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, n));
+    dst_ = make_safe(dst);
+  }
+
+  // perform Sobel filtering
+  bob::ip::base::sobel(*PyBlitzArrayCxx_AsBlitz<double,2>(src), *PyBlitzArrayCxx_AsBlitz<double,3>(dst), border);
+
+  Py_INCREF(dst);
+  return PyBlitzArray_AsNumpyArray(dst, 0);
+
+  CATCH_("in sobel", 0)
 }
 
 

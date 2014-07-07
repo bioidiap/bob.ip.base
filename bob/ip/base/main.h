@@ -273,4 +273,7 @@ extern bob::extension::FunctionDoc s_zigzag;
 PyObject* PyBobIpBase_median(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_median;
 
+PyObject* PyBobIpBase_sobel(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_sobel;
+
 #endif // BOB_IP_BASE_MAIN_H

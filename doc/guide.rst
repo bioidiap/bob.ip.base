@@ -116,30 +116,46 @@ Below we provide some examples.
 Image filtering
 ~~~~~~~~~~~~~~~
 
-One simple example of image filtering is to apply a Gaussian blur filter to an
-image. This can be easily done by first creating an object of the
-:py:class:`bob.ip.base.Gaussian` class:
+One simple example of image filtering is to apply a Gaussian blur filter to an image.
+This can be easily done by first creating an object of the :py:class:`bob.ip.base.Gaussian` class:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> filter = bob.ip.base.Gaussian(sigma = (math.sqrt(0.3*0.5), math.sqrt(0.3*0.5)), radius = (1, 1))
+  >>> filter = bob.ip.base.Gaussian(sigma = (3., 3.), radius = (5, 5))
 
 Now, let's see what happens to a small test image:
 
+.. plot:: plot/gaussian.py
+   :include-source: True
+
+The image of the cross has now been nicely smoothed.
+
+A second example uses Sobel filters to extract edges from an image.
+Two types of Sobel filters exist: The vertical filter :math:`S_y` and the horizontal filter :math:`S_x`:
+
+.. math::
+   S_y = \left\lgroup\begin{array}{ccc} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{array}\right\rgroup \qquad
+   S_x = \left\lgroup\begin{array}{ccc} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{array}\right\rgroup
+
+Both filters can be applied at the same time using the :py:func:`bob.ip.base.sobel` function, where the result of :math:`S_y`will be put to the first layer and :math:`S_x` to the second layer.
+
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
 
-  >>> test_image = numpy.array([[1, 0, 0, 0, 1], [0, 1, 0, 1, 0], [0, 0, 1, 0, 0], [0, 1, 0, 1, 0], [1, 0, 0, 0, 1]], dtype = numpy.float64)
-  >>> filtered_image = filter(test_image)
-  >>> print(filtered_image)
-  [[ 0.936  0.063  0.002  0.063  0.936]
-   [ 0.063  0.873  0.093  0.873  0.063]
-   [ 0.002  0.093  0.876  0.093  0.002]
-   [ 0.063  0.873  0.093  0.873  0.063]
-   [ 0.936  0.063  0.002  0.063  0.936]]
+  >>> image = numpy.zeros((21,21))
+  >>> image[5:16, 5:16] = 1
+  >>> sobel = bob.ip.base.sobel(image)
+  >>> sobel.shape
+  (2, 21, 21)
 
-The image of the cross has now been nicely smoothed.
+Interestingly, the vertical filter :math:`S_y` extracts horizontal edges, while the :math:`S_x` extracts vertical edges.
+In fact, the vector :math:`(s_y, s_x)^T` contains the gradient information at a given location in the image.
+To get the direction-independent strength of the edge at that point, simply compute the Euclidean length of the gradient.
+To compute rotation-dependent results, use the rotation matrix on the gradient vector.
+
+.. plot:: plot/sobel.py
+   :include-source: True
 
 
 Normalizing images according to eye positions
