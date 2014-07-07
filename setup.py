@@ -61,7 +61,6 @@ setup(
           "bob/ip/base/old/HOG.cc",
           "bob/ip/base/old/MultiscaleRetinex.cc",
           "bob/ip/base/old/shear.cc",
-          "bob/ip/base/old/SIFT.cc",
           "bob/ip/base/old/Sobel.cc",
           "bob/ip/base/old/vldsift.cc",
           "bob/ip/base/old/vlsift.cc",
@@ -94,6 +93,7 @@ setup(
           "bob/ip/base/cpp/WeightedGaussian.cpp",
           "bob/ip/base/cpp/SelfQuotientImage.cpp",
           "bob/ip/base/cpp/GaussianScaleSpace.cpp",
+          "bob/ip/base/cpp/SIFT.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -108,6 +108,7 @@ setup(
           "bob/ip/base/weighted_gaussian.cpp",
           "bob/ip/base/self_quotient_image.cpp",
           "bob/ip/base/gaussian_scale_space.cpp",
+          "bob/ip/base/sift.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",

@@ -12,36 +12,37 @@ import os
 import numpy
 import nose.tools
 
+import bob.sp
 import bob.io.base
+import bob.io.image
 from bob.io.base.test_utils import datafile
 
-from .. import SIFT, BorderType, GSSKeypoint, BorderType
+import bob.ip.base
 
 eps = 1e-4
 
 def test_parametrization():
   # Parametrization tests
-  op = SIFT(200,250,4,3,-1,0.5,1.6,4.)
-  nose.tools.eq_(op.height, 200)
-  nose.tools.eq_(op.width, 250)
-  nose.tools.eq_(op.n_octaves, 4)
-  nose.tools.eq_(op.n_intervals, 3)
+  op = bob.ip.base.SIFT((200, 250),4,3,-1,0.5,1.6,4.)
+  nose.tools.eq_(op.size[0], 200)
+  nose.tools.eq_(op.size[1], 250)
+  nose.tools.eq_(op.octaves, 4)
+  nose.tools.eq_(op.scales, 3)
   nose.tools.eq_(op.octave_min, -1)
   nose.tools.eq_(op.sigma_n, 0.5)
   nose.tools.eq_(op.sigma0, 1.6)
   nose.tools.eq_(op.kernel_radius_factor, 4.)
-  op.height = 300
-  op.width = 350
-  op.n_octaves = 3
-  op.n_intervals = 4
+  op.size = (300, 350)
+  op.octaves = 3
+  op.scales = 4
   op.octave_min = 0
   op.sigma_n = 0.6
   op.sigma0 = 2.
   op.kernel_radius_factor = 3.
-  nose.tools.eq_(op.height, 300)
-  nose.tools.eq_(op.width, 350)
-  nose.tools.eq_(op.n_octaves, 3)
-  nose.tools.eq_(op.n_intervals, 4)
+  nose.tools.eq_(op.size[0], 300)
+  nose.tools.eq_(op.size[1], 350)
+  nose.tools.eq_(op.octaves, 3)
+  nose.tools.eq_(op.scales, 4)
   nose.tools.eq_(op.octave_min, 0)
   nose.tools.eq_(op.sigma_n, 0.6)
   nose.tools.eq_(op.sigma0, 2.)
@@ -58,9 +59,10 @@ def test_processing():
   edge_t = 10.
   norm_t = 0.2
   f=4.
-  op = SIFT(A.shape[0],A.shape[1],No,Ns,0,sigma_n,sigma0,cont_t,edge_t,norm_t,f,BorderType.NearestNeighbour)
-  kp=[GSSKeypoint(1.6,326,270)]
-  B=op.compute_descriptor(A,kp)
+  op = bob.ip.base.SIFT(A.shape,No,Ns,0,sigma_n,sigma0,cont_t,edge_t,norm_t,f,bob.sp.BorderType.NearestNeighbour)
+  kp=[bob.ip.base.GSSKeypoint(1.6,(326,270))]
+  B = numpy.ndarray(op.output_shape(1), numpy.float64)
+  op.compute_descriptor(A,kp,B)
   C=B[0]
   #bob.io.base.save(C, datafile(os.path.join("sift","vlimg_ref_cmp.hdf5"), __name__)) # Generated using initial bob version
   C_ref = bob.io.base.load(datafile("vlimg_ref_cmp.hdf5", 'bob.ip.base', 'data/sift'))
@@ -90,16 +92,16 @@ def test_processing():
 
 def test_comparison():
   # Comparisons tests
-  op1 = SIFT(200,250,4,3,-1,0.5,1.6,4.)
-  op1b = SIFT(200,250,4,3,-1,0.5,1.6,4.)
-  op2 = SIFT(300,250,4,3,-1,0.5,1.6,4.)
-  op3 = SIFT(200,350,4,3,-1,0.5,1.6,4.)
-  op4 = SIFT(200,250,3,3,-1,0.5,1.6,4.)
-  op5 = SIFT(200,250,4,4,-1,0.5,1.6,4.)
-  op6 = SIFT(200,250,4,3,0,0.5,1.6,4.)
-  op7 = SIFT(200,250,4,3,-1,0.75,1.6,4.)
-  op8 = SIFT(200,250,4,3,-1,0.5,1.8,4.)
-  op9 = SIFT(200,250,4,3,-1,0.5,1.6,3.)
+  op1 = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.6,4.)
+  op1b = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.6,4.)
+  op2 = bob.ip.base.SIFT((300,250),4,3,-1,0.5,1.6,4.)
+  op3 = bob.ip.base.SIFT((200,350),4,3,-1,0.5,1.6,4.)
+  op4 = bob.ip.base.SIFT((200,250),3,3,-1,0.5,1.6,4.)
+  op5 = bob.ip.base.SIFT((200,250),4,4,-1,0.5,1.6,4.)
+  op6 = bob.ip.base.SIFT((200,250),4,3,0,0.5,1.6,4.)
+  op7 = bob.ip.base.SIFT((200,250),4,3,-1,0.75,1.6,4.)
+  op8 = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.8,4.)
+  op9 = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.6,3.)
   assert op1 == op1
   assert op1 == op1b
   assert (op1 == op2) is False

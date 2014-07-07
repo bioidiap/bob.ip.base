@@ -145,6 +145,7 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseWeightedGaussian(module)) return 0;
   if (!init_BobIpBaseSelfQuotientImage(module)) return 0;
   if (!init_BobIpBaseGaussianScaleSpace(module)) return 0;
+  if (!init_BobIpBaseSIFT(module)) return 0;
 
   /* imports bob.blitz C-API + dependencies */
   if (import_bob_blitz() < 0) return 0;

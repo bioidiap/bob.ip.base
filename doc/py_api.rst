@@ -27,6 +27,7 @@ Classes
    bob.ip.base.GaussianScaleSpace
    bob.ip.base.GSSKeypoint
    bob.ip.base.GSSKeypointInfo
+   bob.ip.base.SIFT
 
 
 Functions

@@ -212,7 +212,7 @@ class ProcessorLBPTop:
     self.operator = operator
     self.generator = generator
 
-    xy_width  = img_size-(operator.xy.radius*2) #Square image
+    xy_width  = int(img_size-(operator.xy.radius*2)) #Square image
     xy_height = xy_width
 
     maxT_radius = int(math.ceil(max(operator.xt.radius, operator.yt.radius)))
