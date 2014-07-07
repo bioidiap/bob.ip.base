@@ -23,11 +23,11 @@ eps = 1e-4
 
 def test_parametrization():
   # Parametrization tests
-  op = bob.ip.base.SIFT((200, 250),4,3,-1,0.5,1.6,4.)
+  op = bob.ip.base.SIFT((200, 250),3,4,-1,0.5,1.6,4.)
   nose.tools.eq_(op.size[0], 200)
   nose.tools.eq_(op.size[1], 250)
-  nose.tools.eq_(op.octaves, 4)
   nose.tools.eq_(op.scales, 3)
+  nose.tools.eq_(op.octaves, 4)
   nose.tools.eq_(op.octave_min, -1)
   nose.tools.eq_(op.sigma_n, 0.5)
   nose.tools.eq_(op.sigma0, 1.6)
@@ -59,7 +59,7 @@ def test_processing():
   edge_t = 10.
   norm_t = 0.2
   f=4.
-  op = bob.ip.base.SIFT(A.shape,No,Ns,0,sigma_n,sigma0,cont_t,edge_t,norm_t,f,bob.sp.BorderType.NearestNeighbour)
+  op = bob.ip.base.SIFT(A.shape,Ns,No,0,sigma_n,sigma0,cont_t,edge_t,norm_t,f,bob.sp.BorderType.NearestNeighbour)
   kp=[bob.ip.base.GSSKeypoint(1.6,(326,270))]
   B = numpy.ndarray(op.output_shape(1), numpy.float64)
   op.compute_descriptor(A,kp,B)
@@ -92,16 +92,16 @@ def test_processing():
 
 def test_comparison():
   # Comparisons tests
-  op1 = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.6,4.)
-  op1b = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.6,4.)
-  op2 = bob.ip.base.SIFT((300,250),4,3,-1,0.5,1.6,4.)
-  op3 = bob.ip.base.SIFT((200,350),4,3,-1,0.5,1.6,4.)
+  op1 = bob.ip.base.SIFT((200,250),3,4,-1,0.5,1.6,4.)
+  op1b = bob.ip.base.SIFT((200,250),3,4,-1,0.5,1.6,4.)
+  op2 = bob.ip.base.SIFT((300,250),3,4,-1,0.5,1.6,4.)
+  op3 = bob.ip.base.SIFT((200,350),3,4,-1,0.5,1.6,4.)
   op4 = bob.ip.base.SIFT((200,250),3,3,-1,0.5,1.6,4.)
   op5 = bob.ip.base.SIFT((200,250),4,4,-1,0.5,1.6,4.)
-  op6 = bob.ip.base.SIFT((200,250),4,3,0,0.5,1.6,4.)
-  op7 = bob.ip.base.SIFT((200,250),4,3,-1,0.75,1.6,4.)
-  op8 = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.8,4.)
-  op9 = bob.ip.base.SIFT((200,250),4,3,-1,0.5,1.6,3.)
+  op6 = bob.ip.base.SIFT((200,250),3,4,0,0.5,1.6,4.)
+  op7 = bob.ip.base.SIFT((200,250),3,4,-1,0.75,1.6,4.)
+  op8 = bob.ip.base.SIFT((200,250),3,4,-1,0.5,1.8,4.)
+  op9 = bob.ip.base.SIFT((200,250),3,4,-1,0.5,1.6,3.)
   assert op1 == op1
   assert op1 == op1b
   assert (op1 == op2) is False

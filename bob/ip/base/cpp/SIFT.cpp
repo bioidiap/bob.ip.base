@@ -13,8 +13,8 @@
 bob::ip::base::SIFT::SIFT(
   const size_t height,
   const size_t width,
-  const size_t n_octaves,
   const size_t n_intervals,
+  const size_t n_octaves,
   const int octave_min,
   const double sigma_n,
   const double sigma0,
@@ -24,7 +24,7 @@ bob::ip::base::SIFT::SIFT(
   const double kernel_radius_factor,
   const bob::sp::Extrapolation::BorderType border_type
 ):
-  m_gss(new bob::ip::base::GaussianScaleSpace(height, width, n_octaves, n_intervals, octave_min, sigma_n, sigma0, kernel_radius_factor, border_type)),
+  m_gss(new bob::ip::base::GaussianScaleSpace(height, width, n_intervals, n_octaves, octave_min, sigma_n, sigma0, kernel_radius_factor, border_type)),
   m_contrast_thres(contrast_thres),
   m_edge_thres(edge_thres),
   m_norm_thres(norm_thres),
@@ -384,4 +384,482 @@ void bob::ip::base::SIFT::computeKeypointInfo(const bob::ip::base::GSSKeypoint& 
   keypoint_i.iy = (int)floor(keypoint.y/factor + 0.5);
   keypoint_i.ix = (int)floor(keypoint.x/factor + 0.5);
 }
+
+
+#if HAVE_VLFEAT
+#include <vl/pgm.h>
+#include <bob/core/array_copy.h>
+/// VLSIFT
+bob::ip::base::VLSIFT::VLSIFT(const size_t height, const size_t width,
+    const size_t n_intervals, const size_t n_octaves, const int octave_min,
+    const double peak_thres, const double edge_thres, const double magnif):
+  m_height(height), m_width(width), m_n_intervals(n_intervals),
+  m_n_octaves(n_octaves), m_octave_min(octave_min),
+  m_peak_thres(peak_thres), m_edge_thres(edge_thres), m_magnif(magnif)
+{
+  // Allocates buffers and filter, and set filter properties
+  allocateAndSet();
+}
+
+bob::ip::base::VLSIFT::VLSIFT(const VLSIFT& other):
+  m_height(other.m_height), m_width(other.m_width),
+  m_n_intervals(other.m_n_intervals), m_n_octaves(other.m_n_octaves),
+  m_octave_min(other.m_octave_min), m_peak_thres(other.m_peak_thres),
+  m_edge_thres(other.m_edge_thres), m_magnif(other.m_magnif)
+{
+  // Allocates buffers and filter, and set filter properties
+  allocateAndSet();
+}
+
+bob::ip::base::VLSIFT& bob::ip::base::VLSIFT::operator=(const bob::ip::base::VLSIFT& other)
+{
+  if (this != &other)
+  {
+    m_height = other.m_height;
+    m_width = other.m_width;
+    m_n_intervals = other.m_n_intervals;
+    m_n_octaves = other.m_n_octaves;
+    m_octave_min = other.m_octave_min;
+    m_peak_thres = other.m_peak_thres;
+    m_edge_thres = other.m_edge_thres;
+    m_magnif = other.m_magnif;
+
+    // Allocates buffers and filter, and set filter properties
+    allocateAndSet();
+  }
+  return *this;
+}
+
+bool bob::ip::base::VLSIFT::operator==(const bob::ip::base::VLSIFT& b) const
+{
+  return (this->m_height == b.m_height && this->m_width == b.m_width &&
+          this->m_n_intervals == b.m_n_intervals &&
+          this->m_n_octaves == b.m_n_octaves &&
+          this->m_octave_min == b.m_octave_min &&
+          this->m_peak_thres == b.m_peak_thres &&
+          this->m_edge_thres == b.m_edge_thres &&
+          this->m_magnif == b.m_magnif);
+}
+
+bool bob::ip::base::VLSIFT::operator!=(const bob::ip::base::VLSIFT& b) const
+{
+  return !(this->operator==(b));
+}
+
+void bob::ip::base::VLSIFT::extract(const blitz::Array<uint8_t,2>& src,
+  std::vector<blitz::Array<double,1> >& dst)
+{
+  // Clears the vector
+  dst.clear();
+  vl_bool err=VL_ERR_OK;
+
+  // Copies data
+  for(unsigned int q=0; q<(unsigned)(m_width * m_height); ++q)
+    m_data[q] = src((int)(q/m_width), (int)(q%m_width));
+  // Converts data type
+  for(unsigned int q=0; q<(unsigned)(m_width * m_height); ++q)
+    m_fdata[q] = m_data[q];
+
+  // Processes each octave
+  int i=0;
+  bool first=true;
+  while(1)
+  {
+    VlSiftKeypoint const *keys = 0;
+    int nkeys;
+
+    // Calculates the GSS for the next octave
+    if(first)
+    {
+      first = false;
+      err = vl_sift_process_first_octave(m_filt, m_fdata);
+    }
+    else
+      err = vl_sift_process_next_octave(m_filt);
+
+    if(err)
+    {
+      err = VL_ERR_OK;
+      break;
+    }
+
+    // Runs the detector
+    vl_sift_detect(m_filt);
+    keys = vl_sift_get_keypoints(m_filt);
+    nkeys = vl_sift_get_nkeypoints(m_filt);
+    i = 0;
+
+    // Loops over the keypoint
+    for(; i < nkeys ; ++i) {
+      double angles[4];
+      int nangles;
+      VlSiftKeypoint const *k;
+
+      // Obtains keypoint orientations
+      k = keys + i;
+      nangles = vl_sift_calc_keypoint_orientations(m_filt, angles, k);
+
+      // For each orientation
+      for(unsigned int q=0; q<(unsigned)nangles; ++q) {
+        blitz::Array<double,1> res(128+4);
+        vl_sift_pix descr[128];
+
+        // Computes the descriptor
+        vl_sift_calc_keypoint_descriptor(m_filt, descr, k, angles[q]);
+
+        int l;
+        res(0) = k->x;
+        res(1) = k->y;
+        res(2) = k->sigma;
+        res(3) = angles[q];
+        for(l=0; l<128; ++l)
+          res(4+l) = 512. * descr[l];
+
+        // Adds it to the vector
+        dst.push_back(res);
+      }
+    }
+  }
+
+}
+
+void bob::ip::base::VLSIFT::extract(const blitz::Array<uint8_t,2>& src,
+  const blitz::Array<double,2>& keypoints,
+  std::vector<blitz::Array<double,1> >& dst)
+{
+  if(keypoints.extent(1) != 3 && keypoints.extent(1) != 4) {
+    boost::format m("extent for dimension 1 of keypoints is %d where it should be either 3 or 4");
+    m % keypoints.extent(1);
+    throw std::runtime_error(m.str());
+  }
+
+  // Clears the vector
+  dst.clear();
+  vl_bool err=VL_ERR_OK;
+
+  // Copies data
+  for(unsigned int q=0; q<(unsigned)(m_width * m_height); ++q)
+    m_data[q] = src((int)(q/m_width), (int)(q%m_width));
+  // Converts data type
+  for(unsigned int q=0; q<(unsigned)(m_width * m_height); ++q)
+    m_fdata[q] = m_data[q];
+
+  // Processes each octave
+  bool first=true;
+  while(1)
+  {
+    // Calculates the GSS for the next octave
+    if(first)
+    {
+      first = false;
+      err = vl_sift_process_first_octave(m_filt, m_fdata);
+    }
+    else
+      err = vl_sift_process_next_octave(m_filt);
+
+    if(err)
+    {
+      err = VL_ERR_OK;
+      break;
+    }
+
+    // Loops over the keypoint
+    for(int i=0; i<keypoints.extent(0); ++i) {
+      double angles[4];
+      int nangles;
+      VlSiftKeypoint ik;
+      VlSiftKeypoint const *k;
+
+      // Obtain keypoint orientations
+      vl_sift_keypoint_init(m_filt, &ik,
+        keypoints(i,1), keypoints(i,0), keypoints(i,2)); // x, y, sigma
+
+      if(ik.o != vl_sift_get_octave_index(m_filt))
+        continue; // Not current scale/octave
+
+      k = &ik ;
+
+      // Compute orientations if required
+      if(keypoints.extent(1) == 4)
+      {
+        angles[0] = keypoints(i,3);
+        nangles = 1;
+      }
+      else
+        // TODO: No way to know if several keypoints are generated from one location
+        nangles = vl_sift_calc_keypoint_orientations(m_filt, angles, k);
+
+      // For each orientation
+      for(unsigned int q=0; q<(unsigned)nangles; ++q) {
+        blitz::Array<double,1> res(128+4);
+        vl_sift_pix descr[128];
+
+        // Computes the descriptor
+        vl_sift_calc_keypoint_descriptor(m_filt, descr, k, angles[q]);
+
+        int l;
+        res(0) = k->x;
+        res(1) = k->y;
+        res(2) = k->sigma;
+        res(3) = angles[q];
+        for(l=0; l<128; ++l)
+          res(4+l) = 512. * descr[l];
+
+        // Adds it to the vector
+        dst.push_back(res);
+      }
+    }
+  }
+}
+
+
+void bob::ip::base::VLSIFT::allocateBuffers()
+{
+  const size_t npixels = m_height * m_width;
+  // Allocates buffers
+  m_data  = (vl_uint8*)malloc(npixels * sizeof(vl_uint8));
+  m_fdata = (vl_sift_pix*)malloc(npixels * sizeof(vl_sift_pix));
+  // TODO: deals with allocation error?
+}
+
+void bob::ip::base::VLSIFT::allocateFilter()
+{
+  // Generates the filter
+  m_filt = vl_sift_new(m_width, m_height, m_n_octaves, m_n_intervals, m_octave_min);
+  // TODO: deals with allocation error?
+}
+
+void bob::ip::base::VLSIFT::allocate()
+{
+  allocateBuffers();
+  allocateFilter();
+}
+
+void bob::ip::base::VLSIFT::setFilterProperties()
+{
+  // Set filter properties
+  vl_sift_set_edge_thresh(m_filt, m_edge_thres);
+  vl_sift_set_peak_thresh(m_filt, m_peak_thres);
+  vl_sift_set_magnif(m_filt, m_magnif);
+}
+
+void bob::ip::base::VLSIFT::allocateFilterAndSet()
+{
+  allocateFilter();
+  setFilterProperties();
+}
+
+void bob::ip::base::VLSIFT::allocateAndSet()
+{
+  allocateBuffers();
+  allocateFilterAndSet();
+}
+
+void bob::ip::base::VLSIFT::cleanupBuffers()
+{
+  // Releases image data
+  free(m_fdata);
+  m_fdata = 0;
+  free(m_data);
+  m_data = 0;
+}
+
+void bob::ip::base::VLSIFT::cleanupFilter()
+{
+  // Releases filter
+  vl_sift_delete(m_filt);
+  m_filt = 0;
+}
+
+void bob::ip::base::VLSIFT::cleanup()
+{
+  cleanupBuffers();
+  cleanupFilter();
+}
+
+bob::ip::base::VLSIFT::~VLSIFT()
+{
+  cleanup();
+}
+
+
+
+/// VLDSIFT
+bob::ip::base::VLDSIFT::VLDSIFT(
+  const blitz::TinyVector<int,2>& size,
+  const blitz::TinyVector<int,2>& step,
+  const blitz::TinyVector<int,2>& block_size
+):
+  m_height(size[0]), m_width(size[1]), m_step_y(step[0]), m_step_x(step[1]),
+  m_block_size_y(block_size[0]), m_block_size_x(block_size[1])
+{
+  allocateAndInit();
+}
+
+
+bob::ip::base::VLDSIFT::VLDSIFT(const VLDSIFT& other):
+  m_height(other.m_height), m_width(other.m_width),
+  m_step_y(other.m_step_y), m_step_x(other.m_step_x),
+  m_block_size_y(other.m_block_size_y),
+  m_block_size_x(other.m_block_size_x),
+  m_use_flat_window(other.m_use_flat_window),
+  m_window_size(other.m_window_size)
+{
+  allocateAndSet();
+}
+
+bob::ip::base::VLDSIFT::~VLDSIFT()
+{
+  cleanup();
+}
+
+bob::ip::base::VLDSIFT& bob::ip::base::VLDSIFT::operator=(const bob::ip::base::VLDSIFT& other)
+{
+  if (this != &other)
+  {
+    m_height = other.m_height;
+    m_width = other.m_width;
+    m_step_y = other.m_step_y;
+    m_step_x = other.m_step_x;
+    m_block_size_y = other.m_block_size_y;
+    m_block_size_x = other.m_block_size_x;
+    m_use_flat_window = other.m_use_flat_window;
+    m_window_size = other.m_window_size;
+
+    // Allocates filter, and set filter properties
+    allocateAndSet();
+  }
+  return *this;
+}
+
+bool bob::ip::base::VLDSIFT::operator==(const bob::ip::base::VLDSIFT& b) const
+{
+  return (this->m_height == b.m_height && this->m_width == b.m_width &&
+          this->m_step_y == b.m_step_y && this->m_step_x == b.m_step_x &&
+          this->m_block_size_y == b.m_block_size_y &&
+          this->m_block_size_x == b.m_block_size_x &&
+          this->m_use_flat_window == b.m_use_flat_window &&
+          this->m_window_size == b.m_window_size);
+}
+
+bool bob::ip::base::VLDSIFT::operator!=(const bob::ip::base::VLDSIFT& b) const
+{
+  return !(this->operator==(b));
+}
+
+void bob::ip::base::VLDSIFT::setBlockSizeY(const size_t block_size_y)
+{
+  m_block_size_y = block_size_y;
+  VlDsiftDescriptorGeometry geom = *vl_dsift_get_geometry(m_filt);
+  geom.binSizeY = (int)m_block_size_y;
+  geom.binSizeX = (int)m_block_size_x;
+  vl_dsift_set_geometry(m_filt, &geom) ;
+}
+
+void bob::ip::base::VLDSIFT::setBlockSizeX(const size_t block_size_x)
+{
+  m_block_size_x = block_size_x;
+  VlDsiftDescriptorGeometry geom = *vl_dsift_get_geometry(m_filt);
+  geom.binSizeY = (int)m_block_size_y;
+  geom.binSizeX = (int)m_block_size_x;
+  vl_dsift_set_geometry(m_filt, &geom) ;
+}
+
+void bob::ip::base::VLDSIFT::setBlockSize(const blitz::TinyVector<int,2>& block_size)
+{
+  m_block_size_y = block_size[0];
+  m_block_size_x = block_size[1];
+  VlDsiftDescriptorGeometry geom = *vl_dsift_get_geometry(m_filt);
+  geom.binSizeY = (int)m_block_size_y;
+  geom.binSizeX = (int)m_block_size_x;
+  vl_dsift_set_geometry(m_filt, &geom) ;
+}
+
+void bob::ip::base::VLDSIFT::extract(const blitz::Array<float,2>& src,
+  blitz::Array<float,2>& dst)
+{
+  // Check parameters size size
+  bob::core::array::assertSameDimensionLength(src.extent(0), m_height);
+  bob::core::array::assertSameDimensionLength(src.extent(1), m_width);
+  int num_frames = vl_dsift_get_keypoint_num(m_filt);
+  int descr_size = vl_dsift_get_descriptor_size(m_filt);
+  bob::core::array::assertSameDimensionLength(dst.extent(0), num_frames);
+  bob::core::array::assertSameDimensionLength(dst.extent(1), descr_size);
+
+  // Get C-style pointer to src data, making a copy if required
+  const float* data;
+  blitz::Array<float,2> x;
+  if(bob::core::array::isCZeroBaseContiguous(src))
+    data = src.data();
+  else
+  {
+    x.reference(bob::core::array::ccopy(src));
+    data = x.data();
+  }
+
+  // Computes features
+  vl_dsift_process(m_filt, data);
+
+  // Move output back to destination array
+  float const *descrs = vl_dsift_get_descriptors(m_filt);
+  if(bob::core::array::isCZeroBaseContiguous(dst))
+    // fast copy
+    std::memcpy(dst.data(), descrs, num_frames*descr_size*sizeof(float));
+  else
+  {
+    // Iterate (slow...)
+    for(int f=0; f<num_frames; ++f)
+      for(int b=0; b<descr_size; ++b)
+      {
+        dst(f,b) = *descrs;
+        ++descrs;
+      }
+  }
+}
+
+void bob::ip::base::VLDSIFT::allocate()
+{
+  // Generates the filter
+  m_filt = vl_dsift_new_basic((int)m_width, (int)m_height, (int)m_step_y,
+            (int)m_block_size_y);
+}
+
+void bob::ip::base::VLDSIFT::allocateAndInit()
+{
+  allocate();
+  m_use_flat_window = vl_dsift_get_flat_window(m_filt);
+  m_window_size = vl_dsift_get_window_size(m_filt);
+}
+
+void bob::ip::base::VLDSIFT::setFilterProperties()
+{
+  // Set filter properties
+  vl_dsift_set_steps(m_filt, (int)m_step_x, (int)m_step_y);
+  vl_dsift_set_flat_window(m_filt, m_use_flat_window);
+  vl_dsift_set_window_size(m_filt, m_window_size);
+  // Set block size
+  VlDsiftDescriptorGeometry geom = *vl_dsift_get_geometry(m_filt);
+  geom.binSizeY = (int)m_block_size_y;
+  geom.binSizeX = (int)m_block_size_x;
+  vl_dsift_set_geometry(m_filt, &geom) ;
+}
+
+void bob::ip::base::VLDSIFT::allocateAndSet()
+{
+  allocate();
+  setFilterProperties();
+}
+
+void bob::ip::base::VLDSIFT::cleanup()
+{
+  // Releases filter
+  vl_dsift_delete(m_filt);
+  m_filt = 0;
+}
+
+
+
+#endif // HAVE_VLFEAT
+
+
 

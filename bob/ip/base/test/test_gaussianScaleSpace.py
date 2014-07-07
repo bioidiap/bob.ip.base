@@ -22,11 +22,11 @@ eps = 1e-4
 
 def test_parametrization():
   # Parametrization tests
-  op = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,4.)
+  op = bob.ip.base.GaussianScaleSpace((200,250),3,4,-1,0.5,1.6,4.)
   nose.tools.eq_(op.size[0], 200)
   nose.tools.eq_(op.size[1], 250)
-  nose.tools.eq_(op.octaves, 4)
   nose.tools.eq_(op.scales, 3)
+  nose.tools.eq_(op.octaves, 4)
   nose.tools.eq_(op.octave_min, -1)
   nose.tools.eq_(op.sigma_n, 0.5)
   nose.tools.eq_(op.sigma0, 1.6)
@@ -56,7 +56,7 @@ def test_processing():
   sigma0 = 1.6
   sigma_n = 0.5
   f=4.
-  op = bob.ip.base.GaussianScaleSpace(A.shape,No,Ns,0,sigma_n,sigma0,f)
+  op = bob.ip.base.GaussianScaleSpace(A.shape,Ns,No,0,sigma_n,sigma0,f)
   pyr = op(A)
 
   import math
@@ -104,16 +104,16 @@ def test_processing():
 
 def test_comparison():
   # Comparisons tests
-  op1 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,4.)
-  op1b = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,4.)
-  op2 = bob.ip.base.GaussianScaleSpace((300,250),4,3,-1,0.5,1.6,4.)
-  op3 = bob.ip.base.GaussianScaleSpace((200,350),4,3,-1,0.5,1.6,4.)
+  op1 = bob.ip.base.GaussianScaleSpace((200,250),3,4,-1,0.5,1.6,4.)
+  op1b = bob.ip.base.GaussianScaleSpace((200,250),3,4,-1,0.5,1.6,4.)
+  op2 = bob.ip.base.GaussianScaleSpace((300,250),3,4,-1,0.5,1.6,4.)
+  op3 = bob.ip.base.GaussianScaleSpace((200,350),3,4,-1,0.5,1.6,4.)
   op4 = bob.ip.base.GaussianScaleSpace((200,250),3,3,-1,0.5,1.6,4.)
   op5 = bob.ip.base.GaussianScaleSpace((200,250),4,4,-1,0.5,1.6,4.)
-  op6 = bob.ip.base.GaussianScaleSpace((200,250),4,3,0,0.5,1.6,4.)
-  op7 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.75,1.6,4.)
-  op8 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.8,4.)
-  op9 = bob.ip.base.GaussianScaleSpace((200,250),4,3,-1,0.5,1.6,3.)
+  op6 = bob.ip.base.GaussianScaleSpace((200,250),3,4,0,0.5,1.6,4.)
+  op7 = bob.ip.base.GaussianScaleSpace((200,250),3,4,-1,0.75,1.6,4.)
+  op8 = bob.ip.base.GaussianScaleSpace((200,250),3,4,-1,0.5,1.8,4.)
+  op9 = bob.ip.base.GaussianScaleSpace((200,250),3,4,-1,0.5,1.6,3.)
   assert op1 == op1
   assert op1 == op1b
   assert (op1 == op2) is False

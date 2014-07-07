@@ -10,8 +10,8 @@
 bob::ip::base::GaussianScaleSpace::GaussianScaleSpace(
   const size_t height,
   const size_t width,
-  const size_t n_octaves,
   const size_t n_intervals,
+  const size_t n_octaves,
   const int octave_min,
   const double sigma_n,
   const double sigma0,

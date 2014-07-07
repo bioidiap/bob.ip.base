@@ -141,8 +141,8 @@ namespace bob { namespace ip { namespace base {
       GaussianScaleSpace(
         const size_t height,
         const size_t width,
-        const size_t n_octaves,
         const size_t n_intervals,
+        const size_t n_octaves,
         const int octave_min,
         const double sigma_n=0.5,
         const double sigma0=1.6,

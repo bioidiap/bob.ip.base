@@ -366,14 +366,15 @@ static auto GaussianScaleSpace_doc = bob::extension::ClassDoc(
   bob::extension::FunctionDoc(
     "__init__",
     "Constructs a new DCT features extractor",
-    ".. todo:: Explain GaussianScaleSpace constructor in more detail.",
+    ".. todo:: Explain GaussianScaleSpace constructor in more detail.\n\n"
+    ".. warning:: The order of the parameters ``scales`` and ``octaves`` has changed compared to the old implementation, in order to keep it consistent with :py:class:`bob.ip.base.VLSIFT`!",
     true
   )
-  .add_prototype("size, octaves, scales, octave_min, [sigma_n], [sigma0], [kernel_radius_factor], [border]", "")
+  .add_prototype("size, scales, octaves, octave_min, [sigma_n], [sigma0], [kernel_radius_factor], [border]", "")
   .add_prototype("gss", "")
   .add_parameter("size", "(int, int)", "The height and width of the images to process")
-  .add_parameter("octaves", "int", "The number of octaves of the pyramid")
   .add_parameter("scales", "int", "The number of intervals of the pyramid. Three additional scales will be computed in practice, as this is required for extracting SIFT features")
+  .add_parameter("octaves", "int", "The number of octaves of the pyramid")
   .add_parameter("octave_min", "int", "The index of the minimum octave")
   .add_parameter("sigma_n", "float", "[default: 0.5] The value sigma_n of the standard deviation for the nominal/initial octave/scale")
   .add_parameter("sigma0", "float", "[default: 1.6] The value sigma0 of the standard deviation for the image of the first octave and first scale")
@@ -386,7 +387,7 @@ static auto GaussianScaleSpace_doc = bob::extension::ClassDoc(
 static int PyBobIpBaseGaussianScaleSpace_init(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
   TRY
 
-  char* kwlist1[] = {c("size"), c("octaves"), c("scales"), c("octave_min"), c("sigma_n"), c("sigma0"), c("kernel_radius_factor"), c("border"), NULL};
+  char* kwlist1[] = {c("size"), c("scales"), c("octaves"), c("octave_min"), c("sigma_n"), c("sigma0"), c("kernel_radius_factor"), c("border"), NULL};
   char* kwlist2[] = {c("gss"), NULL};
 
   // get the number of command line arguments
@@ -404,15 +405,15 @@ static int PyBobIpBaseGaussianScaleSpace_init(PyBobIpBaseGaussianScaleSpaceObjec
   }
 
   blitz::TinyVector<int,2> size;
-  int octaves, scales, octave_min;
+  int scales,octaves, octave_min;
   double sigma_n = 0.5, sigma0 = 1.6, factor = 4.;
   bob::sp::Extrapolation::BorderType border = bob::sp::Extrapolation::Mirror;
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(ii)iii|dddO&", kwlist1, &size[0], &size[1], &octaves, &scales, &octave_min, &sigma_n, &sigma0, &factor, &PyBobSpExtrapolationBorder_Converter, &border)){
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(ii)iii|dddO&", kwlist1, &size[0], &size[1], &scales, &octaves, &octave_min, &sigma_n, &sigma0, &factor, &PyBobSpExtrapolationBorder_Converter, &border)){
     GaussianScaleSpace_doc.print_usage();
     return -1;
   }
-  self->cxx.reset(new bob::ip::base::GaussianScaleSpace(size[0], size[1], octaves, scales, octave_min, sigma_n, sigma0, factor, border));
+  self->cxx.reset(new bob::ip::base::GaussianScaleSpace(size[0], size[1], scales, octaves, octave_min, sigma_n, sigma0, factor, border));
   return 0;
 
   CATCH("cannot create GaussianScaleSpace", -1)
