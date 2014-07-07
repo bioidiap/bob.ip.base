@@ -91,6 +91,7 @@ setup(
 
     install_requires=[
       'setuptools',
+      'matplotlib',
       'bob.blitz',
       'bob.sp',
       'bob.io.base',

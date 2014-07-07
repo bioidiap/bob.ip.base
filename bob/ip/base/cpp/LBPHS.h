@@ -13,11 +13,9 @@
 #include <bob/core/assert.h>
 #include <bob/core/array_index.h>
 
-// TODO: replace by local versions...
-#include <bob/ip/histo.h>
-
 #include "LBP.h"
 #include "Block.h"
+#include "Histogram.h"
 
 namespace bob { namespace ip { namespace base {
 
@@ -52,7 +50,7 @@ namespace bob { namespace ip { namespace base {
     {
       // Compute the LBP histogram
       blitz::Array<uint64_t, 1> block_histogram(dst(i, blitz::Range::all()));
-      histogram<uint16_t>(*it, block_histogram, 0, lbp.getMaxLabel()-1, lbp.getMaxLabel());
+      bob::ip::base::histogram<uint16_t>(*it, block_histogram, 0, lbp.getMaxLabel()-1);
     }
   }
 
