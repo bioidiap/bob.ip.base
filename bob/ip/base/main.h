@@ -219,6 +219,27 @@ extern PyTypeObject PyBobIpBaseSIFTType;
 bool init_BobIpBaseSIFT(PyObject* module);
 int PyBobIpBaseSIFT_Check(PyObject* o);
 
+#ifdef HAVE_VLFEAT
+// .. VLSIFT
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::VLSIFT> cxx;
+} PyBobIpBaseVLSIFTObject;
+
+extern PyTypeObject PyBobIpBaseVLSIFTType;
+int PyBobIpBaseVLSIFT_Check(PyObject* o);
+
+// .. VLDSIFT
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::VLDSIFT> cxx;
+} PyBobIpBaseVLDSIFTObject;
+
+extern PyTypeObject PyBobIpBaseVLDSIFTType;
+int PyBobIpBaseVLDSIFT_Check(PyObject* o);
+
+bool init_BobIpBaseVLFEAT(PyObject* module);
+#endif // HAVE_VLFEAT
 
 // block
 PyObject* PyBobIpBase_block(PyObject*, PyObject*, PyObject*);

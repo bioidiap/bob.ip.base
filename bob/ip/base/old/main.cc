@@ -25,11 +25,6 @@ void bind_ip_glcm_uint8();
 void bind_ip_glcm_uint16();
 void bind_ip_glcmprop();
 
-#if WITH_VLFEAT
-void bind_ip_vlsift();
-void bind_ip_vldsift();
-#endif
-
 BOOST_PYTHON_MODULE(_old_library) {
 
   boost::python::docstring_options docopt(true, true, false);
@@ -50,10 +45,5 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_ip_glcm_uint8();
   bind_ip_glcm_uint16();
   bind_ip_glcmprop();
-
-#if WITH_VLFEAT
-  bind_ip_vlsift();
-  bind_ip_vldsift();
-#endif
 
 }

@@ -5,6 +5,7 @@
 
 from setuptools import setup, find_packages, dist
 dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base', 'bob.sp']))
+import bob.extension.utils
 from bob.blitz.extension import Extension
 
 import bob.io.base
@@ -13,10 +14,65 @@ import bob.sp
 import os
 package_dir = os.path.dirname(os.path.realpath(__file__))
 package_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
-include_dirs = [package_dir, bob.io.base.get_include(), bob.sp.get_include()]
 
 packages = ['bob-ip >= 1.2.2', 'bob-io >= 1.2.2', 'bob-sp >= 1.2.2', 'boost']
 version = '2.0.0a0'
+
+
+class vl:
+
+  def __init__ (self, only_static=False, have_vlfeat = True):
+    """
+    Searches for libvl in stock locations. Allows user to override.
+
+    If the user sets the environment variable BOB_PREFIX_PATH, that prefixes
+    the standard path locations.
+
+    Parameters:
+
+    only_static, boolean
+      A flag, that indicates if we intend to link against the static library only.
+      This will trigger our library search to disconsider shared libraries when searching.
+    """
+
+    self.name = 'vlfeat'
+    header = 'vl/sift.h'
+    module = 'vl'
+
+    # get include directory
+    candidates = bob.extension.utils.find_header(header)
+    if not candidates:
+      raise RuntimeError("could not find %s's `%s' - have you installed %s on this machine?" % (self.name, header, self.name))
+    directory = os.path.dirname(candidates[0])
+    self.include_directory = os.path.normpath(directory)
+
+    # find library
+    prefix = os.path.dirname(os.path.dirname(self.include_directory))
+    candidates = bob.extension.utils.find_library(module, prefixes=[prefix], only_static=only_static)
+    if not candidates:
+      raise RuntimeError("cannot find required %s binary module `%s' - make sure libsvm is installed on `%s'" % (self.name, module, prefix))
+
+    # libraries
+    self.libraries = []
+    name, ext = os.path.splitext(os.path.basename(candidates[0]))
+    if ext in ['.so', '.a', '.dylib', '.dll']:
+      self.libraries.append(name[3:]) #strip 'lib' from the name
+    else: #link against the whole thing
+      self.libraries.append(':' + os.path.basename(candidates[0]))
+
+    # library path
+    self.library_directory = os.path.dirname(candidates[0])
+    # macros
+    if have_vlfeat:
+      self.macros = [('HAVE_%s' % self.name.upper(), '1')]
+    else:
+      self.macros = []
+
+
+vl_pkg = vl(have_vlfeat=True)
+
+include_dirs = [package_dir, bob.io.base.get_include(), bob.sp.get_include(), vl_pkg.include_directory]
+
 
 setup(
 
@@ -62,8 +118,6 @@ setup(
           "bob/ip/base/old/MultiscaleRetinex.cc",
           "bob/ip/base/old/shear.cc",
           "bob/ip/base/old/Sobel.cc",
-          "bob/ip/base/old/vldsift.cc",
-          "bob/ip/base/old/vlsift.cc",
 
           # external requirements as boost::python bindings
           "bob/ip/base/old/blitz_numpy.cc",
@@ -109,6 +163,7 @@ setup(
           "bob/ip/base/self_quotient_image.cpp",
           "bob/ip/base/gaussian_scale_space.cpp",
           "bob/ip/base/sift.cpp",
+          "bob/ip/base/vl_feat.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
@@ -116,6 +171,9 @@ setup(
         packages = packages,
         include_dirs = include_dirs,
         version = version,
+        library_dirs = [vl_pkg.library_directory],
+        libraries = vl_pkg.libraries,
+        define_macros = vl_pkg.macros,
         ),
       ],
 

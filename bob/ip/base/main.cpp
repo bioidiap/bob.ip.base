@@ -147,6 +147,10 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseGaussianScaleSpace(module)) return 0;
   if (!init_BobIpBaseSIFT(module)) return 0;
 
+#ifdef HAVE_VLFEAT
+  if (!init_BobIpBaseVLFEAT(module)) return 0;
+#endif // HAVE_VLFEAT
+
   /* imports bob.blitz C-API + dependencies */
   if (import_bob_blitz() < 0) return 0;
   if (import_bob_io_base() < 0) return 0;

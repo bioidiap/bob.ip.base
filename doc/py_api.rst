@@ -28,6 +28,8 @@ Classes
    bob.ip.base.GSSKeypoint
    bob.ip.base.GSSKeypointInfo
    bob.ip.base.SIFT
+   bob.ip.base.VLSIFT
+   bob.ip.base.VLDSIFT
 
 
 Functions

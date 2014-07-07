@@ -17,8 +17,13 @@
 
 #include "GaussianScaleSpace.h"
 
-namespace bob { namespace ip { namespace base {
+#ifdef HAVE_VLFEAT
+#include <vl/generic.h>
+#include <vl/sift.h>
+#include <vl/dsift.h>
+#endif // HAVE_VLFEAT
 
+namespace bob { namespace ip { namespace base {
 
   /**
    * @brief This class can be used to extract SIFT descriptors
@@ -228,6 +233,284 @@ namespace bob { namespace ip { namespace base {
       std::vector<blitz::Array<double,3> > m_gss_pyr_grad_or;
       std::vector<boost::shared_ptr<bob::ip::GradientMaps> > m_gradient_maps;
   };
+
+
+#ifdef HAVE_VLFEAT
+
+  class VLSIFT
+  {
+    public:
+      /**
+        * @brief Constructor
+        */
+      VLSIFT(
+        const size_t height,
+        const size_t width,
+        const size_t n_intervals,
+        const size_t n_octaves,
+        const int octave_min,
+        const double peak_thres=0.03,
+        const double edge_thres=10.,
+        const double magnif=3.
+      );
+
+      /**
+        * @brief Copy constructor
+        */
+      VLSIFT(const VLSIFT& other);
+
+      /**
+        * @brief Destructor
+        */
+      virtual ~VLSIFT();
+
+      /**
+        * @brief Assignment operator
+        */
+      VLSIFT& operator=(const VLSIFT& other);
+
+      /**
+        * @brief Equal to
+        */
+      bool operator==(const VLSIFT& b) const;
+      /**
+        * @brief Not equal to
+        */
+      bool operator!=(const VLSIFT& b) const;
+
+      /**
+        * @brief Getters
+        */
+      size_t getHeight() const { return m_height; }
+      size_t getWidth() const { return m_width; }
+      size_t getNIntervals() const { return m_n_intervals; }
+      size_t getNOctaves() const { return m_n_octaves; }
+      int getOctaveMin() const { return m_octave_min; }
+      int getOctaveMax() const { return m_octave_min+(int)m_n_octaves-1; }
+      double getPeakThres() const { return m_peak_thres; }
+      double getEdgeThres() const { return m_edge_thres; }
+      double getMagnif() const { return m_magnif; }
+
+      /**
+        * @brief Setters
+        */
+      void setHeight(const size_t height) { m_height = height; cleanup(); allocateAndSet(); }
+      void setWidth(const size_t width) { m_width = width; cleanup(); allocateAndSet(); }
+      void setSize(const blitz::TinyVector<int,2>& size) { m_width = size[0]; m_height = size[1]; cleanup(); allocateAndSet(); }
+      void setNIntervals(const size_t n_intervals) { m_n_intervals = n_intervals; cleanupFilter(); allocateFilterAndSet(); }
+      void setNOctaves(const size_t n_octaves) { m_n_octaves = n_octaves; cleanupFilter(); allocateFilterAndSet(); }
+      void setOctaveMin(const int octave_min) { m_octave_min = octave_min; cleanupFilter(); allocateFilterAndSet(); }
+      void setPeakThres(const double peak_thres) { m_peak_thres = peak_thres; vl_sift_set_peak_thresh(m_filt, m_peak_thres); }
+      void setEdgeThres(const double edge_thres) { m_edge_thres = edge_thres; vl_sift_set_edge_thresh(m_filt, m_edge_thres); }
+      void setMagnif(const double magnif) { m_magnif = magnif; vl_sift_set_magnif(m_filt, m_magnif); }
+
+      /**
+        * @brief Extract SIFT features from a 2D blitz::Array, and save
+        *   the resulting features in the dst vector of 1D blitz::Arrays.
+        */
+      void extract(
+        const blitz::Array<uint8_t,2>& src,
+        std::vector<blitz::Array<double,1> >& dst
+      );
+      /**
+        * @brief Extract SIFT features from a 2D blitz::Array, at the
+        *   keypoints specified by the 2D blitz::Array (Each row of length 3
+        *   or 4 corresponds to a keypoint: y,x,sigma,[orientation]). The
+        *   the resulting features are saved in the dst vector of
+        *   1D blitz::Arrays.
+        */
+      void extract(
+        const blitz::Array<uint8_t,2>& src,
+        const blitz::Array<double,2>& keypoints,
+        std::vector<blitz::Array<double,1> >& dst
+      );
+
+
+    protected:
+      /**
+        * @brief Allocation methods
+        */
+      void allocateBuffers();
+      void allocateFilter();
+      void allocate();
+      /**
+        * @brief Resets the properties of the VLfeat filter object
+        */
+      void setFilterProperties();
+      /**
+        * @brief Reallocate and resets the properties of the VLfeat filter
+        * object
+        */
+      void allocateFilterAndSet();
+      /**
+        * @brief Reallocate and resets the properties of the VLfeat objects
+        */
+      void allocateAndSet();
+
+      /**
+        * @brief Deallocation methods
+        */
+      void cleanupBuffers();
+      void cleanupFilter();
+      void cleanup();
+
+      /**
+        * @brief Attributes
+        */
+      size_t m_height;
+      size_t m_width;
+      size_t m_n_intervals;
+      size_t m_n_octaves;
+      int m_octave_min; // might be negative
+      double m_peak_thres;
+      double m_edge_thres;
+      double m_magnif;
+
+      VlSiftFilt *m_filt;
+      vl_uint8 *m_data;
+      vl_sift_pix *m_fdata;
+  };
+
+
+    /**
+    * @brief This class allows the computation of Dense SIFT features.
+    *   The computation is done using the VLFeat library
+    *   For more information, please refer to the following article:
+    *     "Distinctive Image Features from Scale-Invariant Keypoints",
+    *     from D.G. Lowe,
+    *     International Journal of Computer Vision, 60, 2, pp. 91-110, 2004
+    */
+  class VLDSIFT
+  {
+    public:
+      /**
+        * @brief Constructor
+        * @param height Input/image height
+        * @param width Input/image width
+        * @param step The x- and y-step for generating the grid of keypoins
+        * @param block_size The x and y- size of a unit block
+        */
+      VLDSIFT(
+        const blitz::TinyVector<int,2>& size,
+        const blitz::TinyVector<int,2>& step={5,5},
+        const blitz::TinyVector<int,2>&  block_size={5,5}
+      );
+
+      /**
+        * @brief Copy constructor
+        */
+      VLDSIFT(const VLDSIFT& other);
+
+      /**
+        * @brief Destructor
+        */
+      virtual ~VLDSIFT();
+
+      /**
+        * @brief Assignment operator
+        */
+      VLDSIFT& operator=(const VLDSIFT& other);
+
+      /**
+        * @brief Equal to
+        */
+      bool operator==(const VLDSIFT& b) const;
+      /**
+        * @brief Not equal to
+        */
+      bool operator!=(const VLDSIFT& b) const;
+
+      /**
+        * @brief Getters
+        */
+      size_t getHeight() const { return m_height; }
+      size_t getWidth() const { return m_width; }
+      blitz::TinyVector<int,2> getSize() const { return blitz::TinyVector<int,2>(m_height, m_width);}
+      size_t getStepY() const { return m_step_y; }
+      size_t getStepX() const { return m_step_x; }
+      blitz::TinyVector<int,2> getStep() const { return blitz::TinyVector<int,2>(m_step_y, m_step_x);}
+      size_t getBlockSizeY() const { return m_block_size_y; }
+      size_t getBlockSizeX() const { return m_block_size_x; }
+      blitz::TinyVector<int,2> getBlockSize() const { return blitz::TinyVector<int,2>(m_block_size_y, m_block_size_x);}
+      bool getUseFlatWindow() const { return m_use_flat_window; }
+      double getWindowSize() const { return m_window_size; }
+
+      /**
+        * @brief Setters
+        */
+      void setHeight(const size_t height) { m_height = height; cleanup(); allocateAndSet(); }
+      void setWidth(const size_t width) { m_width = width; cleanup(); allocateAndSet(); }
+      void setSize(const blitz::TinyVector<int,2>& size) { m_height = size[0]; m_width = size[1]; cleanup(); allocateAndSet(); }
+      void setStepY(const size_t step_y) { m_step_y = step_y; vl_dsift_set_steps(m_filt, m_step_x, m_step_y); }
+      void setStepX(const size_t step_x) { m_step_x = step_x; vl_dsift_set_steps(m_filt, m_step_x, m_step_y); }
+      void setStep(const blitz::TinyVector<int,2>& step) {m_step_y = step[0]; m_step_x = step[1]; vl_dsift_set_steps(m_filt, m_step_x, m_step_y); }
+      void setBlockSizeY(const size_t block_size_y);
+      void setBlockSizeX(const size_t block_size_x);
+      void setBlockSize(const blitz::TinyVector<int,2>& step);
+      void setUseFlatWindow(const bool use) { m_use_flat_window = use; vl_dsift_set_flat_window(m_filt, use); }
+      void setWindowSize(const double size) { m_window_size = size; vl_dsift_set_window_size(m_filt, size); }
+
+      /**
+        * @brief Extract Dense SIFT features from a 2D blitz::Array, and save
+        *   the resulting features in the dst 2D blitz::Arrays.
+        * @warning The src and dst arrays should have the correct size
+        *   (for dst the expected size is (getNKeypoints(), getDescriptorSize())
+        *   An exception is thrown otherwise.
+        */
+      void extract(const blitz::Array<float,2>& src, blitz::Array<float,2>& dst);
+
+      /**
+        * @brief Returns the number of keypoints given the current parameters
+        * when processing an image of the expected size.
+        */
+      size_t getNKeypoints() const { return vl_dsift_get_keypoint_num(m_filt); }
+
+      /**
+        * @brief Returns the current size of a descriptor for a given keypoint
+        * given the current parameters.
+        * (number of bins = n_blocks_along_X x n_blocks_along_Y x n_hist_bins
+        */
+      size_t getDescriptorSize() const { return vl_dsift_get_descriptor_size(m_filt); }
+
+    protected:
+      /**
+        * @brief Allocation methods
+        */
+      void allocate();
+      /**
+        * @brief Resets the properties of the VLfeat filter object
+        */
+      void setFilterProperties();
+      /**
+        * @brief Allocate and initialize the properties
+        */
+      void allocateAndInit();
+      /**
+        * @brief Reallocate and resets the properties of the VLfeat objects
+        */
+      void allocateAndSet();
+
+      /**
+        * @brief Deallocation method
+        */
+      void cleanup();
+
+      /**
+        * @brief Attributes
+        */
+      size_t m_height;
+      size_t m_width;
+      size_t m_step_y;
+      size_t m_step_x;
+      size_t m_block_size_y;
+      size_t m_block_size_x;
+      bool m_use_flat_window;
+      double m_window_size;
+      VlDsiftFilter *m_filt;
+  };
+
+
+#endif // HAVE_VLFEAT
 
 } } } // namespaces
 
