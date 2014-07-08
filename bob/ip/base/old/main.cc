@@ -18,7 +18,6 @@ void bind_sp_extrapolate();
 void bind_sp_convolution();
 
 void bind_ip_shear();
-void bind_ip_msr();
 void bind_ip_hog();
 void bind_ip_glcm_uint8();
 void bind_ip_glcm_uint16();
@@ -38,7 +37,6 @@ BOOST_PYTHON_MODULE(_old_library) {
   bind_sp_convolution();
 
   bind_ip_shear();
-  bind_ip_msr();
   bind_ip_hog();
   bind_ip_glcm_uint8();
   bind_ip_glcm_uint16();

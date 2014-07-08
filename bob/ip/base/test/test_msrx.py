@@ -10,43 +10,40 @@
 
 import numpy
 import nose.tools
+from nose.plugins.skip import SkipTest
 
-from .. import MultiscaleRetinex, BorderType
+import bob.sp
+import bob.ip.base
 
 eps = 1e-4
 
 def test_parametrization():
 
   # Parametrization tests
-  op = MultiscaleRetinex(2,1,1,2.)
-  nose.tools.eq_(op.n_scales, 2)
+  op = bob.ip.base.MultiscaleRetinex(2,1,1,2.)
+  nose.tools.eq_(op.scales, 2)
   nose.tools.eq_(op.size_min, 1)
   nose.tools.eq_(op.size_step, 1)
   nose.tools.eq_(op.sigma, 2.)
-  nose.tools.eq_(op.conv_border, BorderType.Mirror)
-  op.n_scales = 3
+  nose.tools.eq_(op.border, bob.sp.BorderType.Mirror)
+  op.scales = 3
   op.size_min = 2
   op.size_step = 2
   op.sigma = 1.
-  op.conv_border = BorderType.Circular
-  nose.tools.eq_(op.n_scales, 3)
+  op.border = bob.sp.BorderType.Circular
+  nose.tools.eq_(op.scales, 3)
   nose.tools.eq_(op.size_min, 2)
   nose.tools.eq_(op.size_step, 2)
   nose.tools.eq_(op.sigma, 1.)
-  nose.tools.eq_(op.conv_border, BorderType.Circular)
-  op.reset(1,1,1,0.5, BorderType.Mirror)
-  nose.tools.eq_(op.n_scales, 1)
-  nose.tools.eq_(op.size_min, 1)
-  nose.tools.eq_(op.size_step, 1)
-  nose.tools.eq_(op.sigma, 0.5)
-  nose.tools.eq_(op.conv_border, BorderType.Mirror)
+  nose.tools.eq_(op.border, bob.sp.BorderType.Circular)
 
-@nose.tools.nottest
+
 def test_processing():
 
+  raise SkipTest("Implement me!")
   # Processing tests
   # TODO
-  op = MultiscaleRetinex(1,1,1,0.5)
+  op = bob.ip.base.MultiscaleRetinex(1,1,1,0.5)
   a_uint8 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.uint8)
   a_float64 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.float64)
   a_ones = numpy.ones(shape=(3,4), dtype=numpy.float64)
@@ -64,13 +61,13 @@ def test_processing():
 def test_comparison():
 
   # Comparisons tests
-  op1 = MultiscaleRetinex(1,1,1,0.5)
-  op1b = MultiscaleRetinex(1,1,1,0.5)
-  op2 = MultiscaleRetinex(1,1,1,0.5, BorderType.Circular)
-  op3 = MultiscaleRetinex(1,1,1,1.)
-  op4 = MultiscaleRetinex(1,1,2,0.5)
-  op5 = MultiscaleRetinex(1,2,1,0.5)
-  op6 = MultiscaleRetinex(2,1,1,0.5)
+  op1 = bob.ip.base.MultiscaleRetinex(1,1,1,0.5)
+  op1b = bob.ip.base.MultiscaleRetinex(1,1,1,0.5)
+  op2 = bob.ip.base.MultiscaleRetinex(1,1,1,0.5, bob.sp.BorderType.Circular)
+  op3 = bob.ip.base.MultiscaleRetinex(1,1,1,1.)
+  op4 = bob.ip.base.MultiscaleRetinex(1,1,2,0.5)
+  op5 = bob.ip.base.MultiscaleRetinex(1,2,1,0.5)
+  op6 = bob.ip.base.MultiscaleRetinex(2,1,1,0.5)
   assert op1 == op1
   assert op1 == op1b
   assert (op1 == op2) is False

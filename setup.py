@@ -116,7 +116,6 @@ setup(
           "bob/ip/base/old/GLCM.cc",
           "bob/ip/base/old/GLCMProp.cc",
           "bob/ip/base/old/HOG.cc",
-          "bob/ip/base/old/MultiscaleRetinex.cc",
           "bob/ip/base/old/shear.cc",
 
           # external requirements as boost::python bindings
@@ -144,6 +143,7 @@ setup(
           "bob/ip/base/cpp/DCTFeatures.cpp",
           "bob/ip/base/cpp/TanTriggs.cpp",
           "bob/ip/base/cpp/Gaussian.cpp",
+          "bob/ip/base/cpp/MultiscaleRetinex.cpp",
           "bob/ip/base/cpp/WeightedGaussian.cpp",
           "bob/ip/base/cpp/SelfQuotientImage.cpp",
           "bob/ip/base/cpp/GaussianScaleSpace.cpp",
@@ -159,6 +159,7 @@ setup(
           "bob/ip/base/dct_features.cpp",
           "bob/ip/base/tan_triggs.cpp",
           "bob/ip/base/gaussian.cpp",
+          "bob/ip/base/multiscale_retinex.cpp",
           "bob/ip/base/weighted_gaussian.cpp",
           "bob/ip/base/self_quotient_image.cpp",
           "bob/ip/base/gaussian_scale_space.cpp",

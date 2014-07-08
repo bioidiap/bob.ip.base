@@ -21,6 +21,7 @@
 #include "cpp/DCTFeatures.h"
 #include "cpp/TanTriggs.h"
 #include "cpp/Gaussian.h"
+#include "cpp/MultiscaleRetinex.h"
 #include "cpp/WeightedGaussian.h"
 #include "cpp/SelfQuotientImage.h"
 #include "cpp/GaussianScaleSpace.h"
@@ -156,6 +157,17 @@ typedef struct {
 extern PyTypeObject PyBobIpBaseGaussianType;
 bool init_BobIpBaseGaussian(PyObject* module);
 int PyBobIpBaseGaussian_Check(PyObject* o);
+
+
+// MultiscaleRetinex
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::MultiscaleRetinex> cxx;
+} PyBobIpBaseMultiscaleRetinexObject;
+
+extern PyTypeObject PyBobIpBaseMultiscaleRetinexType;
+bool init_BobIpBaseMultiscaleRetinex(PyObject* module);
+int PyBobIpBaseMultiscaleRetinex_Check(PyObject* o);
 
 
 // WeightedGaussian

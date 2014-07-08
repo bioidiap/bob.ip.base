@@ -29,6 +29,7 @@ References
 .. [Atanasoaei2012]  *Cosmin Atanasoaei*. **Multivariate Boosting with Look-up Tables for Face Processing,** PhD thesis, EPFL, 2012. `pdf <http://publications.idiap.ch/index.php/publications/show/2315>`__
 .. [Sanderson2002]   *Conrad Sanderson and Kuldip K. Paliwal*. **Polynomial Features for Robust Face Authentication,** In Proceedings of the IEEE International Conference on Image Processing, 2002. `pdf <http://maxwell.me.gu.edu.au/spl/publications/papers/icip02_conrad2.pdf>`__
 .. [TanTriggs2007]   *Xiaoyang Tan and Bill Triggs*. **Enhanced Local Texture Feature Sets for Face Recognition Under Difficult Lighting Conditions,** In International Conference on Analysis and Modeling of Faces and Gestures, 2007. `pdf <https://lear.inrialpes.fr/pubs/2007/TT07/Tan-amfg07a.pdf>`__
+.. [Jobson1997]      *D. Jobson, Z. Rahman and G. Woodell*. **A Multiscale Retinex for bridging the gap between color images and the Human observation of scenes,** In IEEE Transactions on Image Processing, vol. 6, n. 7, 1997.
 .. [Wang2004]        *H. Wang, S.Z. Li and Y. Wang*. **Face Recognition under Varying Lighting Conditions Using Self Quotient Image,** In IEEE International Conference on Image Processing, vol. 2, pp. 1397-1400, 2004.
 .. [Lowe2004]        *D. Lowe*. **Distinctive Image Features from Scale-Invariant Keypoints,** In International Journal of Computer Vision, 2004.
 

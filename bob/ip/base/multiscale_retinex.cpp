@@ -1,8 +1,8 @@
 /**
  * @author Manuel Guenther <manuel.guenther@idiap.ch>
- * @date Fri Jul  4 09:55:18 CEST 2014
+ * @date Tue Jul  8 13:44:48 CEST 2014
  *
- * @brief Binds the SelfQuotientImage class to python
+ * @brief Binds the MultiscaleRetinex class to python
  *
  * Copyright (C) 2011-2014 Idiap Research Institute, Martigny, Switzerland
  */
@@ -13,31 +13,31 @@
 /************ Constructor Section *********************************/
 /******************************************************************/
 
-static auto SelfQuotientImage_doc = bob::extension::ClassDoc(
-  BOB_EXT_MODULE_PREFIX ".SelfQuotientImage",
+static auto MultiscaleRetinex_doc = bob::extension::ClassDoc(
+  BOB_EXT_MODULE_PREFIX ".MultiscaleRetinex",
   "This class allows after configuration to apply the Self Quotient Image algorithm to images",
-  "Details of the Self Quotient Image algorithm is described in [Wang2004]_."
+  "More information about this algorithm can be found in [Jobson1997]_."
 ).add_constructor(
   bob::extension::FunctionDoc(
     "__init__",
-    "Creates an object to preprocess images with the Self Quotient Image algorithm",
-    0,
+    "Creates a MultiscaleRetinex object",
+    ".. todo:: Add documentation for MultiscaleRetinex",
     true
   )
-  .add_prototype("[scales], [size_min], [size_step], [variance], [border]","")
-  .add_prototype("sqi", "")
-  .add_parameter("scales", "int", "[default: 1] The number of scales (:py:class:`bob.ip.base.WeightedGaussian`)")
-  .add_parameter("size_min", "int", "[default: 1] The radius of the kernel of the smallest :py:class:`bob.ip.base.WeightedGaussian`")
+  .add_prototype("[scales], [size_min], [size_step], [sigma], [border]","")
+  .add_prototype("msrx", "")
+  .add_parameter("scales", "int", "[default: 1] The number of scales (:py:class:`bob.ip.base.Gaussian`)")
+  .add_parameter("size_min", "int", "[default: 1] The radius of the kernel of the smallest :py:class:`bob.ip.base.Gaussian`")
   .add_parameter("size_step", "int", "[default: 1] The step used to set the kernel size of other weighted Gaussians: ``size_s = 2 * (size_min + s * size_step) + 1``")
-  .add_parameter("variance", "double", "[default: 2.] The variance of the kernel of the smallest weighted Gaussian; other variances: ``variance_s = variance * (size_min + s * size_step) / size_min``")
+  .add_parameter("sigma", "double", "[default: 2.] The standard deviation of the kernel of the smallest weighted Gaussian; other sigmas: ``sigma_s = sigma * (size_min + s * size_step) / size_min``")
   .add_parameter("border", ":py:class:`bob.sp.BorderType`", "[default: ``bob.sp.BorderType.Mirror``] The extrapolation method used by the convolution at the border")
-  .add_parameter("sqi", ":py:class:`bob.ip.base.SelfQuotientImage`", "The ``SelfQuotientImage`` object to use for copy-construction")
+  .add_parameter("msrx", ":py:class:`bob.ip.base.MultiscaleRetinex`", "The MultiscaleRetinex object to use for copy-construction")
 );
 
-static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject* self, PyObject* args, PyObject* kwargs) {
+static int PyBobIpBaseMultiscaleRetinex_init(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* args, PyObject* kwargs) {
   TRY
 
-  char* kwlist1[] = {c("scales"), c("size_min"), c("size_step"), c("variance"), c("border"), NULL};
+  char* kwlist1[] = {c("scales"), c("size_min"), c("size_step"), c("sigma"), c("border"), NULL};
   char* kwlist2[] = {c("sqi"), NULL};
 
   // get the number of command line arguments
@@ -45,45 +45,45 @@ static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject*
 
   PyObject* k = Py_BuildValue("s", kwlist2[0]);
   auto k_ = make_safe(k);
-  if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseSelfQuotientImage_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
+  if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseMultiscaleRetinex_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
-    PyBobIpBaseSelfQuotientImageObject* sqi;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseSelfQuotientImageType, &sqi)) return -1;
+    PyBobIpBaseMultiscaleRetinexObject* msrx;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseMultiscaleRetinexType, &msrx)) return -1;
 
-    self->cxx.reset(new bob::ip::base::SelfQuotientImage(*sqi->cxx));
+    self->cxx.reset(new bob::ip::base::MultiscaleRetinex(*msrx->cxx));
     return 0;
   }
 
   int scales = 1, size_min = 1, size_step = 1;
-  double variance = 2.;
+  double sigma = 2.;
   bob::sp::Extrapolation::BorderType border = bob::sp::Extrapolation::Mirror;
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiidO&", kwlist1, &scales, &size_min, &size_step, &variance, &PyBobSpExtrapolationBorder_Converter, &border)){
-    SelfQuotientImage_doc.print_usage();
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiidO&", kwlist1, &scales, &size_min, &size_step, &sigma, &PyBobSpExtrapolationBorder_Converter, &border)){
+    MultiscaleRetinex_doc.print_usage();
     return -1;
   }
-  self->cxx.reset(new bob::ip::base::SelfQuotientImage(scales, size_min, size_step, variance, border));
+  self->cxx.reset(new bob::ip::base::MultiscaleRetinex(scales, size_min, size_step, sigma, border));
   return 0;
 
-  CATCH("cannot create SelfQuotientImage", -1)
+  CATCH("cannot create MultiscaleRetinex", -1)
 }
 
-static void PyBobIpBaseSelfQuotientImage_delete(PyBobIpBaseSelfQuotientImageObject* self) {
+static void PyBobIpBaseMultiscaleRetinex_delete(PyBobIpBaseMultiscaleRetinexObject* self) {
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-int PyBobIpBaseSelfQuotientImage_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseSelfQuotientImageType));
+int PyBobIpBaseMultiscaleRetinex_Check(PyObject* o) {
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseMultiscaleRetinexType));
 }
 
-static PyObject* PyBobIpBaseSelfQuotientImage_RichCompare(PyBobIpBaseSelfQuotientImageObject* self, PyObject* other, int op) {
+static PyObject* PyBobIpBaseMultiscaleRetinex_RichCompare(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* other, int op) {
   TRY
 
-  if (!PyBobIpBaseSelfQuotientImage_Check(other)) {
+  if (!PyBobIpBaseMultiscaleRetinex_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
     return 0;
   }
-  auto other_ = reinterpret_cast<PyBobIpBaseSelfQuotientImageObject*>(other);
+  auto other_ = reinterpret_cast<PyBobIpBaseMultiscaleRetinexObject*>(other);
   switch (op) {
     case Py_EQ:
       if (*self->cxx==*other_->cxx) Py_RETURN_TRUE; else Py_RETURN_FALSE;
@@ -93,7 +93,7 @@ static PyObject* PyBobIpBaseSelfQuotientImage_RichCompare(PyBobIpBaseSelfQuotien
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare SelfQuotientImage objects", 0)
+  CATCH("cannot compare MultiscaleRetinex objects", 0)
 }
 
 /******************************************************************/
@@ -103,14 +103,14 @@ static PyObject* PyBobIpBaseSelfQuotientImage_RichCompare(PyBobIpBaseSelfQuotien
 static auto scales = bob::extension::VariableDoc(
   "scales",
   "int",
-  "The number of scales (Weighted Gaussian); with read and write access"
+  "The number of scales (Gaussian); with read and write access"
 );
-PyObject* PyBobIpBaseSelfQuotientImage_getScales(PyBobIpBaseSelfQuotientImageObject* self, void*){
+PyObject* PyBobIpBaseMultiscaleRetinex_getScales(PyBobIpBaseMultiscaleRetinexObject* self, void*){
   TRY
   return Py_BuildValue("i", self->cxx->getNScales());
   CATCH("scales could not be read", 0)
 }
-int PyBobIpBaseSelfQuotientImage_setScales(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
+int PyBobIpBaseMultiscaleRetinex_setScales(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* value, void*){
   TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, scales.name());
@@ -127,12 +127,12 @@ static auto sizeMin = bob::extension::VariableDoc(
   "int",
   "The radius (size=2*radius+1) of the kernel of the smallest weighted Gaussian; with read and write access"
 );
-PyObject* PyBobIpBaseSelfQuotientImage_getSizeMin(PyBobIpBaseSelfQuotientImageObject* self, void*){
+PyObject* PyBobIpBaseMultiscaleRetinex_getSizeMin(PyBobIpBaseMultiscaleRetinexObject* self, void*){
   TRY
   return Py_BuildValue("i", self->cxx->getSizeMin());
   CATCH("size_min could not be read", 0)
 }
-int PyBobIpBaseSelfQuotientImage_setSizeMin(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
+int PyBobIpBaseMultiscaleRetinex_setSizeMin(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* value, void*){
   TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, sizeMin.name());
@@ -148,12 +148,12 @@ static auto sizeStep = bob::extension::VariableDoc(
   "int",
   "The step used to set the kernel size of other Weighted Gaussians (size_s=2*(size_min+s*size_step)+1); with read and write access"
 );
-PyObject* PyBobIpBaseSelfQuotientImage_getSizeStep(PyBobIpBaseSelfQuotientImageObject* self, void*){
+PyObject* PyBobIpBaseMultiscaleRetinex_getSizeStep(PyBobIpBaseMultiscaleRetinexObject* self, void*){
   TRY
   return Py_BuildValue("i", self->cxx->getSizeStep());
   CATCH("size_step could not be read", 0)
 }
-int PyBobIpBaseSelfQuotientImage_setSizeStep(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
+int PyBobIpBaseMultiscaleRetinex_setSizeStep(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* value, void*){
   TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, sizeStep.name());
@@ -165,23 +165,23 @@ int PyBobIpBaseSelfQuotientImage_setSizeStep(PyBobIpBaseSelfQuotientImageObject*
 }
 
 
-static auto variance = bob::extension::VariableDoc(
-  "variance",
+static auto sigma = bob::extension::VariableDoc(
+  "sigma",
   "float",
   "The variance of the kernel of the smallest weighted Gaussian (variance_s = sigma2 * (size_min+s*size_step)/size_min); with read and write access"
 );
-PyObject* PyBobIpBaseSelfQuotientImage_getVariance(PyBobIpBaseSelfQuotientImageObject* self, void*){
+PyObject* PyBobIpBaseMultiscaleRetinex_getSigma(PyBobIpBaseMultiscaleRetinexObject* self, void*){
   TRY
-  return Py_BuildValue("d", self->cxx->getSigma2());
-  CATCH("variance could not be read", 0)
+  return Py_BuildValue("d", self->cxx->getSigma());
+  CATCH("sigma could not be read", 0)
 }
-int PyBobIpBaseSelfQuotientImage_setVariance(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
+int PyBobIpBaseMultiscaleRetinex_setSigma(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* value, void*){
   TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
-  self->cxx->setSigma2(d);
+  self->cxx->setSigma(d);
   return 0;
-  CATCH("variance could not be set", -1)
+  CATCH("sigma could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -189,12 +189,12 @@ static auto border = bob::extension::VariableDoc(
   ":py:class:`bob.sp.BorderType`",
   "The extrapolation method used by the convolution at the border; with read and write access"
 );
-PyObject* PyBobIpBaseSelfQuotientImage_getBorder(PyBobIpBaseSelfQuotientImageObject* self, void*){
+PyObject* PyBobIpBaseMultiscaleRetinex_getBorder(PyBobIpBaseMultiscaleRetinexObject* self, void*){
   TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
   CATCH("border could not be read", 0)
 }
-int PyBobIpBaseSelfQuotientImage_setBorder(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
+int PyBobIpBaseMultiscaleRetinex_setBorder(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* value, void*){
   TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
@@ -203,39 +203,39 @@ int PyBobIpBaseSelfQuotientImage_setBorder(PyBobIpBaseSelfQuotientImageObject* s
   CATCH("border could not be set", -1)
 }
 
-static PyGetSetDef PyBobIpBaseSelfQuotientImage_getseters[] = {
+static PyGetSetDef PyBobIpBaseMultiscaleRetinex_getseters[] = {
     {
       scales.name(),
-      (getter)PyBobIpBaseSelfQuotientImage_getScales,
-      (setter)PyBobIpBaseSelfQuotientImage_setScales,
+      (getter)PyBobIpBaseMultiscaleRetinex_getScales,
+      (setter)PyBobIpBaseMultiscaleRetinex_setScales,
       scales.doc(),
       0
     },
     {
       sizeMin.name(),
-      (getter)PyBobIpBaseSelfQuotientImage_getSizeMin,
-      (setter)PyBobIpBaseSelfQuotientImage_setSizeMin,
+      (getter)PyBobIpBaseMultiscaleRetinex_getSizeMin,
+      (setter)PyBobIpBaseMultiscaleRetinex_setSizeMin,
       sizeMin.doc(),
       0
     },
     {
       sizeStep.name(),
-      (getter)PyBobIpBaseSelfQuotientImage_getSizeStep,
-      (setter)PyBobIpBaseSelfQuotientImage_setSizeStep,
+      (getter)PyBobIpBaseMultiscaleRetinex_getSizeStep,
+      (setter)PyBobIpBaseMultiscaleRetinex_setSizeStep,
       sizeStep.doc(),
       0
     },
     {
-      variance.name(),
-      (getter)PyBobIpBaseSelfQuotientImage_getVariance,
-      (setter)PyBobIpBaseSelfQuotientImage_setVariance,
-      variance.doc(),
+      sigma.name(),
+      (getter)PyBobIpBaseMultiscaleRetinex_getSigma,
+      (setter)PyBobIpBaseMultiscaleRetinex_setSigma,
+      sigma.doc(),
       0
     },
     {
       border.name(),
-      (getter)PyBobIpBaseSelfQuotientImage_getBorder,
-      (setter)PyBobIpBaseSelfQuotientImage_setBorder,
+      (getter)PyBobIpBaseMultiscaleRetinex_getBorder,
+      (setter)PyBobIpBaseMultiscaleRetinex_setBorder,
       border.doc(),
       0
     },
@@ -250,7 +250,8 @@ static PyGetSetDef PyBobIpBaseSelfQuotientImage_getseters[] = {
 
 static auto process = bob::extension::FunctionDoc(
   "process",
-  "Applies the Self Quotient Image algorithm to an image (2D/grayscale or 3D/color) of type uint8, uint16 or double",
+  "Applies the Self Quotient Image algorithm to an image (2D/grayscale or color 3D/color) of type uint8, uint16 or double",
+  ".. todo:: Check if this documentation is correct (seems to be copied from :py:class:`bob.ip.base.SelfQuotientImage`\n\n"
   "If given, the ``dst`` array should have the type float and the same size as the ``src`` array.\n\n"
   ".. note:: The :py:func:`__call__` function is an alias for this method.",
   true
@@ -262,13 +263,13 @@ static auto process = bob::extension::FunctionDoc(
 ;
 
 template <typename T, int D>
-static PyObject* process_inner(PyBobIpBaseSelfQuotientImageObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
+static PyObject* process_inner(PyBobIpBaseMultiscaleRetinexObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
   self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<double,D>(output));
   Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
-static PyObject* PyBobIpBaseSelfQuotientImage_process(PyBobIpBaseSelfQuotientImageObject* self, PyObject* args, PyObject* kwargs) {
+static PyObject* PyBobIpBaseMultiscaleRetinex_process(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* args, PyObject* kwargs) {
   TRY
   static char* kwlist[] = {c("src"), c("dst"), 0};
 
@@ -317,10 +318,10 @@ static PyObject* PyBobIpBaseSelfQuotientImage_process(PyBobIpBaseSelfQuotientIma
 }
 
 
-static PyMethodDef PyBobIpBaseSelfQuotientImage_methods[] = {
+static PyMethodDef PyBobIpBaseMultiscaleRetinex_methods[] = {
   {
     process.name(),
-    (PyCFunction)PyBobIpBaseSelfQuotientImage_process,
+    (PyCFunction)PyBobIpBaseMultiscaleRetinex_process,
     METH_VARARGS|METH_KEYWORDS,
     process.doc()
   },
@@ -332,35 +333,35 @@ static PyMethodDef PyBobIpBaseSelfQuotientImage_methods[] = {
 /************ Module Section **************************************/
 /******************************************************************/
 
-// Define the SelfQuotientImage type struct; will be initialized later
-PyTypeObject PyBobIpBaseSelfQuotientImageType = {
+// Define the MultiscaleRetinex type struct; will be initialized later
+PyTypeObject PyBobIpBaseMultiscaleRetinexType = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
 
-bool init_BobIpBaseSelfQuotientImage(PyObject* module)
+bool init_BobIpBaseMultiscaleRetinex(PyObject* module)
 {
   // initialize the Gabor wavelet type struct
-  PyBobIpBaseSelfQuotientImageType.tp_name = SelfQuotientImage_doc.name();
-  PyBobIpBaseSelfQuotientImageType.tp_basicsize = sizeof(PyBobIpBaseSelfQuotientImageObject);
-  PyBobIpBaseSelfQuotientImageType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseSelfQuotientImageType.tp_doc = SelfQuotientImage_doc.doc();
+  PyBobIpBaseMultiscaleRetinexType.tp_name = MultiscaleRetinex_doc.name();
+  PyBobIpBaseMultiscaleRetinexType.tp_basicsize = sizeof(PyBobIpBaseMultiscaleRetinexObject);
+  PyBobIpBaseMultiscaleRetinexType.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseMultiscaleRetinexType.tp_doc = MultiscaleRetinex_doc.doc();
 
   // set the functions
-  PyBobIpBaseSelfQuotientImageType.tp_new = PyType_GenericNew;
-  PyBobIpBaseSelfQuotientImageType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseSelfQuotientImage_init);
-  PyBobIpBaseSelfQuotientImageType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseSelfQuotientImage_delete);
-  PyBobIpBaseSelfQuotientImageType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseSelfQuotientImage_RichCompare);
-  PyBobIpBaseSelfQuotientImageType.tp_methods = PyBobIpBaseSelfQuotientImage_methods;
-  PyBobIpBaseSelfQuotientImageType.tp_getset = PyBobIpBaseSelfQuotientImage_getseters;
-  PyBobIpBaseSelfQuotientImageType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseSelfQuotientImage_process);
+  PyBobIpBaseMultiscaleRetinexType.tp_new = PyType_GenericNew;
+  PyBobIpBaseMultiscaleRetinexType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseMultiscaleRetinex_init);
+  PyBobIpBaseMultiscaleRetinexType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseMultiscaleRetinex_delete);
+  PyBobIpBaseMultiscaleRetinexType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseMultiscaleRetinex_RichCompare);
+  PyBobIpBaseMultiscaleRetinexType.tp_methods = PyBobIpBaseMultiscaleRetinex_methods;
+  PyBobIpBaseMultiscaleRetinexType.tp_getset = PyBobIpBaseMultiscaleRetinex_getseters;
+  PyBobIpBaseMultiscaleRetinexType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseMultiscaleRetinex_process);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseSelfQuotientImageType) < 0)
+  if (PyType_Ready(&PyBobIpBaseMultiscaleRetinexType) < 0)
     return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseSelfQuotientImageType);
-  return PyModule_AddObject(module, "SelfQuotientImage", (PyObject*)&PyBobIpBaseSelfQuotientImageType) >= 0;
+  Py_INCREF(&PyBobIpBaseMultiscaleRetinexType);
+  return PyModule_AddObject(module, "MultiscaleRetinex", (PyObject*)&PyBobIpBaseMultiscaleRetinexType) >= 0;
 }
 

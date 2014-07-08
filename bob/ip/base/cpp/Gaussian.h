@@ -32,7 +32,7 @@ namespace bob { namespace ip { namespace base {
        * @param border_type The interpolation type for the convolution
        */
       Gaussian(
-        const size_t radius_y, const size_t radius_x,
+        const size_t radius_y = 1, const size_t radius_x = 1,
         const double sigma_y=sqrt(2.5), const double sigma_x=sqrt(2.5),
         const bob::sp::Extrapolation::BorderType border_type = bob::sp::Extrapolation::Mirror
       );

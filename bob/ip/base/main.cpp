@@ -148,6 +148,7 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseDCTFeatures(module)) return 0;
   if (!init_BobIpBaseTanTriggs(module)) return 0;
   if (!init_BobIpBaseGaussian(module)) return 0;
+  if (!init_BobIpBaseMultiscaleRetinex(module)) return 0;
   if (!init_BobIpBaseWeightedGaussian(module)) return 0;
   if (!init_BobIpBaseSelfQuotientImage(module)) return 0;
   if (!init_BobIpBaseGaussianScaleSpace(module)) return 0;
