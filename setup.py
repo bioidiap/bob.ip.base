@@ -115,7 +115,6 @@ setup(
         [
           "bob/ip/base/old/GLCM.cc",
           "bob/ip/base/old/GLCMProp.cc",
-          "bob/ip/base/old/HOG.cc",
           "bob/ip/base/old/shear.cc",
 
           # external requirements as boost::python bindings
@@ -148,6 +147,7 @@ setup(
           "bob/ip/base/cpp/SelfQuotientImage.cpp",
           "bob/ip/base/cpp/GaussianScaleSpace.cpp",
           "bob/ip/base/cpp/SIFT.cpp",
+          "bob/ip/base/cpp/HOG.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -165,6 +165,7 @@ setup(
           "bob/ip/base/gaussian_scale_space.cpp",
           "bob/ip/base/sift.cpp",
           "bob/ip/base/vl_feat.cpp",
+          "bob/ip/base/hog.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",

@@ -32,6 +32,7 @@ References
 .. [Jobson1997]      *D. Jobson, Z. Rahman and G. Woodell*. **A Multiscale Retinex for bridging the gap between color images and the Human observation of scenes,** In IEEE Transactions on Image Processing, vol. 6, n. 7, 1997.
 .. [Wang2004]        *H. Wang, S.Z. Li and Y. Wang*. **Face Recognition under Varying Lighting Conditions Using Self Quotient Image,** In IEEE International Conference on Image Processing, vol. 2, pp. 1397-1400, 2004.
 .. [Lowe2004]        *D. Lowe*. **Distinctive Image Features from Scale-Invariant Keypoints,** In International Journal of Computer Vision, 2004.
+.. [Dalal2005]       *N. Dalal, B. Triggs*. **Histograms of Oriented Gradients for Human Detection,** In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, 2005.
 
 Indices and tables
 ------------------

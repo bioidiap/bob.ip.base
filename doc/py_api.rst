@@ -32,6 +32,10 @@ Classes
    bob.ip.base.VLSIFT
    bob.ip.base.VLDSIFT
 
+   bob.ip.base.GradientMagnitude
+   bob.ip.base.BlockNorm
+   bob.ip.base.HOG
+
 
 Functions
 ---------

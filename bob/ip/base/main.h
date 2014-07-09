@@ -26,6 +26,7 @@
 #include "cpp/SelfQuotientImage.h"
 #include "cpp/GaussianScaleSpace.h"
 #include "cpp/SIFT.h"
+#include "cpp/HOG.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
 
@@ -252,6 +253,30 @@ int PyBobIpBaseVLDSIFT_Check(PyObject* o);
 
 bool init_BobIpBaseVLFEAT(PyObject* module);
 #endif // HAVE_VLFEAT
+
+
+// HOG...
+// .. GradientMagnitude
+extern PyTypeObject PyBobIpBaseGradientMagnitudeType;
+int PyBobIpBaseGradientMagnitude_Check(PyObject* o);
+int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientMagnitudeType* b);
+
+// .. BlockNorm
+extern PyTypeObject PyBobIpBaseBlockNormType;
+int PyBobIpBaseBlockNorm_Check(PyObject* o);
+int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b);
+
+// .. HOG
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::HOG> cxx;
+} PyBobIpBaseHOGObject;
+
+extern PyTypeObject PyBobIpBaseHOGType;
+int PyBobIpBaseHOG_Check(PyObject* o);
+
+bool init_BobIpBaseHOG(PyObject* module);
+
 
 // block
 PyObject* PyBobIpBase_block(PyObject*, PyObject*, PyObject*);
