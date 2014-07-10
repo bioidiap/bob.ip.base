@@ -4,6 +4,8 @@
 
 .. image:: https://travis-ci.org/bioidiap/bob.ip.base.svg?branch=master
    :target: https://travis-ci.org/bioidiap/bob.ip.base
+.. image:: http://img.shields.io/badge/docs-latest-orange.png
+   :target: https://www.idiap.ch/software/bob/docs/latest/bioidiap/bob.ip.base/master/index.html
 .. image:: https://coveralls.io/repos/bioidiap/bob.ip.base/badge.png
    :target: https://coveralls.io/r/bioidiap/bob.ip.base
 .. image:: http://img.shields.io/github/tag/bioidiap/bob.ip.base.png
@@ -29,8 +31,9 @@ the package and run test units.
 Documentation
 -------------
 
-You can generate the documentation for this package, after installation, using
-Sphinx::
+The latest version of the documentation can be found `here <https://www.idiap.ch/software/bob/docs/latest/bioidiap/bob.ip.base/master/index.html>`_.
+
+Otherwise, you can generate the documentation for this package yourself, after installation, using Sphinx::
 
   $ sphinx-build -b html doc sphinx
 
@@ -42,7 +45,7 @@ Testing
 
 You can run a set of tests using the nose test runner::
 
-  $ nosetests -sv bob.ip.base
+  $ nosetests -sv
 
 .. warning::
 
