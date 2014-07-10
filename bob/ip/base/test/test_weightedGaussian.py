@@ -17,7 +17,6 @@ import bob.sp
 
 import bob.io.base
 import bob.io.base.test_utils
-import bob.io.image
 
 eps = 1e-4
 
@@ -63,7 +62,7 @@ def _normalize(image):
 
 def test_image():
   # copied from the old C++ tests
-  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.pgm", "bob.ip.base")).astype(numpy.float64)
+  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.hdf5", "bob.ip.base")).astype(numpy.float64)
   processed = numpy.ndarray(image.shape, numpy.float64)
 
   gaussian = bob.ip.base.WeightedGaussian((0.5,0.5), (1,1))

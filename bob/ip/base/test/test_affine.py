@@ -15,7 +15,6 @@ from nose.plugins.skip import SkipTest
 
 import bob.io.base
 import bob.io.base.test_utils
-import bob.io.image
 
 import bob.ip.base
 
@@ -173,14 +172,14 @@ def test_scale_non_round():
 
 def test_rotate():
   # load input image
-  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.pgm", "bob.ip.base"))
+  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.hdf5", "bob.ip.base"))
 
   # rotate the face with 10 degree
   image_r10 = bob.ip.base.rotate(image, 10.)
   normalized_r10 = numpy.round(image_r10).astype(numpy.uint8)
 
   # compare with reference
-  reference_file_r10 = bob.io.base.test_utils.datafile("image_r10.pgm", "bob.ip.base", "data/affine")
+  reference_file_r10 = bob.io.base.test_utils.datafile("image_r10.hdf5", "bob.ip.base", "data/affine")
   if regenerate_reference:
     bob.io.base.save(normalized_r10, reference_file_r10)
   reference_r10 = bob.io.base.load(reference_file_r10)
@@ -192,7 +191,7 @@ def test_rotate():
   normalized_r70 = numpy.round(image_r70).astype(numpy.uint8)
 
   # compare with reference
-  reference_file_r70 = bob.io.base.test_utils.datafile("image_r70.pgm", "bob.ip.base", "data/affine")
+  reference_file_r70 = bob.io.base.test_utils.datafile("image_r70.hdf5", "bob.ip.base", "data/affine")
   if regenerate_reference:
     bob.io.base.save(normalized_r70, reference_file_r70)
   reference_r70 = bob.io.base.load(reference_file_r70)
@@ -211,7 +210,7 @@ def test_rotate_mask():
 def test_geom_norm_simple():
   # tests the geom-norm functionality (copied from old C++ tests)
 
-  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.pgm", "bob.ip.base", "data/affine"))
+  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.hdf5", "bob.ip.base", "data/affine"))
   processed = numpy.ndarray((40, 40))
 
   # Define a Geometric normalizer
@@ -227,7 +226,7 @@ def test_geom_norm_simple():
   normalized = numpy.round(processed).astype(numpy.uint8)
 
   # This is the actual test image that was copied from the old implementation of Bob
-  reference_file = bob.io.base.test_utils.datafile("image_r10_geom_norm.pgm", "bob.ip.base", "data/affine")
+  reference_file = bob.io.base.test_utils.datafile("image_r10_geom_norm.hdf5", "bob.ip.base", "data/affine")
   if regenerate_reference:
     bob.io.base.save(normalized, reference_file)
 
@@ -239,7 +238,7 @@ def test_geom_norm_simple():
 def test_geom_norm_with_mask():
   # tests the geom-norm functionality with masks (copied from old C++ tests)
 
-  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r70.pgm", "bob.ip.base", "data/affine"))
+  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r70.hdf5", "bob.ip.base", "data/affine"))
   processed = numpy.ndarray((160, 160))
 
   test_mask = test_image != 0;
@@ -260,14 +259,14 @@ def test_geom_norm_with_mask():
   mask = processed_mask.astype(numpy.uint8)*255
 
   # This is the actual test image that was copied from the old implementation of Bob
-  reference_file = bob.io.base.test_utils.datafile("image_r70_geom_norm.pgm", "bob.ip.base", "data/affine")
+  reference_file = bob.io.base.test_utils.datafile("image_r70_geom_norm.hdf5", "bob.ip.base", "data/affine")
   if regenerate_reference:
     bob.io.base.save(normalized, reference_file)
   reference_image = bob.io.base.load(reference_file)
   assert numpy.allclose(normalized, reference_image)
 
   # This is the actual test mask that was copied from the old implementation of Bob
-  mask_file = bob.io.base.test_utils.datafile("image_r70_mask.pgm", "bob.ip.base", "data/affine")
+  mask_file = bob.io.base.test_utils.datafile("image_r70_mask.hdf5", "bob.ip.base", "data/affine")
   if regenerate_reference:
     bob.io.base.save(mask, mask_file)
   reference_mask = bob.io.base.load(mask_file)
@@ -298,7 +297,7 @@ def test_geom_norm_position():
 
 def test_face_eyes_norm():
   # load test image
-  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.pgm", "bob.ip.base", "data/affine"))
+  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.hdf5", "bob.ip.base", "data/affine"))
   processed = numpy.ndarray((40, 40))
 
   fen = bob.ip.base.FaceEyesNorm((40, 40), 20, (5/19.*40, 20))
@@ -307,7 +306,7 @@ def test_face_eyes_norm():
   fen(test_image, processed, (67,47), (62,71))
   normalized = numpy.round(processed).astype(numpy.uint8)
 
-  reference_file = bob.io.base.test_utils.datafile("image_r10_face_eyes_norm.pgm", "bob.ip.base", "data/affine")
+  reference_file = bob.io.base.test_utils.datafile("image_r10_face_eyes_norm.hdf5", "bob.ip.base", "data/affine")
   if regenerate_reference:
     bob.io.base.save(normalized, reference_file)
 

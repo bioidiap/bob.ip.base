@@ -15,7 +15,6 @@ import nose.tools
 from nose.plugins.skip import SkipTest
 
 import bob.io.base
-import bob.io.image
 import bob.io.base.test_utils
 
 import bob.ip.base
@@ -65,7 +64,7 @@ def test_VLSift_parametrization():
 @vlsift_found
 def test_VLSiftKeypointsPython():
   # Computes SIFT feature using VLFeat binding
-  img =  bob.io.base.load(bob.io.base.test_utils.datafile('vlimg_ref.pgm', 'bob.ip.base', "data/sift"))
+  img =  bob.io.base.load(bob.io.base.test_utils.datafile('vlimg_ref.hdf5', 'bob.ip.base', "data/sift"))
   mysift1 = bob.ip.base.VLSIFT(img.shape, 3, 5, 0)
   # Define keypoints: (y, x, sigma, orientation)
   kp=numpy.array([[75., 50., 1., 1.], [100., 100., 3., 0.]], dtype=numpy.float64)
@@ -120,7 +119,7 @@ def test_VLDSiftPython():
   ref_vl_end = bob.io.base.load(bob.io.base.test_utils.datafile("vldsift_gref_end.hdf5", 'bob.ip.base', "data/sift"))
 
   # Computes dense SIFT feature using VLFeat binding
-  img = bob.io.base.load(bob.io.base.test_utils.datafile('vlimg_ref.pgm', 'bob.ip.base', "data/sift")).astype(numpy.float32)
+  img = bob.io.base.load(bob.io.base.test_utils.datafile('vlimg_ref.hdf5', 'bob.ip.base', "data/sift")).astype(numpy.float32)
   mydsift1 = bob.ip.base.VLDSIFT(img.shape)
   out_vl = mydsift1(img)
   # Compare to reference (first 200 descriptors)

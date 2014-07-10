@@ -13,16 +13,9 @@ import numpy
 import random
 
 import bob.io.base
-import bob.io.image
 from bob.io.base.test_utils import datafile
 
 import bob.ip.base
-
-def load_gray(filename):
-  # Please note our PNG loader will always load in RGB, but since that is a
-  # grayscaled version of the image, I just select one of the planes.
-  array = bob.io.base.load(datafile(filename, "bob.ip.base", "data/histo"))
-  return array[0,:,:]
 
 def random_int(array, min_value, max_value):
   for i in range(0,array.shape()[0]):
@@ -47,7 +40,7 @@ def test_small():
 def test_uint8_histoPython():
 
   # Compute the histogram of a uint8 image
-  input_image = load_gray('image.ppm')
+  input_image = bob.io.base.load(datafile('image.hdf5', "bob.ip.base"))
 
 
   histo1 = bob.ip.base.histogram(input_image)
@@ -61,7 +54,7 @@ def test_uint8_histoPython():
   bob.ip.base.histogram(input_image, (0, 255), histo5)
 
   # Save the computed data
-  #bob.io.base.save(histo1, os.path.join('histo','image_histo.hdf5'))
+  #bob.io.base.save(histo1, datafile('image_histo.hdf5', 'bob.ip.base', 'data/histo'))
 
   histo_ref = bob.io.base.load(datafile('image_histo.hdf5', 'bob.ip.base', 'data/histo'))
 

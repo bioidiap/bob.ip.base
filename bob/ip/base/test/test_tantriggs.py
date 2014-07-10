@@ -15,7 +15,6 @@ import bob.sp
 
 import bob.io.base
 import bob.io.base.test_utils
-import bob.io.image
 
 
 regenerate_reference = False
@@ -88,7 +87,7 @@ def _normalize(image):
 def test_processing():
   # Processing tests, as copied performed in the C++ part)
   # Load original image
-  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.pgm", "bob.ip.base"))
+  image = bob.io.base.load(bob.io.base.test_utils.datafile("image.hdf5", "bob.ip.base"))
 
   # First test
   tt = bob.ip.base.TanTriggs()

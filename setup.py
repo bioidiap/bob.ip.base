@@ -94,7 +94,6 @@ setup(
       'bob.blitz',
       'bob.sp',
       'bob.io.base',
-      'bob.io.image',
     ],
 
     namespace_packages=[

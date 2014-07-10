@@ -13,7 +13,6 @@ import numpy
 import nose.tools
 
 import bob.io.base
-import bob.io.image
 from bob.io.base.test_utils import datafile
 
 import bob.ip.base
@@ -50,7 +49,7 @@ def test_parametrization():
 
 def test_processing():
   # Processing tests
-  A = bob.io.base.load(datafile("vlimg_ref.pgm", "bob.ip.base", "data/sift"))
+  A = bob.io.base.load(datafile("vlimg_ref.hdf5", "bob.ip.base", "data/sift"))
   No = 3
   Ns = 3
   sigma0 = 1.6
