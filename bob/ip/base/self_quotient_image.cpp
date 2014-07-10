@@ -340,7 +340,7 @@ PyTypeObject PyBobIpBaseSelfQuotientImageType = {
 
 bool init_BobIpBaseSelfQuotientImage(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseSelfQuotientImageType.tp_name = SelfQuotientImage_doc.name();
   PyBobIpBaseSelfQuotientImageType.tp_basicsize = sizeof(PyBobIpBaseSelfQuotientImageObject);
   PyBobIpBaseSelfQuotientImageType.tp_flags = Py_TPFLAGS_DEFAULT;

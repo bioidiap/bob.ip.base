@@ -489,7 +489,7 @@ PyTypeObject PyBobIpBaseFaceEyesNormType = {
 
 bool init_BobIpBaseFaceEyesNorm(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseFaceEyesNormType.tp_name = FaceEyesNorm_doc.name();
   PyBobIpBaseFaceEyesNormType.tp_basicsize = sizeof(PyBobIpBaseFaceEyesNormObject);
   PyBobIpBaseFaceEyesNormType.tp_flags = Py_TPFLAGS_DEFAULT;

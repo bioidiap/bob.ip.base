@@ -10,7 +10,7 @@
 
 import numpy
 import nose.tools
-from .. import GLCM, GLCMProp
+import bob.ip.base
 
 IMG_3x3_A = numpy.array([ [0, 1, 0],
                           [0, 1, 1],
@@ -35,13 +35,13 @@ IMG_3x6_A = numpy.array([ [1, 1, 4, 2, 1, 0],
 
 def test_matrix_computation():
 
-  glcm = GLCM('uint8')
-  assert glcm.get_glcm_shape() == (256, 256, 1)
+  glcm = bob.ip.base.GLCM(dtype='uint8')
+  assert glcm.output_shape() == (256, 256, 1)
   res = glcm(IMG_3x3_A)
   assert (res[0:2, 0:2, 0] == numpy.array([[0,3],[2,1]], dtype='float64')).all()
 
   glcm.offset = numpy.array([[1,0],[0,-1]], dtype='int32')
-  assert glcm.get_glcm_shape() == (256, 256, 2)
+  assert glcm.output_shape() == (256, 256, 2)
   res = glcm(IMG_3x3_A)
   assert (res[0:2, 0:2, 0] == numpy.array([[0,3],[2,1]], dtype='float64')).all()
   assert (res[0:2, 0:2, 1] == numpy.array([[2,1],[1,2]], dtype='float64')).all()
@@ -70,8 +70,8 @@ def test_matrix_computation():
 
 def test_matrix_computation_additional():
 
-  glcm = GLCM('uint8', num_levels=8);
-  assert glcm.get_glcm_shape() == (8, 8, 1)
+  glcm = bob.ip.base.GLCM(dtype=numpy.uint8, levels=8);
+  assert glcm.output_shape() == (8, 8, 1)
   assert (glcm.quantization_table == numpy.array([0,32,64,96,128,160,192,224])).all()
   res = glcm(IMG_3x3_B)
   assert (res[:,:,0] == expected).all()
@@ -79,13 +79,22 @@ def test_matrix_computation_additional():
 
 def test_matrix_computation_additional_2():
 
-  glcm = GLCM('uint16', numpy.array([0,19,55,92,128,164,201,237], dtype='uint16')) # thresholds selected according to Matlab quantization
-  assert glcm.get_glcm_shape() == (8, 8, 1)
-  nose.tools.eq_(glcm.num_levels,8)
+  glcm = bob.ip.base.GLCM(numpy.array([0,19,55,92,128,164,201,237], dtype='uint16')) # thresholds selected according to Matlab quantization
+  assert glcm.output_shape() == (8, 8, 1)
+  nose.tools.eq_(glcm.levels,8)
   nose.tools.eq_(glcm.max_level,65535)
   nose.tools.eq_(glcm.min_level,0)
   res = glcm(IMG_3x3_C)
   assert (res[:,:,0] == expected).all()
+
+
+def test_copy_constructor():
+
+  glcm = bob.ip.base.GLCM(numpy.array([0,19,55,92,128,164,201,237], dtype='uint16')) # thresholds selected according to Matlab quantization
+  glcm2 = bob.ip.base.GLCM(glcm)
+  assert glcm == glcm2
+  glcm2.symmetric = True
+  assert glcm != glcm2
 
 
 def test_properties():
@@ -97,7 +106,7 @@ def test_properties():
   # needed, in particluar in the i_matrix and j_matrix variables, as well as
   # xplusy_index
 
-  glcm_prop = GLCMProp()
+  glcm_prop = bob.ip.base.GLCM()
   glcm_matrix = numpy.array([[[0,0,2,0,0],[1,1,0,0,2],[0,1,0,2,0],[0,1,0,1,1],[1,0,1,0,1]]], dtype='double')
   res_matrix = numpy.ndarray((5,5,1), 'double')
   res_matrix[:,:,0] = glcm_matrix
@@ -108,23 +117,25 @@ def test_properties():
   assert numpy.allclose(glcm_prop.variance(res_matrix), [5.90293333333333])  # sum of squares (variance) in [5]
   assert numpy.allclose(glcm_prop.auto_correlation(res_matrix), [4.73333333])  # auto-correlation in [5]
   assert numpy.allclose(glcm_prop.correlation(res_matrix), [0.0262698])  # correlation-p in [5]
-  assert numpy.allclose(glcm_prop.correlation_m(res_matrix), [0.0262698])  # correlation-m in [5]
-  assert numpy.allclose(glcm_prop.inv_diff_mom(res_matrix), [0.4372549])  # homogeneity-p in [5]
-  assert numpy.allclose(glcm_prop.sum_avg(res_matrix), [4.33333333333333])  # sum average in [5]
-  assert numpy.allclose(glcm_prop.sum_var(res_matrix), [9.57993445])  # sum variance in [5]
+  assert numpy.allclose(glcm_prop.correlation_matlab(res_matrix), [0.0262698])  # correlation-m in [5]
+  assert numpy.allclose(glcm_prop.inverse_difference_moment(res_matrix), [0.4372549])  # homogeneity-p in [5]
+  assert numpy.allclose(glcm_prop.sum_average(res_matrix), [4.33333333333333])  # sum average in [5]
+  assert numpy.allclose(glcm_prop.sum_variance(res_matrix), [9.57993445])  # sum variance in [5]
   assert numpy.allclose(glcm_prop.sum_entropy(res_matrix), [1.93381])  # sum entropy in [5]
   assert numpy.allclose(glcm_prop.entropy(res_matrix), [2.43079132887823])  # entropy in [5]
   assert numpy.allclose(glcm_prop.dissimilarity(res_matrix), [1.53333333])  # dissimilarity in [5]
   assert numpy.allclose(glcm_prop.homogeneity(res_matrix), [0.50222222])  # homogeneity-m in [5]
-  assert numpy.allclose(glcm_prop.diff_entropy(res_matrix), [1.48975032])  # difference entropy in [5]
-  assert numpy.allclose(glcm_prop.diff_var(res_matrix), [3.66666667])  # difference variance in [5]
-  assert numpy.allclose(glcm_prop.cluster_prom(res_matrix), [30.87407407])  # cluster prominance in [5]
+  assert numpy.allclose(glcm_prop.difference_entropy(res_matrix), [1.48975032])  # difference entropy in [5]
+  assert numpy.allclose(glcm_prop.difference_variance(res_matrix), [3.66666667])  # difference variance in [5]
+  assert numpy.allclose(glcm_prop.cluster_prominence(res_matrix), [30.87407407])  # cluster prominance in [5]
   assert numpy.allclose(glcm_prop.cluster_shade(res_matrix), [0.07407407])  # cluster shade in [5]
-  assert numpy.allclose(glcm_prop.max_prob(res_matrix), [0.13333333])  # maximum probability in [5]
-  assert numpy.allclose(glcm_prop.inf_meas_corr1(res_matrix), [-0.46810262])  # information measure correlation 1 in [5]
-  assert numpy.allclose(glcm_prop.inf_meas_corr2(res_matrix), [0.87955875])  # information measure correlation 2 in [5]
-  assert numpy.allclose(glcm_prop.inv_diff(res_matrix), [0.50222222])  # inverse difference in [5]
-  assert numpy.allclose(glcm_prop.inv_diff_norm(res_matrix), [ 0.788624338624339])  # inverse difference normalized in [5]
-  assert numpy.allclose(glcm_prop.inv_diff_mom_norm(res_matrix), [0.8890875])  # inverse difference moment normalized in [5]
+  assert numpy.allclose(glcm_prop.maximum_probability(res_matrix), [0.13333333])  # maximum probability in [5]
+  assert numpy.allclose(glcm_prop.information_measure_of_correlation_1(res_matrix), [-0.46810262])  # information measure correlation 1 in [5]
+  assert numpy.allclose(glcm_prop.information_measure_of_correlation_2(res_matrix), [0.87955875])  # information measure correlation 2 in [5]
+  assert numpy.allclose(glcm_prop.inverse_difference(res_matrix), [0.50222222])  # inverse difference in [5]
+  assert numpy.allclose(glcm_prop.inverse_difference_normalized(res_matrix), [ 0.788624338624339])  # inverse difference normalized in [5]
+  assert numpy.allclose(glcm_prop.inverse_difference_moment_normalized(res_matrix), [0.8890875])  # inverse difference moment normalized in [5]
 
-  assert numpy.allclose(glcm_prop.properties_by_name(res_matrix, ["angular second moment"]), numpy.array([0.09333333]))  # energy in [5],[6]
+  assert numpy.allclose(glcm_prop.properties_by_name(res_matrix, ["angular_second_moment"]), numpy.array([0.09333333]))  # energy in [5],[6]
+  assert numpy.allclose(glcm_prop.properties_by_name(res_matrix, [bob.ip.base.GLCMProperty.angular_second_moment]), numpy.array([0.09333333]))  # energy in [5],[6]
+

@@ -15,13 +15,6 @@ static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* 
 /************ Enumerations Section ********************************/
 /******************************************************************/
 
-static int insert_item_string(PyObject* dict, PyObject* entries, const char* key, Py_ssize_t value){
-  auto v = make_safe(Py_BuildValue("n", value));
-  if (PyDict_SetItemString(dict, key, v.get()) < 0) return -1;
-  return PyDict_SetItemString(entries, key, v.get());
-}
-
-
 auto GradientMagnitude_doc = bob::extension::ClassDoc(
   BOB_EXT_MODULE_PREFIX ".GradientMagnitude",
   "Gradient 'magnitude' used",
@@ -50,6 +43,14 @@ static PyObject* createGradientMagnitude() {
 }
 
 int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientMagnitudeType* b) {
+  if (PyString_Check(o)){
+    PyObject* dict = PyBobIpBaseGradientMagnitudeType.tp_dict;
+    if (!PyDict_Contains(dict, o)){
+      PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the integer values defined in `%s'", PyBobIpBaseGradientMagnitudeType.tp_name);
+      return 0;
+    }
+    o = PyDict_GetItem(dict, o);
+  }
 
   Py_ssize_t v = PyNumber_AsSsize_t(o, PyExc_OverflowError);
   if (v == -1 && PyErr_Occurred()) return 0;
@@ -59,7 +60,7 @@ int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientM
     return 1;
   }
 
-  PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the integer values defined in `%s'", PyBobIpBaseGradientMagnitudeType.tp_name);
+  PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGradientMagnitudeType.tp_name);
   return 0;
 }
 
@@ -100,6 +101,15 @@ static PyObject* createBlockNorm() {
 }
 
 int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b) {
+  if (PyString_Check(o)){
+    PyObject* dict = PyBobIpBaseBlockNormType.tp_dict;
+    if (!PyDict_Contains(dict, o)){
+      PyErr_Format(PyExc_ValueError, "block norm type parameter parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseBlockNormType.tp_name);
+      return 0;
+    }
+    o = PyDict_GetItem(dict, o);
+  }
+
   Py_ssize_t v = PyNumber_AsSsize_t(o, PyExc_OverflowError);
   if (v == -1 && PyErr_Occurred()) return 0;
 
@@ -108,7 +118,7 @@ int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b) {
     return 1;
   }
 
-  PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the integer values defined in `%s'", PyBobIpBaseBlockNormType.tp_name);
+  PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseBlockNormType.tp_name);
   return 0;
 }
 

@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Tue Jun 24 14:03:17 CEST 2014
  *
  * @brief Binds the GeomNorm class to python
@@ -374,7 +374,7 @@ PyTypeObject PyBobIpBaseGeomNormType = {
 
 bool init_BobIpBaseGeomNorm(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseGeomNormType.tp_name = GeomNorm_doc.name();
   PyBobIpBaseGeomNormType.tp_basicsize = sizeof(PyBobIpBaseGeomNormObject);
   PyBobIpBaseGeomNormType.tp_flags = Py_TPFLAGS_DEFAULT;

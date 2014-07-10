@@ -18,7 +18,6 @@ package_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
 packages = ['bob-ip >= 1.2.2', 'bob-io >= 1.2.2', 'bob-sp >= 1.2.2', 'boost']
 version = '2.0.0a0'
 
-
 class vl:
 
   def __init__ (self, only_static=False, have_vlfeat = True):
@@ -101,35 +100,15 @@ setup(
     namespace_packages=[
       "bob",
       "bob.ip",
-      ],
+    ],
 
     ext_modules = [
       Extension("bob.ip.base.version",
         [
           "bob/ip/base/version.cpp",
-          ],
+        ],
         version = version,
         packages = packages,
-        ),
-      Extension("bob.ip.base._old_library",
-        [
-          "bob/ip/base/old/GLCM.cc",
-          "bob/ip/base/old/GLCMProp.cc",
-          "bob/ip/base/old/shear.cc",
-
-          # external requirements as boost::python bindings
-          "bob/ip/base/old/blitz_numpy.cc",
-          "bob/ip/base/old/ndarray_numpy.cc",
-          "bob/ip/base/old/ndarray.cc",
-          "bob/ip/base/old/tinyvector.cc",
-          "bob/ip/base/old/extrapolate.cc",
-          "bob/ip/base/old/conv.cc",
-
-          "bob/ip/base/old/main.cc",
-          ],
-        packages = packages,
-        boost_modules = ['python'],
-        version = version,
         ),
       Extension("bob.ip.base._library",
         [
@@ -148,6 +127,7 @@ setup(
           "bob/ip/base/cpp/GaussianScaleSpace.cpp",
           "bob/ip/base/cpp/SIFT.cpp",
           "bob/ip/base/cpp/HOG.cpp",
+          "bob/ip/base/cpp/GLCM.cpp",
 
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
@@ -166,18 +146,20 @@ setup(
           "bob/ip/base/sift.cpp",
           "bob/ip/base/vl_feat.cpp",
           "bob/ip/base/hog.cpp",
+          "bob/ip/base/glcm.cpp",
           "bob/ip/base/filter.cpp",
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
-          ],
+        ],
+
         packages = packages,
         include_dirs = include_dirs,
         version = version,
         library_dirs = [vl_pkg.library_directory],
         libraries = vl_pkg.libraries,
         define_macros = vl_pkg.macros,
-        ),
-      ],
+      ),
+    ],
 
     classifiers = [
       'Development Status :: 3 - Alpha',
@@ -187,6 +169,6 @@ setup(
       'Programming Language :: Python',
       'Programming Language :: Python :: 3',
       'Topic :: Software Development :: Libraries :: Python Modules',
-      ],
+    ],
 
-    )
+)

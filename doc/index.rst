@@ -33,6 +33,7 @@ References
 .. [Wang2004]        *H. Wang, S.Z. Li and Y. Wang*. **Face Recognition under Varying Lighting Conditions Using Self Quotient Image,** In IEEE International Conference on Image Processing, vol. 2, pp. 1397-1400, 2004.
 .. [Lowe2004]        *D. Lowe*. **Distinctive Image Features from Scale-Invariant Keypoints,** In International Journal of Computer Vision, 2004.
 .. [Dalal2005]       *N. Dalal, B. Triggs*. **Histograms of Oriented Gradients for Human Detection,** In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, 2005.
+.. [Haralick1973]    *R. M. Haralick, K. Shanmugam, I. Dinstein*. **Textural Features for Image Classification,** In IEEE Transactions on Systems, Man and Cybernetics, vol. SMC-3, No. 6, p. 610-621, 1973.
 
 Indices and tables
 ------------------

@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Thu Jul  3 17:59:11 CEST 2014
  *
  * @brief Binds the Gaussian class to python
@@ -329,7 +329,7 @@ PyTypeObject PyBobIpBaseGaussianType = {
 
 bool init_BobIpBaseGaussian(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseGaussianType.tp_name = Gaussian_doc.name();
   PyBobIpBaseGaussianType.tp_basicsize = sizeof(PyBobIpBaseGaussianObject);
   PyBobIpBaseGaussianType.tp_flags = Py_TPFLAGS_DEFAULT;

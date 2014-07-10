@@ -341,7 +341,7 @@ PyTypeObject PyBobIpBaseMultiscaleRetinexType = {
 
 bool init_BobIpBaseMultiscaleRetinex(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseMultiscaleRetinexType.tp_name = MultiscaleRetinex_doc.name();
   PyBobIpBaseMultiscaleRetinexType.tp_basicsize = sizeof(PyBobIpBaseMultiscaleRetinexObject);
   PyBobIpBaseMultiscaleRetinexType.tp_flags = Py_TPFLAGS_DEFAULT;

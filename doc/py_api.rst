@@ -36,6 +36,9 @@ Classes
    bob.ip.base.BlockNorm
    bob.ip.base.HOG
 
+   bob.ip.base.GLCMProperty
+   bob.ip.base.GLCM
+
 
 Functions
 ---------

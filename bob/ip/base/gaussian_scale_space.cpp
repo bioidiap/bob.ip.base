@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Fri Jul  4 15:39:36 CEST 2014
  *
  * @brief Binds the GaussianScaleSpace class and related classes to python

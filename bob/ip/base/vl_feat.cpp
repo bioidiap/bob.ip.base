@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Mon Jul  7 10:13:37 CEST 2014
  *
  * @brief Binds the SIFT class to python

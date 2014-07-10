@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Wed Jul  2 14:38:18 CEST 2014
  *
  * @brief Binds the TanTriggs class to python
@@ -410,7 +410,7 @@ PyTypeObject PyBobIpBaseTanTriggsType = {
 
 bool init_BobIpBaseTanTriggs(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseTanTriggsType.tp_name = TanTriggs_doc.name();
   PyBobIpBaseTanTriggsType.tp_basicsize = sizeof(PyBobIpBaseTanTriggsObject);
   PyBobIpBaseTanTriggsType.tp_flags = Py_TPFLAGS_DEFAULT;

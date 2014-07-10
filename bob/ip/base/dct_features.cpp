@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Wed Jul  2 14:38:18 CEST 2014
  *
  * @brief Binds the DCTFeatures class to python
@@ -607,7 +607,7 @@ PyTypeObject PyBobIpBaseDCTFeaturesType = {
 
 bool init_BobIpBaseDCTFeatures(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseDCTFeaturesType.tp_name = DCTFeatures_doc.name();
   PyBobIpBaseDCTFeaturesType.tp_basicsize = sizeof(PyBobIpBaseDCTFeaturesObject);
   PyBobIpBaseDCTFeaturesType.tp_flags = Py_TPFLAGS_DEFAULT;

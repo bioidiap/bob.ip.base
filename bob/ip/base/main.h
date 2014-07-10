@@ -29,6 +29,7 @@
 #include "cpp/HOG.h"
 #include "cpp/GeomNorm.h"
 #include "cpp/FaceEyesNorm.h"
+#include "cpp/GLCM.h"
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -61,6 +62,14 @@
   }
 
 static inline char* c(const char* o){return const_cast<char*>(o);}  /* converts const char* to char* */
+
+/// inserts the given key, value pair into the given dictionaries
+static inline int insert_item_string(PyObject* dict, PyObject* entries, const char* key, Py_ssize_t value){
+  auto v = make_safe(Py_BuildValue("n", value));
+  if (PyDict_SetItemString(dict, key, v.get()) < 0) return -1;
+  return PyDict_SetItemString(entries, key, v.get());
+}
+
 
 
 // GeomNorm
@@ -276,6 +285,21 @@ extern PyTypeObject PyBobIpBaseHOGType;
 int PyBobIpBaseHOG_Check(PyObject* o);
 
 bool init_BobIpBaseHOG(PyObject* module);
+
+
+
+// GLCM
+typedef struct {
+  PyObject_HEAD
+  int type_num;
+  boost::shared_ptr<void> cxx; // will be casted in each call
+  boost::shared_ptr<bob::ip::base::GLCMProp> prop; // the GLMC property handler
+} PyBobIpBaseGLCMObject;
+
+extern PyTypeObject PyBobIpBaseGLCMType;
+int PyBobIpBaseGLCM_Check(PyObject* o);
+
+bool init_BobIpBaseGLCM(PyObject* module);
 
 
 // block

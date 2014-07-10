@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Wed Jun 25 18:28:03 CEST 2014
  *
  * @brief Binds the LBPTop class to python
@@ -238,7 +238,7 @@ PyTypeObject PyBobIpBaseLBPTopType = {
 
 bool init_BobIpBaseLBPTop(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseLBPTopType.tp_name = LBPTop_doc.name();
   PyBobIpBaseLBPTopType.tp_basicsize = sizeof(PyBobIpBaseLBPTopObject);
   PyBobIpBaseLBPTopType.tp_flags = Py_TPFLAGS_DEFAULT;

@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Tue Jun 24 14:03:17 CEST 2014
  *
  * @brief Binds the LBP class to python
@@ -1052,7 +1052,7 @@ PyTypeObject PyBobIpBaseLBPType = {
 
 bool init_BobIpBaseLBP(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseLBPType.tp_name = LBP_doc.name();
   PyBobIpBaseLBPType.tp_basicsize = sizeof(PyBobIpBaseLBPObject);
   PyBobIpBaseLBPType.tp_flags = Py_TPFLAGS_DEFAULT;

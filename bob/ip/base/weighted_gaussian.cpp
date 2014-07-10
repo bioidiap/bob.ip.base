@@ -1,5 +1,5 @@
 /**
- * @author Manuel Guenther <manuel.guenthr@idiap.ch>
+ * @author Manuel Guenther <manuel.guenther@idiap.ch>
  * @date Thu Jul  3 17:59:11 CEST 2014
  *
  * @brief Binds the WeightedGaussian class to python
@@ -291,7 +291,7 @@ PyTypeObject PyBobIpBaseWeightedGaussianType = {
 
 bool init_BobIpBaseWeightedGaussian(PyObject* module)
 {
-  // initialize the Gabor wavelet type struct
+  // initialize the type struct
   PyBobIpBaseWeightedGaussianType.tp_name = WeightedGaussian_doc.name();
   PyBobIpBaseWeightedGaussianType.tp_basicsize = sizeof(PyBobIpBaseWeightedGaussianObject);
   PyBobIpBaseWeightedGaussianType.tp_flags = Py_TPFLAGS_DEFAULT;

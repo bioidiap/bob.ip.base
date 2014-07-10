@@ -8,7 +8,10 @@ matrix:
     - secure: h0vO8a9n55lXgKTIRFb2WFWpIAzgLfV9OLUaTynbTZBROAzK1M6D2uxA9hnE7tSaxn8jp8Hg7LeyPctn8GRubFMU+P5HxeOhNfkXz8GNv1bUUbwULCt15mTG9ioksvWqg2hTWf4OTGpTiTttPzgIrM/F2/daD/lMhKwHjaJ9YUg=
   - python: 3.2
     env:
-    - NUMPYSPEC===1.7.1
+    - NUMPYSPEC===1.8
+  - python: 3.3
+    env:
+    - NUMPYSPEC===1.8.0
 before_install:
 - sudo add-apt-repository -y ppa:biometrics/bob
 - sudo add-apt-repository -y ppa:biometrics/bob.preview

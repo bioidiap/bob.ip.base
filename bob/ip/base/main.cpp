@@ -154,6 +154,7 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseGaussianScaleSpace(module)) return 0;
   if (!init_BobIpBaseSIFT(module)) return 0;
   if (!init_BobIpBaseHOG(module)) return 0;
+  if (!init_BobIpBaseGLCM(module)) return 0;
 
 #ifdef HAVE_VLFEAT
   if (!init_BobIpBaseVLFEAT(module)) return 0;
