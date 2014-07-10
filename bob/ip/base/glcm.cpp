@@ -256,16 +256,16 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
   } else if (min == 0){
     // constructor with levels
     switch (self->type_num){
-      case NPY_UINT8: self->cxx.reset(new bob::ip::base::GLCM<uint8_t>(static_cast<uint8_t>(PyInt_AsLong(levels)))); break;
-      case NPY_UINT16: self->cxx.reset(new bob::ip::base::GLCM<uint16_t>(static_cast<uint16_t>(PyInt_AsLong(levels)))); break;
+      case NPY_UINT8: self->cxx.reset(new bob::ip::base::GLCM<uint8_t>(static_cast<uint8_t>(PyInt_AS_LONG(levels)))); break;
+      case NPY_UINT16: self->cxx.reset(new bob::ip::base::GLCM<uint16_t>(static_cast<uint16_t>(PyInt_AS_LONG(levels)))); break;
       case NPY_FLOAT64: self->cxx.reset(new bob::ip::base::GLCM<double>(static_cast<uint8_t>(PyFloat_AsDouble(levels)))); break;
       default: break; // already handled
     }
   } else {
     // constructor with all three parameters
     switch (self->type_num){
-      case NPY_UINT8: self->cxx.reset(new bob::ip::base::GLCM<uint8_t>(static_cast<uint8_t>(PyInt_AsLong(levels)), static_cast<uint8_t>(PyInt_AsLong(min)), static_cast<uint8_t>(PyInt_AsLong(max)))); break;
-      case NPY_UINT16: self->cxx.reset(new bob::ip::base::GLCM<uint16_t>(static_cast<uint16_t>(PyInt_AsLong(levels)), static_cast<uint16_t>(PyInt_AsLong(min)), static_cast<uint16_t>(PyInt_AsLong(max)))); break;
+      case NPY_UINT8: self->cxx.reset(new bob::ip::base::GLCM<uint8_t>(static_cast<uint8_t>(PyInt_AS_LONG(levels)), static_cast<uint8_t>(PyInt_AS_LONG(min)), static_cast<uint8_t>(PyInt_AS_LONG(max)))); break;
+      case NPY_UINT16: self->cxx.reset(new bob::ip::base::GLCM<uint16_t>(static_cast<uint16_t>(PyInt_AS_LONG(levels)), static_cast<uint16_t>(PyInt_AS_LONG(min)), static_cast<uint16_t>(PyInt_AS_LONG(max)))); break;
       case NPY_FLOAT64: self->cxx.reset(new bob::ip::base::GLCM<double>(static_cast<uint8_t>(PyFloat_AsDouble(levels)), static_cast<uint8_t>(PyFloat_AsDouble(min)), static_cast<uint8_t>(PyFloat_AsDouble(max)))); break;
       default: break; // already handled
     }
