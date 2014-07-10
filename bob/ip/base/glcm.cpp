@@ -675,7 +675,8 @@ static PyObject* PyBobIpBaseGLCM_extract(PyBobIpBaseGLCMObject* self, PyObject* 
 static auto propertiesByName = bob::extension::FunctionDoc(
   "properties_by_name",
   "Query the properties of GLCM by specifying a name",
-  "Returns a list of numpy.array of the queried properties.",
+  "Returns a list of numpy.array of the queried properties. "
+  "Please see the documentation of :py:class:`bob.ip.base.GLCMProperty` for details on the possible properties.",
   true
 )
 .add_prototype("glcm_matrix, prop_names", "prop_values")
