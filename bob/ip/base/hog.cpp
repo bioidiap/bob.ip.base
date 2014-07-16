@@ -667,7 +667,12 @@ static auto extract = bob::extension::FunctionDoc(
 
 template <typename T>
 static PyObject* extract_inner(PyBobIpBaseHOGObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
-  self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<double,3>(output));
+  blitz::Array<double,2> input_;
+  if (typeid(T) == typeid(double))
+    input_.reference(*PyBlitzArrayCxx_AsBlitz<double,2>(input));
+  else
+    input_.reference(bob::core::array::cast<double>(*PyBlitzArrayCxx_AsBlitz<T,2>(input)));
+  self->cxx->extract(input_, *PyBlitzArrayCxx_AsBlitz<double,3>(output));
   Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
@@ -704,7 +709,7 @@ static PyObject* PyBobIpBaseHOG_extract(PyBobIpBaseHOGObject* self, PyObject* ar
   // finally, process the data
   switch (input->type_num){
     case NPY_UINT8:   return extract_inner<uint8_t>(self, input, output);
-    case NPY_UINT16:  throw std::runtime_error("calling this function with uint16 currently fails (remove this, when bob::math::gradient is fixed)"); return extract_inner<uint16_t>(self, input, output);
+    case NPY_UINT16:  return extract_inner<uint16_t>(self, input, output);
     case NPY_FLOAT64: return extract_inner<double>(self, input, output);
     default:
       PyErr_Format(PyExc_TypeError, "`%s' input array of type %s are currently not supported", Py_TYPE(self)->tp_name, PyBlitzArray_TypenumAsString(input->type_num));

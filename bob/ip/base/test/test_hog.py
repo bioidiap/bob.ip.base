@@ -252,18 +252,14 @@ def test_HOG():
   assert numpy.allclose( hist_3D, HIST_IMG_A, EPSILON)
   hog.extract(IMG_8x8_A.astype(numpy.uint8), hist_3D)
   assert numpy.allclose( hist_3D, HIST_IMG_A, EPSILON)
-####
-# The uint16 tests fail due to some problems in bob::math::gradient
-#  hog.extract(IMG_8x8_A.astype(numpy.uint16), hist_3D)
-#  assert numpy.allclose( hist_3D, HIST_IMG_A, EPSILON)
+  hog.extract(IMG_8x8_A.astype(numpy.uint16), hist_3D)
+  assert numpy.allclose( hist_3D, HIST_IMG_A, EPSILON)
   hist3 = hog.extract(IMG_8x8_A)
   assert numpy.allclose( hist3, HIST_IMG_A, EPSILON)
   hist3 = hog.extract(IMG_8x8_A.astype(numpy.uint8))
   assert numpy.allclose( hist3, HIST_IMG_A, EPSILON)
-####
-# The uint16 tests fail due to some problems in bob::math::gradient
-#  hist3 = hog.extract(IMG_8x8_A.astype(numpy.uint16))
-#  assert numpy.allclose( hist3, HIST_IMG_A, EPSILON)
+  hist3 = hog.extract(IMG_8x8_A.astype(numpy.uint16))
+  assert numpy.allclose( hist3, HIST_IMG_A, EPSILON)
 
   # Check equal/not equal operators
   hog1 = bob.ip.base.HOG((8,8))
