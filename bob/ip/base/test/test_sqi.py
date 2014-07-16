@@ -9,6 +9,7 @@
 """
 
 import numpy
+import math
 import nose.tools
 
 import bob.sp
@@ -22,23 +23,23 @@ def test_parametrization():
   nose.tools.eq_(op.scales, 2)
   nose.tools.eq_(op.size_min, 1)
   nose.tools.eq_(op.size_step, 1)
-  nose.tools.eq_(op.variance, 2.)
+  nose.tools.eq_(op.sigma, 2.)
   nose.tools.eq_(op.border, bob.sp.BorderType.Mirror)
   op.scales = 3
   op.size_min = 2
   op.size_step = 2
-  op.variance = 1.
+  op.sigma = 1.
   op.border = bob.sp.BorderType.Circular
   nose.tools.eq_(op.scales, 3)
   nose.tools.eq_(op.size_min, 2)
   nose.tools.eq_(op.size_step, 2)
-  nose.tools.eq_(op.variance, 1.)
+  nose.tools.eq_(op.sigma, 1.)
   nose.tools.eq_(op.border, bob.sp.BorderType.Circular)
 
 
 def test_processing():
   # Processing tests
-  op = bob.ip.base.SelfQuotientImage(1,1,1,0.5)
+  op = bob.ip.base.SelfQuotientImage(1,1,1,math.sqrt(0.5))
   a_uint8 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.uint8)
   a_float64 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.float64)
   a_ones = numpy.ones(shape=(3,4), dtype=numpy.float64)

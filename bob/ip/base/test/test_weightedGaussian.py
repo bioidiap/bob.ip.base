@@ -25,21 +25,21 @@ def test_parametrization():
   op = bob.ip.base.WeightedGaussian((0.5,0.6), (1,2))
   nose.tools.eq_(op.radius[0], 1)
   nose.tools.eq_(op.radius[1], 2)
-  nose.tools.eq_(op.variance[0], 0.5)
-  nose.tools.eq_(op.variance[1], 0.6)
+  nose.tools.eq_(op.sigma[0], 0.5)
+  nose.tools.eq_(op.sigma[1], 0.6)
   nose.tools.eq_(op.border, bob.sp.BorderType.Mirror)
   op.radius = (2,4)
-  op.variance = (1.,1.5)
+  op.sigma = (1.,1.5)
   op.border = bob.sp.BorderType.Circular
   nose.tools.eq_(op.radius[0], 2)
   nose.tools.eq_(op.radius[1], 4)
-  nose.tools.eq_(op.variance[0], 1.)
-  nose.tools.eq_(op.variance[1], 1.5)
+  nose.tools.eq_(op.sigma[0], 1.)
+  nose.tools.eq_(op.sigma[1], 1.5)
   nose.tools.eq_(op.border, bob.sp.BorderType.Circular)
 
 def test_processing():
 
-  op = bob.ip.base.WeightedGaussian((0.5, 0.5), (1,1))
+  op = bob.ip.base.WeightedGaussian((math.sqrt(0.5), math.sqrt(0.5)), (1,1))
   a_uint8 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.uint8)
   a_float64 = numpy.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], dtype=numpy.float64)
   a_ref = numpy.array([[1.21194, 2, 3, 3.78806], [3.79444, 7.45636,
@@ -65,7 +65,7 @@ def test_image():
   image = bob.io.base.load(bob.io.base.test_utils.datafile("image.hdf5", "bob.ip.base")).astype(numpy.float64)
   processed = numpy.ndarray(image.shape, numpy.float64)
 
-  gaussian = bob.ip.base.WeightedGaussian((0.5,0.5), (1,1))
+  gaussian = bob.ip.base.WeightedGaussian((math.sqrt(0.5), math.sqrt(0.5)), (1,1))
   gaussian(image, processed)
 
   # Compare to reference image

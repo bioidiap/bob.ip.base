@@ -40,14 +40,14 @@ namespace bob { namespace ip { namespace base {
         * @param size_min The size of the smallest convolution kernel
         * @param size_step The step increase in size for consecutive
         *                  convolution kernels
-        * @param sigma2 The variance of the smallest convolution kernel
+        * @param sigma The variance of the smallest convolution kernel
         * @param border_type The interpolation type for the convolution
         */
       SelfQuotientImage(
           const size_t n_scales=1,
           const size_t size_min=1,
           const size_t size_step=1,
-          const double sigma2=2.,
+          const double sigma=sqrt(2.),
           const bob::sp::Extrapolation::BorderType border_type = bob::sp::Extrapolation::Mirror
       );
 
@@ -81,14 +81,14 @@ namespace bob { namespace ip { namespace base {
         * @param size_min The size of the smallest convolution kernel
         * @param size_step The step increase in size for consecutive
         *                  convolution kernels
-        * @param sigma2 The variance of the smallest convolution kernel
+        * @param sigma The variance of the smallest convolution kernel
         * @param border_type The interpolation type for the convolution
        */
       void reset(
         const size_t n_scales=1,
         const size_t size_min=1,
         const size_t size_step=1,
-        const double sigma2=2.,
+        const double sigma=sqrt(2.),
         const bob::sp::Extrapolation::BorderType border_type = bob::sp::Extrapolation::Mirror
       );
 
@@ -98,7 +98,7 @@ namespace bob { namespace ip { namespace base {
       size_t getNScales() const { return m_n_scales; }
       size_t getSizeMin() const { return m_size_min; }
       size_t getSizeStep() const { return m_size_step; }
-      double getSigma2() const { return m_sigma2; }
+      double getSigma() const { return m_sigma; }
       bob::sp::Extrapolation::BorderType getConvBorder() const { return m_conv_border; }
 
       /**
@@ -111,7 +111,7 @@ namespace bob { namespace ip { namespace base {
       }
       void setSizeMin(const size_t size_min) { m_size_min = size_min; computeKernels(); }
       void setSizeStep(const size_t size_step) { m_size_step = size_step; computeKernels(); }
-      void setSigma2(const double sigma2) { m_sigma2 = sigma2; computeKernels(); }
+      void setSigma(const double sigma) { m_sigma = sigma; computeKernels(); }
       void setConvBorder(const bob::sp::Extrapolation::BorderType border_type) { m_conv_border = border_type; computeKernels(); }
 
         /**
@@ -163,7 +163,7 @@ namespace bob { namespace ip { namespace base {
         size_t m_n_scales;
         size_t m_size_min;
         size_t m_size_step;
-        double m_sigma2;
+        double m_sigma;
         bob::sp::Extrapolation::BorderType m_conv_border;
 
         boost::shared_array<bob::ip::base::WeightedGaussian> m_wgaussians;

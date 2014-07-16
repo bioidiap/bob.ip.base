@@ -31,13 +31,13 @@ namespace bob { namespace ip { namespace base {
         *                 (height = 2*radius_y + 1)
         * @param radius_x The radius-width of the kernel along the x-axis
         *                 (width = 2*radius_x + 1)
-        * @param sigma2_y The variance of the kernel along the y-axis
-        * @param sigma2_x The variance of the kernel along the x-axis
+        * @param sigma_y The variance of the kernel along the y-axis
+        * @param sigma_x The variance of the kernel along the x-axis
         * @param border_type The interpolation type for the convolution
         */
       WeightedGaussian(
         const size_t radius_y=1, const size_t radius_x=1,
-        const double sigma2_y=2., const double sigma2_x=2.,
+        const double sigma_y=sqrt(2.), const double sigma_x=sqrt(2.),
         const bob::sp::Extrapolation::BorderType border_type = bob::sp::Extrapolation::Mirror
       );
 
@@ -71,12 +71,12 @@ namespace bob { namespace ip { namespace base {
         *                 (height = 2*radius_y + 1)
         * @param radius_x The radius-width of the kernel along the x-axis
         *                 (width = 2*radius_x + 1)
-        * @param sigma2_y The variance of the kernel along the y-axis
-        * @param sigma2_x The variance of the kernel along the x-axis
+        * @param sigma_y The variance of the kernel along the y-axis
+        * @param sigma_x The variance of the kernel along the x-axis
         * @param border_type The interpolation type for the convolution
         */
       void reset( const size_t radius_y=1, const size_t radius_x=1,
-        const double sigma2_y=2., const double sigma2_x=2.,
+        const double sigma_y=sqrt(2.), const double sigma_x=sqrt(2.),
         const bob::sp::Extrapolation::BorderType border_type =
           bob::sp::Extrapolation::Mirror);
 
@@ -85,8 +85,8 @@ namespace bob { namespace ip { namespace base {
         */
       size_t getRadiusY() const { return m_radius_y; }
       size_t getRadiusX() const { return m_radius_x; }
-      double getSigma2Y() const { return m_sigma2_y; }
-      double getSigma2X() const { return m_sigma2_x; }
+      double getSigmaY() const { return m_sigma_y; }
+      double getSigmaX() const { return m_sigma_x; }
       bob::sp::Extrapolation::BorderType getConvBorder() const { return m_conv_border; }
       const blitz::Array<double,2>& getUnweightedKernel() const { return m_kernel; }
 
@@ -96,9 +96,9 @@ namespace bob { namespace ip { namespace base {
       void setRadiusY(const size_t radius_y){ m_radius_y = radius_y; computeKernel(); }
       void setRadiusX(const size_t radius_x){ m_radius_x = radius_x; computeKernel(); }
       void setRadius(const blitz::TinyVector<int,2>& radius) {m_radius_y = radius[0]; m_radius_x = radius[1]; computeKernel();}
-      void setSigma2Y(const double sigma2_y){ m_sigma2_y = sigma2_y; computeKernel(); }
-      void setSigma2X(const double sigma2_x){ m_sigma2_x = sigma2_x; computeKernel(); }
-      void setSigma2(const blitz::TinyVector<double,2>& sigma2) {m_sigma2_y = sigma2[0]; m_sigma2_x = sigma2[1]; computeKernel();}
+      void setSigmaY(const double sigma_y){ m_sigma_y = sigma_y; computeKernel(); }
+      void setSigmaX(const double sigma_x){ m_sigma_x = sigma_x; computeKernel(); }
+      void setSigma(const blitz::TinyVector<double,2>& sigma) {m_sigma_y = sigma[0]; m_sigma_x = sigma[1]; computeKernel();}
       void setConvBorder(const bob::sp::Extrapolation::BorderType border_type){ m_conv_border = border_type; }
 
 
@@ -147,8 +147,8 @@ namespace bob { namespace ip { namespace base {
         */
       size_t m_radius_y;
       size_t m_radius_x;
-      double m_sigma2_y;
-      double m_sigma2_x;
+      double m_sigma_y;
+      double m_sigma_x;
       bob::sp::Extrapolation::BorderType m_conv_border;
 
       blitz::Array<double,2> m_kernel;

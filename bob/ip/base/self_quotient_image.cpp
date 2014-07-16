@@ -21,15 +21,17 @@ static auto SelfQuotientImage_doc = bob::extension::ClassDoc(
   bob::extension::FunctionDoc(
     "__init__",
     "Creates an object to preprocess images with the Self Quotient Image algorithm",
-    0,
+    ".. todo:: explain SelfQuotientImage constructor\n\n"
+    ".. warning:: Compared to the last Bob version, here the sigma parameter is the **standard deviation** and not the variance. "
+    "This includes that the :py:class:`WeightedGaussian` pyramid is **different**, see https://github.com/bioidiap/bob.ip.base/issues/1.",
     true
   )
-  .add_prototype("[scales], [size_min], [size_step], [variance], [border]","")
+  .add_prototype("[scales], [size_min], [size_step], [sigma], [border]","")
   .add_prototype("sqi", "")
   .add_parameter("scales", "int", "[default: 1] The number of scales (:py:class:`bob.ip.base.WeightedGaussian`)")
   .add_parameter("size_min", "int", "[default: 1] The radius of the kernel of the smallest :py:class:`bob.ip.base.WeightedGaussian`")
   .add_parameter("size_step", "int", "[default: 1] The step used to set the kernel size of other weighted Gaussians: ``size_s = 2 * (size_min + s * size_step) + 1``")
-  .add_parameter("variance", "double", "[default: 2.] The variance of the kernel of the smallest weighted Gaussian; other variances: ``variance_s = variance * (size_min + s * size_step) / size_min``")
+  .add_parameter("sigma", "double", "[default: ``math.sqrt(2.)``] The standard deviation of the kernel of the smallest weighted Gaussian; other sigmas: ``sigma_s = sigma * (size_min + s * size_step) / size_min``")
   .add_parameter("border", ":py:class:`bob.sp.BorderType`", "[default: ``bob.sp.BorderType.Mirror``] The extrapolation method used by the convolution at the border")
   .add_parameter("sqi", ":py:class:`bob.ip.base.SelfQuotientImage`", "The ``SelfQuotientImage`` object to use for copy-construction")
 );
@@ -37,7 +39,7 @@ static auto SelfQuotientImage_doc = bob::extension::ClassDoc(
 static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject* self, PyObject* args, PyObject* kwargs) {
   TRY
 
-  char* kwlist1[] = {c("scales"), c("size_min"), c("size_step"), c("variance"), c("border"), NULL};
+  char* kwlist1[] = {c("scales"), c("size_min"), c("size_step"), c("sigma"), c("border"), NULL};
   char* kwlist2[] = {c("sqi"), NULL};
 
   // get the number of command line arguments
@@ -55,14 +57,14 @@ static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject*
   }
 
   int scales = 1, size_min = 1, size_step = 1;
-  double variance = 2.;
+  double sigma = sqrt(2.);
   bob::sp::Extrapolation::BorderType border = bob::sp::Extrapolation::Mirror;
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiidO&", kwlist1, &scales, &size_min, &size_step, &variance, &PyBobSpExtrapolationBorder_Converter, &border)){
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiidO&", kwlist1, &scales, &size_min, &size_step, &sigma, &PyBobSpExtrapolationBorder_Converter, &border)){
     SelfQuotientImage_doc.print_usage();
     return -1;
   }
-  self->cxx.reset(new bob::ip::base::SelfQuotientImage(scales, size_min, size_step, variance, border));
+  self->cxx.reset(new bob::ip::base::SelfQuotientImage(scales, size_min, size_step, sigma, border));
   return 0;
 
   CATCH("cannot create SelfQuotientImage", -1)
@@ -165,23 +167,23 @@ int PyBobIpBaseSelfQuotientImage_setSizeStep(PyBobIpBaseSelfQuotientImageObject*
 }
 
 
-static auto variance = bob::extension::VariableDoc(
-  "variance",
+static auto sigma = bob::extension::VariableDoc(
+  "sigma",
   "float",
-  "The variance of the kernel of the smallest weighted Gaussian (variance_s = sigma2 * (size_min+s*size_step)/size_min); with read and write access"
+  "The standard deviation of the kernel of the smallest weighted Gaussian (sigma_s = sigma * (size_min+s*size_step)/size_min); with read and write access"
 );
-PyObject* PyBobIpBaseSelfQuotientImage_getVariance(PyBobIpBaseSelfQuotientImageObject* self, void*){
+PyObject* PyBobIpBaseSelfQuotientImage_getSigma(PyBobIpBaseSelfQuotientImageObject* self, void*){
   TRY
-  return Py_BuildValue("d", self->cxx->getSigma2());
-  CATCH("variance could not be read", 0)
+  return Py_BuildValue("d", self->cxx->getSigma());
+  CATCH("sigma could not be read", 0)
 }
-int PyBobIpBaseSelfQuotientImage_setVariance(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
+int PyBobIpBaseSelfQuotientImage_setSigma(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
   TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
-  self->cxx->setSigma2(d);
+  self->cxx->setSigma(d);
   return 0;
-  CATCH("variance could not be set", -1)
+  CATCH("sigma could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -226,10 +228,10 @@ static PyGetSetDef PyBobIpBaseSelfQuotientImage_getseters[] = {
       0
     },
     {
-      variance.name(),
-      (getter)PyBobIpBaseSelfQuotientImage_getVariance,
-      (setter)PyBobIpBaseSelfQuotientImage_setVariance,
-      variance.doc(),
+      sigma.name(),
+      (getter)PyBobIpBaseSelfQuotientImage_getSigma,
+      (setter)PyBobIpBaseSelfQuotientImage_setSigma,
+      sigma.doc(),
       0
     },
     {

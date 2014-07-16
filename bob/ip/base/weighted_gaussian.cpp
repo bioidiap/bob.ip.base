@@ -21,13 +21,14 @@ static auto WeightedGaussian_doc = bob::extension::ClassDoc(
   bob::extension::FunctionDoc(
     "__init__",
     "Constructs a new weighted Gaussian filter",
-    0,
+    ".. todo:: explain WeightedGaussian constructor\n\n"
+    ".. warning:: Compared to the last Bob version, here the sigma parameter is the **standard deviation** and not the variance.",
     true
   )
-  .add_prototype("variance, [radius], [border]","")
+  .add_prototype("sigma, [radius], [border]","")
   .add_prototype("weighted_gaussian", "")
-  .add_parameter("variance", "(double, double)", "The variance (i.e., the **square** standard deviation) of the WeightedGaussian along the y- and x-axes in pixels")
-  .add_parameter("radius", "(int, int)", "[default: (-1, -1) -> ``3*sqrt(variance)`` ] The radius of the Gaussian in both directions -- the size of the kernel is ``2*radius+1``")
+  .add_parameter("sigma", "(double, double)", "The standard deviation of the WeightedGaussian along the y- and x-axes in pixels")
+  .add_parameter("radius", "(int, int)", "[default: (-1, -1) -> ``3*sigma`` ] The radius of the Gaussian in both directions -- the size of the kernel is ``2*radius+1``")
   .add_parameter("border", ":py:class:`bob.sp.BorderType`", "[default: ``bob.sp.BorderType.Mirror``] The extrapolation method used by the convolution at the border")
   .add_parameter("weighted_gaussian", ":py:class:`bob.ip.base.WeightedGaussian`", "The weighted Gaussian object to use for copy-construction")
 );
@@ -35,7 +36,7 @@ static auto WeightedGaussian_doc = bob::extension::ClassDoc(
 static int PyBobIpBaseWeightedGaussian_init(PyBobIpBaseWeightedGaussianObject* self, PyObject* args, PyObject* kwargs) {
   TRY
 
-  char* kwlist1[] = {c("variance"), c("radius"), c("border"), NULL};
+  char* kwlist1[] = {c("sigma"), c("radius"), c("border"), NULL};
   char* kwlist2[] = {c("weighted_gaussian"), NULL};
 
   // get the number of command line arguments
@@ -52,18 +53,18 @@ static int PyBobIpBaseWeightedGaussian_init(PyBobIpBaseWeightedGaussianObject* s
     return 0;
   }
 
-  blitz::TinyVector<double,2> variance;
+  blitz::TinyVector<double,2> sigma;
   blitz::TinyVector<int,2> radius (-1, -1);
   bob::sp::Extrapolation::BorderType border = bob::sp::Extrapolation::Mirror;
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(dd)|(ii)O&", kwlist1, &variance[0], &variance[1], &radius[0], &radius[1], &PyBobSpExtrapolationBorder_Converter, &border)){
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(dd)|(ii)O&", kwlist1, &sigma[0], &sigma[1], &radius[0], &radius[1], &PyBobSpExtrapolationBorder_Converter, &border)){
     WeightedGaussian_doc.print_usage();
     return -1;
   }
   // set the radius
-  for (int i = 0; i < 2; ++i) if (radius[i] < 0) radius[i] = std::max(int(std::sqrt(variance[i]) * 3 + 0.5), 1);
+  for (int i = 0; i < 2; ++i) if (radius[i] < 0) radius[i] = std::max(int(sigma[i] * 3 + 0.5), 1);
 
-  self->cxx.reset(new bob::ip::base::WeightedGaussian(radius[0], radius[1], variance[0], variance[1], border));
+  self->cxx.reset(new bob::ip::base::WeightedGaussian(radius[0], radius[1], sigma[0], sigma[1], border));
   return 0;
 
   CATCH("cannot create WeightedGaussian", -1)
@@ -102,34 +103,34 @@ static PyObject* PyBobIpBaseWeightedGaussian_RichCompare(PyBobIpBaseWeightedGaus
 /************ Variables Section ***********************************/
 /******************************************************************/
 
-static auto sigma2 = bob::extension::VariableDoc(
-  "variance",
+static auto sigma = bob::extension::VariableDoc(
+  "sigma",
   "(float, float)",
-  "The variance of the weighted Gaussian along the y- and x-axes; with read and write access",
-  ".. note:: The :py:attr:`radius` of the kernel is **not** reset by setting the ``variance`` value."
+  "The standard deviation of the weighted Gaussian along the y- and x-axes; with read and write access",
+  ".. note:: The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
 );
-PyObject* PyBobIpBaseWeightedGaussian_getSigma2(PyBobIpBaseWeightedGaussianObject* self, void*){
+PyObject* PyBobIpBaseWeightedGaussian_getSigma(PyBobIpBaseWeightedGaussianObject* self, void*){
   TRY
-  return Py_BuildValue("(dd)", self->cxx->getSigma2Y(), self->cxx->getSigma2X());
+  return Py_BuildValue("(dd)", self->cxx->getSigmaY(), self->cxx->getSigmaX());
   CATCH("sigma could not be read", 0)
 }
-int PyBobIpBaseWeightedGaussian_setSigma2(PyBobIpBaseWeightedGaussianObject* self, PyObject* value, void*){
+int PyBobIpBaseWeightedGaussian_setSigma(PyBobIpBaseWeightedGaussianObject* self, PyObject* value, void*){
   TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
-    PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, sigma2.name());
+    PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, sigma.name());
     return -1;
   }
-  self->cxx->setSigma2(r);
+  self->cxx->setSigma(r);
   return 0;
-  CATCH("variance could not be set", -1)
+  CATCH("sigma could not be set", -1)
 }
 
 static auto radius = bob::extension::VariableDoc(
   "radius",
   "(int, int)",
   "The radius of the WeightedGaussian along the y- and x-axes (size of the kernel=2*radius+1); with read and write access",
-  "When setting the radius to a negative value, it will be automatically computed as ``3*sqrt``:py:attr:`variance`."
+  "When setting the radius to a negative value, it will be automatically computed as ``3*``:py:attr:`sigma`."
 );
 PyObject* PyBobIpBaseWeightedGaussian_getRadius(PyBobIpBaseWeightedGaussianObject* self, void*){
   TRY
@@ -143,8 +144,8 @@ int PyBobIpBaseWeightedGaussian_setRadius(PyBobIpBaseWeightedGaussianObject* sel
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two integers", Py_TYPE(self)->tp_name, radius.name());
     return -1;
   }
-  if (r[0] < 0) r[0] = std::max(int(std::sqrt(self->cxx->getSigma2Y()) * 3 + 0.5), 1);
-  if (r[1] < 0) r[1] = std::max(int(std::sqrt(self->cxx->getSigma2X()) * 3 + 0.5), 1);
+  if (r[0] < 0) r[0] = std::max(int(self->cxx->getSigmaY() * 3 + 0.5), 1);
+  if (r[1] < 0) r[1] = std::max(int(self->cxx->getSigmaX() * 3 + 0.5), 1);
   self->cxx->setRadius(r);
   return 0;
   CATCH("radius could not be set", -1)
@@ -171,10 +172,10 @@ int PyBobIpBaseWeightedGaussian_setBorder(PyBobIpBaseWeightedGaussianObject* sel
 
 static PyGetSetDef PyBobIpBaseWeightedGaussian_getseters[] = {
     {
-      sigma2.name(),
-      (getter)PyBobIpBaseWeightedGaussian_getSigma2,
-      (setter)PyBobIpBaseWeightedGaussian_setSigma2,
-      sigma2.doc(),
+      sigma.name(),
+      (getter)PyBobIpBaseWeightedGaussian_getSigma,
+      (setter)PyBobIpBaseWeightedGaussian_setSigma,
+      sigma.doc(),
       0
     },
     {
