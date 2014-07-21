@@ -68,7 +68,7 @@ blitz::TinyVector<double,2>
 bob::ip::base::GeomNorm::process(const blitz::TinyVector<double,2>& position, const blitz::TinyVector<double,2>& center) const
 {
   // compute scale and angle parameters
-  const double sin_angle = -sin(m_rotation_angle * M_PI / 180.) * m_scaling_factor,
+  const double sin_angle = sin(m_rotation_angle * M_PI / 180.) * m_scaling_factor,
                cos_angle = cos(m_rotation_angle * M_PI / 180.) * m_scaling_factor;
 
   const double centered_y = position(0) - center[0],

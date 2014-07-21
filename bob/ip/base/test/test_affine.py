@@ -276,6 +276,7 @@ def test_geom_norm_with_mask():
 def test_geom_norm_position():
   # generate geometric normalizer that rotates by 45 degrees, scales by 2 and moves to new center (40,80)
   # (the image resolution aka cropping area 160x160 is not required for this test...)
+  # NOTE: the rotation direction is NEGATIVE, i.e., -45 degrees since this is how the images are transformed
   geom_norm = bob.ip.base.GeomNorm(45., 2., (160, 160), (40, 80))
 
   # define positions to be rotated
@@ -286,9 +287,9 @@ def test_geom_norm_position():
   rotated = geom_norm(position,(20,20))
 
   # check the new position
-  # new y-value should be 0 plus offset
-  # new x value is the length of the centered vector (i.e. 5*sqrt(2)) times the scaling factor 2 plus offset
-  assert numpy.allclose(rotated, (40, 80. + 5. * math.sqrt(2.) * 2))
+  # new y-value should be offset minus the length of the centered vector (i.e. 5*sqrt(2)) times the scaling factor 2
+  # new x value is the offset
+  assert numpy.allclose(rotated, (40 - 5. * math.sqrt(2.) * 2, 80. ))
 
 
 ###############################################
@@ -300,10 +301,15 @@ def test_face_eyes_norm():
   test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.hdf5", "bob.ip.base", "data/affine"))
   processed = numpy.ndarray((40, 40))
 
-  fen = bob.ip.base.FaceEyesNorm((40, 40), 20, (5/19.*40, 20))
+  offset = (5/19.*40, 20)
+  fen = bob.ip.base.FaceEyesNorm((40, 40), 20, offset)
+
+  # right and left eye in original image
+  right_eye = (67,47)
+  left_eye = (62,71)
 
   # Process giving the coordinates of the eyes
-  fen(test_image, processed, (67,47), (62,71))
+  fen(test_image, processed, right_eye, left_eye)
   normalized = numpy.round(processed).astype(numpy.uint8)
 
   reference_file = bob.io.base.test_utils.datafile("image_r10_face_eyes_norm.hdf5", "bob.ip.base", "data/affine")
@@ -314,4 +320,11 @@ def test_face_eyes_norm():
 
   assert numpy.allclose(normalized, reference_image)
 
+  # check that the eye positions are actually alligned correctly
+  center = ((right_eye[0] + left_eye[0]) / 2., (right_eye[1] + left_eye[1]) / 2.)
+  new_right_eye = fen.geom_norm(right_eye, center)
+  new_left_eye = fen.geom_norm(left_eye, center)
+
+  assert numpy.allclose(new_right_eye, (offset[0], 10.))
+  assert numpy.allclose(new_left_eye, (offset[0], 30.))
 

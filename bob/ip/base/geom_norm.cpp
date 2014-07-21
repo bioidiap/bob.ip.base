@@ -21,7 +21,10 @@ static auto GeomNorm_doc = bob::extension::ClassDoc(
   bob::extension::FunctionDoc(
     "__init__",
     "Constructs a GeomNorm object with the given scale, angle, size of the new image and transformation offset in the new image",
-    ".. todo:: Add a more detailed documentation of GeomNorm, i.e., by adding some equations",
+    "When the GeomNorm is applied to an image, it is rotated and scaled such that it **visually** rotated counter-clock-wise (mathematically positive) with the given angle, i.e., to mimic the behavior of ImageMagick. "
+    "Since the origin in the image is in the top-left corner, this means that the rotation is **actually** clock-wise (mathematically negative). "
+    "This **also applies** for the second version of the landmarks, which will be rotated mathematically negative as well, to keep it consistent with the image.\n\n"
+    ".. warning:: The behavior of the landmark rotation has changed from Bob version 1.x, where the landmarks were mistakenly rotated mathematically positive.",
     true
   )
   .add_prototype("rotation_angle, scaling_factor, crop_size, crop_offset", "")
@@ -231,8 +234,8 @@ static PyGetSetDef PyBobIpBaseGeomNorm_getseters[] = {
 
 static auto process = bob::extension::FunctionDoc(
   "process",
-  "This function processes the image or position",
-  ".. todo:: Add more detailed information\n\n"
+  "This function geometrically normalizes an image or a position in the image",
+  "The function rotates and scales the given image, or a position in image coordinates, such that the result is **visually** rotated and scaled with the :py:attr:`rotation_angle` and :py:attr:`scaling_factor`. "
   ".. note:: The :py:func:`__call__` function is an alias for this method.",
   true
 )
