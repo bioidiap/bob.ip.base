@@ -6,7 +6,7 @@
 from setuptools import setup, find_packages, dist
 dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base', 'bob.sp']))
 import bob.extension.utils
-from bob.blitz.extension import Extension
+from bob.blitz.extension import Extension, build_ext
 
 import bob.io.base
 import bob.sp
@@ -109,7 +109,7 @@ setup(
         version = version,
         packages = packages,
         ),
-      Extension("bob.ip.base._library",
+      Extension("bob.ip.base.libbob_ip_base",
         [
           # pure C++ code
           "bob/ip/base/cpp/GeomNorm.cpp",
@@ -127,7 +127,17 @@ setup(
           "bob/ip/base/cpp/SIFT.cpp",
           "bob/ip/base/cpp/HOG.cpp",
           "bob/ip/base/cpp/GLCM.cpp",
+        ],
+        packages = packages,
+        include_dirs = include_dirs,
+        version = version,
+        library_dirs = [vl_pkg.library_directory],
+        libraries = vl_pkg.libraries,
+        define_macros = vl_pkg.macros,
+      ),
 
+      Extension("bob.ip.base._library",
+        [
           # Python bindings
           "bob/ip/base/auxiliary.cpp",
           "bob/ip/base/geom_norm.cpp",
@@ -152,6 +162,7 @@ setup(
         ],
 
         packages = packages,
+        internal_libraries = {package_dir: ['bob_ip_base']},
         include_dirs = include_dirs,
         version = version,
         library_dirs = [vl_pkg.library_directory],
@@ -159,6 +170,10 @@ setup(
         define_macros = vl_pkg.macros,
       ),
     ],
+
+    cmdclass = {
+      'build_ext': build_ext
+    },
 
     classifiers = [
       'Development Status :: 3 - Alpha',
