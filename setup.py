@@ -134,6 +134,7 @@ setup(
         library_dirs = [vl_pkg.library_directory],
         libraries = vl_pkg.libraries,
         define_macros = vl_pkg.macros,
+        is_pure_cpp = True,
       ),
 
       Extension("bob.ip.base._library",
