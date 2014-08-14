@@ -9,10 +9,10 @@
 
 
 #include "main.h"
-#include "cpp/IntegralImage.h"
-#include "cpp/LBPHS.h"
-#include "cpp/Histogram.h"
-#include "cpp/ZigZag.h"
+#include <bob.ip.base/IntegralImage.h>
+#include <bob.ip.base/LBPHS.h>
+#include <bob.ip.base/Histogram.h>
+#include <bob.ip.base/ZigZag.h>
 
 static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
 

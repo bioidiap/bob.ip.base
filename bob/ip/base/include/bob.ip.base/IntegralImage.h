@@ -10,9 +10,8 @@
 #ifndef BOB_IP_BASE_INTEGRAL_IMAGE_H
 #define BOB_IP_BASE_INTEGRAL_IMAGE_H
 
-#include "bob/core/assert.h"
-#include "bob/core/array_index.h"
-#include "bob/core/cast.h"
+#include <bob.core/assert.h>
+#include <bob.core/array_index.h>
 
 namespace bob { namespace ip { namespace base {
     /**
@@ -27,18 +26,18 @@ namespace bob { namespace ip { namespace base {
     template<typename T, typename U>
     void integral_(const blitz::Array<T,2>& src, blitz::Array<U,2>& dst)
     {
-      dst(0,0) = bob::core::cast<U>(src(0,0));
+      dst(0,0) = static_cast<U>(src(0,0));
       // Compute first row
       for(int x=1; x<src.extent(1); ++x)
-        dst(0,x) = dst(0,x-1) + bob::core::cast<U>(src(0,x));
+        dst(0,x) = dst(0,x-1) + static_cast<U>(src(0,x));
       // Compute remaining part
       for(int y=1; y<src.extent(0); ++y)
       {
-        dst(y,0) = dst(y-1,0) + bob::core::cast<U>(src(y,0));
+        dst(y,0) = dst(y-1,0) + static_cast<U>(src(y,0));
         U row_sum_cur = src(y,0);
         for(int x=1; x<src.extent(1); ++x)
         {
-          row_sum_cur += bob::core::cast<U>(src(y,x));
+          row_sum_cur += static_cast<U>(src(y,x));
           dst(y,x) = dst(y-1,x) + row_sum_cur;
         }
       }
@@ -101,13 +100,13 @@ namespace bob { namespace ip { namespace base {
   template<typename T, typename U>
   void integral_(const blitz::Array<T,2>& src, blitz::Array<U,2>& dst, blitz::Array<U,2>& sqr)
   {
-    const U v = bob::core::cast<U>(src(0,0));
+    const U v = static_cast<U>(src(0,0));
     dst(0,0) = v;
     sqr(0,0) = v*v;
 
     // Compute first row
     for(int x=1; x<src.extent(1); ++x){
-      const U v = bob::core::cast<U>(src(0,x));
+      const U v = static_cast<U>(src(0,x));
       dst(0,x) = dst(0,x-1) + v;
       sqr(0,x) = sqr(0,x-1) + v*v;
     }
@@ -115,7 +114,7 @@ namespace bob { namespace ip { namespace base {
     // Compute remaining part
     for(int y=1; y<src.extent(0); ++y)
     {
-      U row_sum_cur = bob::core::cast<U>(src(y,0));
+      U row_sum_cur = static_cast<U>(src(y,0));
       U row_sum_sqr = row_sum_cur * row_sum_cur;
 
       dst(y,0) = dst(y-1,0) + row_sum_cur;
@@ -123,7 +122,7 @@ namespace bob { namespace ip { namespace base {
 
       for(int x=1; x<src.extent(1); ++x)
       {
-        const U v = bob::core::cast<U>(src(y,x));
+        const U v = static_cast<U>(src(y,x));
         row_sum_cur += v;
         row_sum_sqr += v*v;
 

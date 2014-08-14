@@ -7,7 +7,7 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "FaceEyesNorm.h"
+#include <bob.ip.base/FaceEyesNorm.h>
 
 bob::ip::base::FaceEyesNorm::FaceEyesNorm(
     const blitz::TinyVector<int,2>& cropSize,

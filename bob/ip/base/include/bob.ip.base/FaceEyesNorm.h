@@ -11,10 +11,10 @@
 #define BOB_IP_BASE_FACE_EYES_NORM_H
 
 #include <boost/shared_ptr.hpp>
-#include "bob/core/assert.h"
-#include "bob/core/check.h"
+#include <bob.core/assert.h>
+#include <bob.core/check.h>
 
-#include "GeomNorm.h"
+#include <bob.ip.base/GeomNorm.h>
 
 static inline double _sqr(double x){return x*x;}
 

@@ -12,8 +12,8 @@
 
 #include <vector>
 #include <algorithm>
-#include "bob/core/assert.h"
-#include "bob/core/cast.h"
+#include <bob.core/assert.h>
+#include <bob.core/cast.h>
 
 namespace bob { namespace ip { namespace base {
 

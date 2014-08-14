@@ -7,7 +7,7 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "SelfQuotientImage.h"
+#include <bob.ip.base/SelfQuotientImage.h>
 
 bob::ip::base::SelfQuotientImage::SelfQuotientImage(
     const size_t n_scales,

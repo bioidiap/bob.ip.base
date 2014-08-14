@@ -1,5 +1,4 @@
 /**
- * @file bob/ip/block.h
  * @date Tue Apr 5 12:38:15 2011 +0200
  * @author Laurent El Shafey <Laurent.El-Shafey@idiap.ch>
  *
@@ -11,7 +10,7 @@
 #ifndef BOB_IP_BASE_BLOCK_H
 #define BOB_IP_BASE_BLOCK_H
 
-#include "bob/core/assert.h"
+#include <bob.core/assert.h>
 
 namespace bob { namespace ip { namespace base {
 

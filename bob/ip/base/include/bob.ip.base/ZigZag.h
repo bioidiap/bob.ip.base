@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <boost/format.hpp>
-#include "bob/core/assert.h"
+#include <bob.core/assert.h>
 
 namespace bob { namespace ip { namespace base {
 

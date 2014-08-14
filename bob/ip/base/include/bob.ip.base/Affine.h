@@ -11,8 +11,8 @@
 #define BOB_IP_BASE_AFFINE_H
 
 #include <boost/shared_ptr.hpp>
-#include <bob/core/assert.h>
-#include <bob/core/check.h>
+#include <bob.core/assert.h>
+#include <bob.core/check.h>
 
 
 namespace bob { namespace ip { namespace base {

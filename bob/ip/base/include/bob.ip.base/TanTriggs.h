@@ -10,9 +10,9 @@
 #ifndef BOB_IP_BASE_TAN_TRIGGS_H
 #define BOB_IP_BASE_TAN_TRIGGS_H
 
-#include "bob/core/assert.h"
-#include "bob/sp/conv.h"
-#include "bob/sp/extrapolate.h"
+#include <bob.core/assert.h>
+#include <bob.sp/conv.h>
+#include <bob.sp/extrapolate.h>
 
 namespace bob { namespace ip { namespace base {
 

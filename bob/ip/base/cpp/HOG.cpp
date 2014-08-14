@@ -7,7 +7,7 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "HOG.h"
+#include <bob.ip.base/HOG.h>
 
 bob::ip::base::BlockCellDescriptors::BlockCellDescriptors(
   const size_t height,

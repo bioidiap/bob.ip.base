@@ -8,7 +8,7 @@
  */
 
 #include "main.h"
-#include "cpp/GLCM.h"
+#include <bob.ip.base/GLCM.h>
 
 /******************************************************************/
 /************ Enumerations Section ********************************/

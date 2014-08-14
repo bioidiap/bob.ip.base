@@ -7,9 +7,8 @@
  * Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "DCTFeatures.h"
-
-#include "ZigZag.h"
+#include <bob.ip.base/DCTFeatures.h>
+#include <bob.ip.base/ZigZag.h>
 
 #include <stdexcept>
 

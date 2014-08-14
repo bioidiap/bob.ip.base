@@ -7,7 +7,7 @@
  * Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "TanTriggs.h"
+#include <bob.ip.base/TanTriggs.h>
 
 bob::ip::base::TanTriggs::TanTriggs(
   const double gamma,

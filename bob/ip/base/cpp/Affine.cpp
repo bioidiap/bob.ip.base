@@ -8,7 +8,7 @@
  */
 
 
-#include "Affine.h"
+#include <bob.ip.base/Affine.h>
 
 static bool isTrue(const blitz::Array<bool,2>& mask, int y0, int x0, int y1, int x1)
 {

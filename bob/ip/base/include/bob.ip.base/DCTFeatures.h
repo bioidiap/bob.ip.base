@@ -8,13 +8,13 @@
 #ifndef BOB_IP_BASE_DCT_FEATURES_H
 #define BOB_IP_BASE_DCT_FEATURES_H
 
-#include <bob/core/cast.h>
-#include <bob/core/array_copy.h>
-#include <bob/sp/DCT2D.h>
+#include <bob.core/cast.h>
+#include <bob.core/array_copy.h>
+#include <bob.sp/DCT2D.h>
 #include <list>
 #include <limits>
 
-#include "Block.h"
+#include <bob.ip.base/Block.h>
 
 namespace bob { namespace ip { namespace base {
 

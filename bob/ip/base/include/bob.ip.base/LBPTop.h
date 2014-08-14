@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <limits>
 
-#include "LBP.h"
+#include <bob.ip.base/LBP.h>
 
 namespace bob { namespace ip { namespace base {
 

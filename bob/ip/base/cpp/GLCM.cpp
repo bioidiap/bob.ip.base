@@ -7,11 +7,11 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "bob/core/array_copy.h"
-#include "bob/core/assert.h"
+#include <bob.core/array_copy.h>
+#include <bob.core/assert.h>
 #include <boost/make_shared.hpp>
 
-#include "GLCM.h"
+#include <bob.ip.base/GLCM.h>
 
 static double sqr(const double x)
 {

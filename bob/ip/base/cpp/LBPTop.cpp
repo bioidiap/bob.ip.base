@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 #include <boost/format.hpp>
-#include "LBPTop.h"
+#include <bob.ip.base/LBPTop.h>
 
 bob::ip::base::LBPTop::LBPTop(
     boost::shared_ptr<LBP> lbp_xy,

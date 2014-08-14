@@ -9,12 +9,12 @@
 #define BOB_IP_BASE_GAUSSIANSCALESPACE_H
 
 #include <blitz/array.h>
-#include <bob/core/assert.h>
+#include <bob.core/assert.h>
 
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
-#include "Gaussian.h"
+#include <bob.ip.base/Gaussian.h>
 
 namespace bob { namespace ip { namespace base {
   /**

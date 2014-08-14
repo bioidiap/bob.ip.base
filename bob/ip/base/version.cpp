@@ -5,9 +5,11 @@
  * @brief Binds configuration information available from bob
  */
 
-#include <Python.h>
-
-#include <bob/config.h>
+#ifdef NO_IMPORT_ARRAY
+#undef NO_IMPORT_ARRAY
+#endif
+#include <bob.blitz/capi.h>
+#include <bob.blitz/cleanup.h>
 
 #include <string>
 #include <cstdlib>
@@ -17,11 +19,7 @@
 #include <boost/format.hpp>
 #include <vl/generic.h>
 
-#ifdef NO_IMPORT_ARRAY
-#undef NO_IMPORT_ARRAY
-#endif
-#include <bob.blitz/capi.h>
-#include <bob.blitz/cleanup.h>
+#include <bob.core/config.h>
 
 static int dict_set(PyObject* d, const char* key, const char* value) {
   PyObject* v = Py_BuildValue("s", value);
@@ -89,10 +87,10 @@ static PyObject* vlfeat_version() {
 }
 
 /**
- * Bob version, API version and platform
+ * bob.core c/c++ api version
  */
-static PyObject* bob_version() {
-  return Py_BuildValue("sis", BOB_VERSION, BOB_API_VERSION, BOB_PLATFORM);
+static PyObject* bob_core_version() {
+  return Py_BuildValue("{ss}", "api", BOOST_PP_STRINGIZE(BOB_CORE_API_VERSION));
 }
 
 /**
@@ -122,7 +120,7 @@ static PyObject* build_version_dictionary() {
   if (!dict_steal(retval, "Python", python_version())) return 0;
   if (!dict_steal(retval, "NumPy", numpy_version())) return 0;
   if (!dict_steal(retval, "bob.blitz", bob_blitz_version())) return 0;
-  if (!dict_steal(retval, "Bob", bob_version())) return 0;
+  if (!dict_steal(retval, "Bob", bob_core_version())) return 0;
   if (!dict_steal(retval, "VLFeat", vlfeat_version())) return 0;
 
   Py_INCREF(retval);

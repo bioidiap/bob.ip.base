@@ -11,7 +11,7 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "LBP.h"
+#include <bob.ip.base/LBP.h>
 
 #include <boost/math/constants/constants.hpp>
 
@@ -123,7 +123,7 @@ bob::ip::base::LBP::LBP(
   init();
 }
 
-bob::ip::base::LBP::LBP(bob::io::HDF5File file):
+bob::ip::base::LBP::LBP(bob::io::base::HDF5File file):
   m_P(0),
   m_R_y(0),
   m_R_x(0),
@@ -468,7 +468,7 @@ int bob::ip::base::LBP::getMaxLabel() const {
   }
 }
 
-void bob::ip::base::LBP::save(bob::io::HDF5File file) const{
+void bob::ip::base::LBP::save(bob::io::base::HDF5File file) const{
   file.set("Neighbors", m_P);
   if (m_mb_y > 0 && m_mb_y > 0) {
     file.append("BlockSize", m_mb_y);
@@ -488,7 +488,7 @@ void bob::ip::base::LBP::save(bob::io::HDF5File file) const{
   file.set("ELBPType", m_eLBP_type);
 }
 
-void bob::ip::base::LBP::load(bob::io::HDF5File file){
+void bob::ip::base::LBP::load(bob::io::base::HDF5File file){
   m_P = file.read<int>("Neighbors");
   m_ov_y = m_ov_x = 0;
   if (file.contains("BlockSize")){

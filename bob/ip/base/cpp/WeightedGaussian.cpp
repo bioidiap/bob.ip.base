@@ -10,8 +10,8 @@
 
 #include <boost/format.hpp>
 #include <stdexcept>
-#include "IntegralImage.h"
-#include "WeightedGaussian.h"
+#include <bob.ip.base/IntegralImage.h>
+#include <bob.ip.base/WeightedGaussian.h>
 
 
 bob::ip::base::WeightedGaussian::WeightedGaussian(

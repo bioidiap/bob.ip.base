@@ -22,11 +22,12 @@
 
 #include <blitz/array.h>
 
-#include <bob/core/assert.h>
-#include <bob/sp/interpolate.h>
-#include <bob/io/HDF5File.h>
+#include <bob.core/assert.h>
+#include <bob.core/cast.h>
+#include <bob.sp/interpolate.h>
+#include <bob.io.base/HDF5File.h>
 
-#include "IntegralImage.h"
+#include <bob.ip.base/IntegralImage.h>
 
 
 namespace bob { namespace ip { namespace base {
@@ -139,7 +140,7 @@ namespace bob { namespace ip { namespace base {
        * Constructor reading the configuration from the given HDF5File.
        * @param file  The HDF5File, from which the configuration should be read
        */
-      LBP(bob::io::HDF5File file);
+      LBP(bob::io::base::HDF5File file);
 
       /**
        * Copy constructor
@@ -270,12 +271,12 @@ namespace bob { namespace ip { namespace base {
       /**
        * Writes the LBP configuration to HDF5File
        */
-      void save(bob::io::HDF5File file) const;
+      void save(bob::io::base::HDF5File file) const;
 
       /**
        * Reads the LBP configuration from HDF5File
        */
-      void load(bob::io::HDF5File file);
+      void load(bob::io::base::HDF5File file);
 
     private:
 

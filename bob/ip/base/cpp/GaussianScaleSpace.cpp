@@ -5,7 +5,7 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "GaussianScaleSpace.h"
+#include <bob.ip.base/GaussianScaleSpace.h>
 
 bob::ip::base::GaussianScaleSpace::GaussianScaleSpace(
   const size_t height,

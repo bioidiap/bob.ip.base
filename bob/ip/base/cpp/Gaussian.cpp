@@ -8,7 +8,7 @@
  */
 
 
-#include "Gaussian.h"
+#include <bob.ip.base/Gaussian.h>
 
 bob::ip::base::Gaussian::Gaussian(
   const size_t radius_y, const size_t radius_x,

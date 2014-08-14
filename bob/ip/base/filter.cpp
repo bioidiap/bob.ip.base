@@ -9,8 +9,8 @@
 
 
 #include "main.h"
-#include "cpp/Median.h"
-#include "cpp/Sobel.h"
+#include <bob.ip.base/Median.h>
+#include <bob.ip.base/Sobel.h>
 
 static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
 

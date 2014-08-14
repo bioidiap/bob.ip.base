@@ -11,10 +11,10 @@
 #define BOB_IP_BASE_GEOM_NORM_H
 
 #include <boost/shared_ptr.hpp>
-#include "bob/core/assert.h"
-#include "bob/core/check.h"
+#include <bob.core/assert.h>
+#include <bob.core/check.h>
 
-#include "Affine.h"
+#include <bob.ip.base/Affine.h>
 
 namespace bob { namespace ip { namespace base {
 

@@ -16,20 +16,20 @@
 #include <bob.io.base/api.h>
 #include <bob.extension/documentation.h>
 
-#include "cpp/LBP.h"
-#include "cpp/LBPTop.h"
-#include "cpp/DCTFeatures.h"
-#include "cpp/TanTriggs.h"
-#include "cpp/Gaussian.h"
-#include "cpp/MultiscaleRetinex.h"
-#include "cpp/WeightedGaussian.h"
-#include "cpp/SelfQuotientImage.h"
-#include "cpp/GaussianScaleSpace.h"
-#include "cpp/SIFT.h"
-#include "cpp/HOG.h"
-#include "cpp/GeomNorm.h"
-#include "cpp/FaceEyesNorm.h"
-#include "cpp/GLCM.h"
+#include <bob.ip.base/LBP.h>
+#include <bob.ip.base/LBPTop.h>
+#include <bob.ip.base/DCTFeatures.h>
+#include <bob.ip.base/TanTriggs.h>
+#include <bob.ip.base/Gaussian.h>
+#include <bob.ip.base/MultiscaleRetinex.h>
+#include <bob.ip.base/WeightedGaussian.h>
+#include <bob.ip.base/SelfQuotientImage.h>
+#include <bob.ip.base/GaussianScaleSpace.h>
+#include <bob.ip.base/SIFT.h>
+#include <bob.ip.base/HOG.h>
+#include <bob.ip.base/GeomNorm.h>
+#include <bob.ip.base/FaceEyesNorm.h>
+#include <bob.ip.base/GLCM.h>
 
 
 #if PY_VERSION_HEX >= 0x03000000

@@ -13,12 +13,12 @@
 #ifndef BOB_IP_BASE_MULTISCALE_RETINEX_H
 #define BOB_IP_BASE_MULTISCALE_RETINEX_H
 
-#include <bob/core/assert.h>
-#include <bob/core/cast.h>
-#include <bob/sp/extrapolate.h>
+#include <bob.core/assert.h>
+#include <bob.core/cast.h>
+#include <bob.sp/extrapolate.h>
 #include <boost/shared_array.hpp>
 
-#include "Gaussian.h"
+#include <bob.ip.base/Gaussian.h>
 
 namespace bob { namespace ip { namespace base {
 

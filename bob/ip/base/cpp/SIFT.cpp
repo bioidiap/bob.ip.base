@@ -5,10 +5,10 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include <bob/core/assert.h>
+#include <bob.core/assert.h>
 #include <algorithm>
 
-#include "SIFT.h"
+#include <bob.ip.base/SIFT.h>
 
 bob::ip::base::SIFT::SIFT(
   const size_t height,
@@ -160,8 +160,8 @@ void bob::ip::base::SIFT::resetCache()
       m_gss_pyr[i].extent(1), m_gss_pyr[i].extent(2)));
     m_gss_pyr_grad_or.push_back(blitz::Array<double,3>(m_gss_pyr[i].extent(0)-3,
       m_gss_pyr[i].extent(1), m_gss_pyr[i].extent(2)));
-    m_gradient_maps.push_back(boost::shared_ptr<bob::ip::GradientMaps>(new
-      bob::ip::GradientMaps(m_gss_pyr[i].extent(1), m_gss_pyr[i].extent(2))));
+    m_gradient_maps.push_back(boost::shared_ptr<bob::ip::base::GradientMaps>(new
+      bob::ip::base::GradientMaps(m_gss_pyr[i].extent(1), m_gss_pyr[i].extent(2))));
     m_gss_pyr[i] = 0.;
     m_dog_pyr[i] = 0.;
     m_gss_pyr_grad_mag[i] = 0.;
@@ -196,13 +196,13 @@ void bob::ip::base::SIFT::computeGradient()
     blitz::Array<double,3>& gss = m_gss_pyr[i];
     blitz::Array<double,3>& gmag = m_gss_pyr_grad_mag[i];
     blitz::Array<double,3>& gor = m_gss_pyr_grad_or[i];
-    boost::shared_ptr<bob::ip::GradientMaps> gmap = m_gradient_maps[i];
+    boost::shared_ptr<bob::ip::base::GradientMaps> gmap = m_gradient_maps[i];
     for (int s=0; s<gmag.extent(0); ++s)
     {
       blitz::Array<double,2> gss_s = gss(s+1, rall, rall);
       blitz::Array<double,2> gmag_s = gmag(s, rall, rall);
       blitz::Array<double,2> gor_s = gor(s, rall, rall);
-      gmap->forward(gss_s, gmag_s, gor_s);
+      gmap->process(gss_s, gmag_s, gor_s);
     }
   }
 }
@@ -388,7 +388,7 @@ void bob::ip::base::SIFT::computeKeypointInfo(const bob::ip::base::GSSKeypoint& 
 
 #if HAVE_VLFEAT
 #include <vl/pgm.h>
-#include <bob/core/array_copy.h>
+#include <bob.core/array_copy.h>
 /// VLSIFT
 bob::ip::base::VLSIFT::VLSIFT(const size_t height, const size_t width,
     const size_t n_intervals, const size_t n_octaves, const int octave_min,

@@ -14,10 +14,10 @@
 #ifndef BOB_IP_BASE_CELL_BLOCK_DESCRIPTORS_H
 #define BOB_IP_BASE_CELL_BLOCK_DESCRIPTORS_H
 
-#include "bob/core/assert.h"
-#include "bob/math/gradient.h"
+#include <bob.core/assert.h>
+#include <bob.math/gradient.h>
 
-#include "Block.h"
+#include <bob.ip.base/Block.h>
 
 #include <boost/shared_ptr.hpp>
 

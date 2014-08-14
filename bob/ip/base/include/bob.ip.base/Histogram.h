@@ -11,8 +11,8 @@
 #define BOB_IP_BASE_HISTOGRAM_H
 
 
-#include "bob/core/assert.h"
-#include "bob/core/array_type.h"
+#include <bob.core/assert.h>
+#include <bob.io.base/array_type.h>
 
 namespace bob { namespace ip { namespace base {
 
@@ -37,19 +37,19 @@ namespace bob { namespace ip { namespace base {
     const blitz::Array<T, 2>& src,
     blitz::Array<uint64_t, 1>& histo
   ){
-    bob::core::array::ElementType element_type = bob::core::array::getElementType<T>();
+    bob::io::base::array::ElementType element_type = bob::io::base::array::getElementType<T>();
 
     // Check that the given type is supported
     switch (element_type) {
-      case bob::core::array::t_uint8:
-      case bob::core::array::t_uint16:
-      case bob::core::array::t_uint32:
-      case bob::core::array::t_uint64:
+      case bob::io::base::array::t_uint8:
+      case bob::io::base::array::t_uint16:
+      case bob::io::base::array::t_uint32:
+      case bob::io::base::array::t_uint64:
         // Valid type
         break;
       default:
         // Invalid type
-        throw std::runtime_error((boost::format("data type `%s' cannot be histogrammed without specifying a range") % bob::core::array::stringize<T>()).str());
+        throw std::runtime_error((boost::format("data type `%s' cannot be histogrammed without specifying a range") % bob::io::base::array::stringize<T>()).str());
     }
 
     // empty the histogram
@@ -88,26 +88,26 @@ namespace bob { namespace ip { namespace base {
     T min,
     T max
   ){
-    bob::core::array::ElementType element_type = bob::core::array::getElementType<T>();
+    bob::io::base::array::ElementType element_type = bob::io::base::array::getElementType<T>();
 
     // Check that the given type is supported
     switch (element_type) {
-      case bob::core::array::t_int8:
-      case bob::core::array::t_int16:
-      case bob::core::array::t_int32:
-      case bob::core::array::t_int64:
-      case bob::core::array::t_uint8:
-      case bob::core::array::t_uint16:
-      case bob::core::array::t_uint32:
-      case bob::core::array::t_uint64:
-      case bob::core::array::t_float32:
-      case bob::core::array::t_float64:
-      case bob::core::array::t_float128:
+      case bob::io::base::array::t_int8:
+      case bob::io::base::array::t_int16:
+      case bob::io::base::array::t_int32:
+      case bob::io::base::array::t_int64:
+      case bob::io::base::array::t_uint8:
+      case bob::io::base::array::t_uint16:
+      case bob::io::base::array::t_uint32:
+      case bob::io::base::array::t_uint64:
+      case bob::io::base::array::t_float32:
+      case bob::io::base::array::t_float64:
+      case bob::io::base::array::t_float128:
         // Valid type
         break;
       default:
         // Invalid type
-        throw std::runtime_error((boost::format("data type `%s' cannot be histogrammed") % bob::core::array::stringize<T>()).str());
+        throw std::runtime_error((boost::format("data type `%s' cannot be histogrammed") % bob::io::base::array::stringize<T>()).str());
     }
 
     if (max <= min) {
@@ -160,42 +160,42 @@ namespace bob { namespace ip { namespace base {
     const blitz::Array<T1, 2>& src,
     blitz::Array<T2, 2>& dst
   ){
-    bob::core::array::ElementType element_type = bob::core::array::getElementType<T1>();
+    bob::io::base::array::ElementType element_type = bob::io::base::array::getElementType<T1>();
     // Check that the given type is supported
     // we here only support integral types lower than 64 bit
     switch (element_type) {
-      case bob::core::array::t_uint8:
-      case bob::core::array::t_uint16:
+      case bob::io::base::array::t_uint8:
+      case bob::io::base::array::t_uint16:
         // Valid type
         break;
       default:
         // Invalid type
-        throw std::runtime_error((boost::format("data type `%s' cannot be histogrammed") % bob::core::array::stringize<T1>()).str());
+        throw std::runtime_error((boost::format("data type `%s' cannot be histogrammed") % bob::io::base::array::stringize<T1>()).str());
     }
 
     // range of the desired type
     T2 dst_min, dst_max;
 
-    element_type = bob::core::array::getElementType<T2>();
+    element_type = bob::io::base::array::getElementType<T2>();
 
     // Check that the given type is supported
     // we here only support integral types lower than 64 bit
     switch (element_type) {
-      case bob::core::array::t_uint8:
-      case bob::core::array::t_uint16:
-      case bob::core::array::t_uint32:
+      case bob::io::base::array::t_uint8:
+      case bob::io::base::array::t_uint16:
+      case bob::io::base::array::t_uint32:
         // Valid type
         dst_min = std::numeric_limits<T2>::min();
         dst_max = std::numeric_limits<T2>::max();
         break;
-      case bob::core::array::t_float32:
-      case bob::core::array::t_float64:
+      case bob::io::base::array::t_float32:
+      case bob::io::base::array::t_float64:
         dst_min = std::numeric_limits<T1>::min();
         dst_max = std::numeric_limits<T1>::max();
         break;
       default:
         // Invalid type
-          std::runtime_error((boost::format("data type `%s' cannot be the destination of histogram equalization") % bob::core::array::stringize<T2>()).str());
+          std::runtime_error((boost::format("data type `%s' cannot be the destination of histogram equalization") % bob::io::base::array::stringize<T2>()).str());
     }
     bob::core::array::assertSameShape(src, dst);
 

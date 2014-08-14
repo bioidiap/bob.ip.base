@@ -4,18 +4,15 @@
 # Thu 30 Jan 08:45:49 2014 CET
 
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base', 'bob.sp']))
+dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.core', 'bob.io.base', 'bob.sp', 'bob.math']))
 import bob.extension.utils
-from bob.blitz.extension import Extension, build_ext
-
-import bob.io.base
-import bob.sp
+from bob.blitz.extension import Extension, Library, build_ext
 
 import os
 package_dir = os.path.dirname(os.path.realpath(__file__))
-package_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
+target_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
 
-packages = ['bob-ip >= 1.2.2', 'bob-io >= 1.2.2', 'bob-sp >= 1.2.2', 'boost']
+packages = ['boost']
 version = '2.0.0a0'
 
 class vl:
@@ -70,7 +67,7 @@ class vl:
 
 vl_pkg = vl(have_vlfeat=True)
 
-include_dirs = [package_dir, bob.io.base.get_include(), bob.sp.get_include(), vl_pkg.include_directory]
+include_dirs = [vl_pkg.include_directory]
 
 
 setup(
@@ -92,6 +89,7 @@ setup(
       'setuptools',
       'matplotlib',
       'bob.blitz',
+      'bob.core',
       'bob.sp',
       'bob.io.base',
     ],
@@ -106,12 +104,13 @@ setup(
         [
           "bob/ip/base/version.cpp",
         ],
-        version = version,
+        bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math'],
         packages = packages,
-        ),
-      Extension("bob.ip.base.libbob_ip_base",
+        version = version,
+      ),
+
+      Library("bob_ip_base",
         [
-          # pure C++ code
           "bob/ip/base/cpp/GeomNorm.cpp",
           "bob/ip/base/cpp/FaceEyesNorm.cpp",
           "bob/ip/base/cpp/Affine.cpp",
@@ -128,18 +127,19 @@ setup(
           "bob/ip/base/cpp/HOG.cpp",
           "bob/ip/base/cpp/GLCM.cpp",
         ],
+        package_directory = package_dir,
+        target_directory = target_dir,
         packages = packages,
+        bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math'],
         include_dirs = include_dirs,
         version = version,
         library_dirs = [vl_pkg.library_directory],
         libraries = vl_pkg.libraries,
         define_macros = vl_pkg.macros,
-        is_pure_cpp = True,
       ),
 
       Extension("bob.ip.base._library",
         [
-          # Python bindings
           "bob/ip/base/auxiliary.cpp",
           "bob/ip/base/geom_norm.cpp",
           "bob/ip/base/face_eyes_norm.cpp",
@@ -161,13 +161,12 @@ setup(
           "bob/ip/base/utils.cpp",
           "bob/ip/base/main.cpp",
         ],
-
         packages = packages,
-        internal_libraries = {package_dir: ['bob_ip_base']},
+        bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math'],
         include_dirs = include_dirs,
         version = version,
         library_dirs = [vl_pkg.library_directory],
-        libraries = vl_pkg.libraries,
+        libraries = vl_pkg.libraries + ['bob_ip_base'],
         define_macros = vl_pkg.macros,
       ),
     ],

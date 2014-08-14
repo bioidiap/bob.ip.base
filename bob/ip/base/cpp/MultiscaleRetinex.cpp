@@ -7,7 +7,7 @@
  * Copyright (C) Idiap Research Institute, Martigny, Switzerland
  */
 
-#include "MultiscaleRetinex.h"
+#include <bob.ip.base/MultiscaleRetinex.h>
 
 bob::ip::base::MultiscaleRetinex::MultiscaleRetinex(
   const size_t n_scales,

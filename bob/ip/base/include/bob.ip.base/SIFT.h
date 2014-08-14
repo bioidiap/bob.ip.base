@@ -10,12 +10,12 @@
 
 #include <blitz/array.h>
 // TODO: import into bob.ip.base
-#include <bob/ip/BlockCellGradientDescriptors.h>
-#include <bob/sp/conv.h>
+#include <bob.sp/conv.h>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
-#include "GaussianScaleSpace.h"
+#include <bob.ip.base/GaussianScaleSpace.h>
+#include <bob.ip.base/HOG.h>
 
 #ifdef HAVE_VLFEAT
 #include <vl/generic.h>
@@ -231,7 +231,7 @@ namespace bob { namespace ip { namespace base {
       std::vector<blitz::Array<double,3> > m_dog_pyr;
       std::vector<blitz::Array<double,3> > m_gss_pyr_grad_mag;
       std::vector<blitz::Array<double,3> > m_gss_pyr_grad_or;
-      std::vector<boost::shared_ptr<bob::ip::GradientMaps> > m_gradient_maps;
+      std::vector<boost::shared_ptr<bob::ip::base::GradientMaps> > m_gradient_maps;
   };
 
 
