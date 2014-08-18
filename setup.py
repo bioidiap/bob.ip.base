@@ -3,14 +3,12 @@
 # Andre Anjos <andre.anjos@idiap.ch>
 # Thu 30 Jan 08:45:49 2014 CET
 
+bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math']
+
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.core', 'bob.io.base', 'bob.sp', 'bob.math']))
+dist.Distribution(dict(setup_requires=['bob.blitz'] + bob_packages))
 import bob.extension.utils
 from bob.blitz.extension import Extension, Library, build_ext
-
-import os
-package_dir = os.path.dirname(os.path.realpath(__file__))
-target_dir = os.path.join(package_dir, 'bob', 'ip', 'base')
 
 packages = ['boost']
 version = '2.0.0a0'
@@ -67,7 +65,7 @@ class vl:
 
 vl_pkg = vl(have_vlfeat=True)
 
-include_dirs = [vl_pkg.include_directory]
+system_include_dirs = [vl_pkg.include_directory]
 
 
 setup(
@@ -92,6 +90,7 @@ setup(
       'bob.core',
       'bob.sp',
       'bob.io.base',
+      'bob.math',
     ],
 
     namespace_packages=[
@@ -104,12 +103,12 @@ setup(
         [
           "bob/ip/base/version.cpp",
         ],
-        bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math'],
+        bob_packages = bob_packages,
         packages = packages,
         version = version,
       ),
 
-      Library("bob_ip_base",
+      Library("bob.ip.base.bob_ip_base",
         [
           "bob/ip/base/cpp/GeomNorm.cpp",
           "bob/ip/base/cpp/FaceEyesNorm.cpp",
@@ -127,11 +126,9 @@ setup(
           "bob/ip/base/cpp/HOG.cpp",
           "bob/ip/base/cpp/GLCM.cpp",
         ],
-        package_directory = package_dir,
-        target_directory = target_dir,
         packages = packages,
-        bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math'],
-        include_dirs = include_dirs,
+        bob_packages = bob_packages,
+        system_include_dirs = system_include_dirs,
         version = version,
         library_dirs = [vl_pkg.library_directory],
         libraries = vl_pkg.libraries,
@@ -162,11 +159,11 @@ setup(
           "bob/ip/base/main.cpp",
         ],
         packages = packages,
-        bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math'],
-        include_dirs = include_dirs,
+        bob_packages = bob_packages,
+        system_include_dirs = system_include_dirs,
         version = version,
         library_dirs = [vl_pkg.library_directory],
-        libraries = vl_pkg.libraries + ['bob_ip_base'],
+        libraries = vl_pkg.libraries,
         define_macros = vl_pkg.macros,
       ),
     ],
