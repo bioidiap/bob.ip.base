@@ -15,7 +15,7 @@ version = '2.0.0a0'
 
 class vl:
 
-  def __init__ (self, only_static=False, have_vlfeat = True):
+  def __init__ (self, only_static=False):
     """
     Searches for libvl in stock locations. Allows user to override.
 
@@ -33,21 +33,27 @@ class vl:
     header = 'vl/sift.h'
     module = 'vl'
 
+    self.include_directories = []
+    self.libraries = []
+    self.library_directories = []
+
     # get include directory
     candidates = bob.extension.utils.find_header(header)
     if not candidates:
-      raise RuntimeError("could not find %s's `%s' - have you installed %s on this machine?" % (self.name, header, self.name))
+#      raise RuntimeError("could not find %s's `%s' - have you installed %s on this machine?" % (self.name, header, self.name))
+      return
     directory = os.path.dirname(candidates[0])
-    self.include_directory = os.path.normpath(directory)
 
     # find library
-    prefix = os.path.dirname(os.path.dirname(self.include_directory))
+    prefix = os.path.dirname(os.path.dirname(directory))
     candidates = bob.extension.utils.find_library(module, prefixes=[prefix], only_static=only_static)
     if not candidates:
-      raise RuntimeError("cannot find required %s binary module `%s' - make sure libsvm is installed on `%s'" % (self.name, module, prefix))
+#      raise RuntimeError("cannot find required %s binary module `%s' - make sure libvlfeat-dev is installed on `%s'" % (self.name, module, prefix))
+      return
 
+    # include directories
+    self.include_directories = [os.path.normpath(directory)]
     # libraries
-    self.libraries = []
     name, ext = os.path.splitext(os.path.basename(candidates[0]))
     if ext in ['.so', '.a', '.dylib', '.dll']:
       self.libraries.append(name[3:]) #strip 'lib' from the name
@@ -55,17 +61,14 @@ class vl:
       self.libraries.append(':' + os.path.basename(candidates[0]))
 
     # library path
-    self.library_directory = os.path.dirname(candidates[0])
+    self.library_directories = [os.path.dirname(candidates[0])]
     # macros
-    if have_vlfeat:
-      self.macros = [('HAVE_%s' % self.name.upper(), '1')]
-    else:
-      self.macros = []
+    self.macros = [('HAVE_%s' % self.name.upper(), '1')]
 
 
-vl_pkg = vl(have_vlfeat=True)
+vl_pkg = vl()
 
-system_include_dirs = [vl_pkg.include_directory]
+system_include_dirs = vl_pkg.include_directories
 
 
 setup(
@@ -128,9 +131,9 @@ setup(
         ],
         packages = packages,
         bob_packages = bob_packages,
-        system_include_dirs = system_include_dirs,
+        system_include_dirs = vl_pkg.library_directories,
         version = version,
-        library_dirs = [vl_pkg.library_directory],
+        library_dirs = vl_pkg.library_directories,
         libraries = vl_pkg.libraries,
         define_macros = vl_pkg.macros,
       ),
@@ -160,9 +163,9 @@ setup(
         ],
         packages = packages,
         bob_packages = bob_packages,
-        system_include_dirs = system_include_dirs,
+        system_include_dirs = vl_pkg.library_directories,
         version = version,
-        library_dirs = [vl_pkg.library_directory],
+        library_dirs = vl_pkg.library_directories,
         libraries = vl_pkg.libraries,
         define_macros = vl_pkg.macros,
       ),
