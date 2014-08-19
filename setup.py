@@ -36,6 +36,7 @@ class vl:
     self.include_directories = []
     self.libraries = []
     self.library_directories = []
+    self.macros = []
 
     # get include directory
     candidates = bob.extension.utils.find_header(header)
