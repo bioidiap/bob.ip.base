@@ -1,3 +1,11 @@
+# import Libraries of other lib packages
+import bob.io.base
+import bob.sp
+
+# import our own Library
+import bob.extension
+bob.extension.load_bob_library('bob.ip.base', __file__)
+
 from ._library import *
 from .__glcm__ import *
 from .__functions__ import *
