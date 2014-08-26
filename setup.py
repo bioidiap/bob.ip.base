@@ -29,6 +29,7 @@ class vl:
       A flag, that indicates if we intend to link against the static library only.
       This will trigger our library search to disconsider shared libraries when searching.
     """
+    import os
 
     self.name = 'vlfeat'
     header = 'vl/sift.h'
