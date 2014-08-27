@@ -10,6 +10,8 @@ dist.Distribution(dict(setup_requires=['bob.blitz'] + bob_packages))
 import bob.extension.utils
 from bob.blitz.extension import Extension, Library, build_ext
 
+import os
+
 packages = ['boost']
 boost_modules = ['system']
 version = '2.0.0a0'
