@@ -91,7 +91,7 @@ namespace bob { namespace ip { namespace base {
         m_offset(bob::core::array::ccopy(other.m_offset)),
         m_symmetric(other.m_symmetric),
         m_normalized(other.m_normalized),
-        m_quantization(m_quantization)
+        m_quantization(other.m_quantization)
       {}
 
       /**

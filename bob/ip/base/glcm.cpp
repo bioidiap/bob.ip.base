@@ -798,7 +798,7 @@ bool init_BobIpBaseGLCM(PyObject* module)
   PyBobIpBaseGLCMPropertyType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGLCMProperty_init);
   PyBobIpBaseGLCMPropertyType.tp_dict = createGLCMProperty();
 
-  if (!PyType_Ready(&PyBobIpBaseGLCMPropertyType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGLCMPropertyType) < 0) return false;
   Py_INCREF(&PyBobIpBaseGLCMPropertyType);
   if (PyModule_AddObject(module, "GLCMProperty", (PyObject*)&PyBobIpBaseGLCMPropertyType) < 0) return false;
 
@@ -818,8 +818,7 @@ bool init_BobIpBaseGLCM(PyObject* module)
   PyBobIpBaseGLCMType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGLCM_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseGLCMType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseGLCMType) < 0) return false;
 
   // add the type to the module
   Py_INCREF(&PyBobIpBaseGLCMType);

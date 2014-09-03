@@ -37,18 +37,17 @@ bob::extension::FunctionDoc s_histogram = bob::extension::FunctionDoc(
 ;
 
 template <typename T, char C> bool inner_histogram(PyBlitzArrayObject* src, PyBlitzArrayObject* hist, PyObject* min_max) {
-  if (min_max){
-    std::string format = (boost::format("%1%%1%") % C).str();
-    T min, max;
-    if (!PyArg_ParseTuple(min_max, format.c_str(), &min, &max)) {
-      std::cout << "failed here" << std::endl;
-      return false;
-    }
-    bob::ip::base::histogram(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<uint64_t, 1>(hist), min, max);
-  } else {
-    bob::ip::base::histogram(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<uint64_t, 1>(hist));
+  std::string format = (boost::format("%1%%1%") % C).str();
+  T min, max;
+  if (!PyArg_ParseTuple(min_max, format.c_str(), &min, &max)) {
+    return false;
   }
+  bob::ip::base::histogram(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<uint64_t, 1>(hist), min, max);
   return true;
+}
+
+template <typename T, char C> void inner_histogram(PyBlitzArrayObject* src, PyBlitzArrayObject* hist){
+  bob::ip::base::histogram(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<uint64_t, 1>(hist));
 }
 
 PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
@@ -128,20 +127,32 @@ PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
 
   // now, get the histogram running
   bool res = true;
-  switch (src->type_num){
-    case NPY_UINT8:    res = inner_histogram<uint8_t, 'B'>(src, hist, min_max); break;
-    case NPY_UINT16:   res = inner_histogram<uint16_t, 'H'>(src, hist, min_max); break;
-    case NPY_UINT32:   res = inner_histogram<uint32_t, 'I'>(src, hist, min_max); break;
-    case NPY_UINT64:   res = inner_histogram<uint64_t, 'K'>(src, hist, min_max); break;
-    case NPY_INT8:     res = inner_histogram<int8_t, 'b'>(src, hist, min_max); break;
-    case NPY_INT16:    res = inner_histogram<int16_t, 'h'>(src, hist, min_max); break;
-    case NPY_INT32:    res = inner_histogram<int32_t, 'i'>(src, hist, min_max); break;
-    case NPY_INT64:    res = inner_histogram<int64_t, 'L'>(src, hist, min_max); break;
-    case NPY_FLOAT32:  res = inner_histogram<float, 'f'>(src, hist, min_max); break;
-    case NPY_FLOAT64:  res = inner_histogram<double, 'd'>(src, hist, min_max); break;
-    default:
-      PyErr_Format(PyExc_TypeError, "'histogram' : The given input data type %s is not supported.", PyBlitzArray_TypenumAsString(src->type_num));
-      return 0;
+  if (min_max){
+    switch (src->type_num){
+      case NPY_UINT8:    res = inner_histogram<uint8_t, 'B'>(src, hist, min_max); break;
+      case NPY_UINT16:   res = inner_histogram<uint16_t, 'H'>(src, hist, min_max); break;
+      case NPY_UINT32:   res = inner_histogram<uint32_t, 'I'>(src, hist, min_max); break;
+      case NPY_UINT64:   res = inner_histogram<uint64_t, 'K'>(src, hist, min_max); break;
+      case NPY_INT8:     res = inner_histogram<int8_t, 'b'>(src, hist, min_max); break;
+      case NPY_INT16:    res = inner_histogram<int16_t, 'h'>(src, hist, min_max); break;
+      case NPY_INT32:    res = inner_histogram<int32_t, 'i'>(src, hist, min_max); break;
+      case NPY_INT64:    res = inner_histogram<int64_t, 'L'>(src, hist, min_max); break;
+      case NPY_FLOAT32:  res = inner_histogram<float, 'f'>(src, hist, min_max); break;
+      case NPY_FLOAT64:  res = inner_histogram<double, 'd'>(src, hist, min_max); break;
+      default:
+        PyErr_Format(PyExc_TypeError, "'histogram' : The given input data type %s is not supported.", PyBlitzArray_TypenumAsString(src->type_num));
+        return 0;
+    }
+  } else {
+    switch (src->type_num){
+      case NPY_UINT8:    inner_histogram<uint8_t, 'B'>(src, hist); break;
+      case NPY_UINT16:   inner_histogram<uint16_t, 'H'>(src, hist); break;
+      case NPY_UINT32:   inner_histogram<uint32_t, 'I'>(src, hist); break;
+      case NPY_UINT64:   inner_histogram<uint64_t, 'K'>(src, hist); break;
+      default:
+        PyErr_Format(PyExc_TypeError, "'histogram' : The given input data type %s is not supported.", PyBlitzArray_TypenumAsString(src->type_num));
+        return 0;
+    }
   }
   if (!res) return 0;
 

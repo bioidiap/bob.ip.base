@@ -9,9 +9,6 @@
 
 #include "main.h"
 
-static inline bool t(PyObject* o){return o == 0 || PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns true if object is NULL */
-static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
-
 /******************************************************************/
 /************ Constructor Section *********************************/
 /******************************************************************/

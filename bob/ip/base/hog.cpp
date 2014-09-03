@@ -780,7 +780,7 @@ bool init_BobIpBaseHOG(PyObject* module)
   PyBobIpBaseGradientMagnitudeType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGradientMagnitude_init);
   PyBobIpBaseGradientMagnitudeType.tp_dict = createGradientMagnitude();
 
-  if (!PyType_Ready(&PyBobIpBaseGradientMagnitudeType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGradientMagnitudeType) < 0) return false;
   Py_INCREF(&PyBobIpBaseGradientMagnitudeType);
   if (PyModule_AddObject(module, "GradientMagnitude", (PyObject*)&PyBobIpBaseGradientMagnitudeType) < 0) return false;
 
@@ -792,7 +792,7 @@ bool init_BobIpBaseHOG(PyObject* module)
   PyBobIpBaseBlockNormType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseBlockNorm_init);
   PyBobIpBaseBlockNormType.tp_dict = createBlockNorm();
 
-  if (!PyType_Ready(&PyBobIpBaseBlockNormType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseBlockNormType) < 0) return false;
   Py_INCREF(&PyBobIpBaseBlockNormType);
   if (PyModule_AddObject(module, "BlockNorm", (PyObject*)&PyBobIpBaseBlockNormType) < 0) return false;
 
@@ -812,8 +812,7 @@ bool init_BobIpBaseHOG(PyObject* module)
   PyBobIpBaseHOGType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseHOG_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseHOGType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseHOGType) < 0) return false;
 
   // add the type to the module
   Py_INCREF(&PyBobIpBaseHOGType);

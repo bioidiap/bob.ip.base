@@ -55,12 +55,12 @@ namespace bob { namespace ip { namespace base {
     // empty the histogram
     histo = 0;
 
-    uint32_t max = histo.extent(0);
+    unsigned max = histo.extent(0);
     for (auto it = src.begin(); it != src.end(); ++it){
       // perform a check that the pixel is in range
-      if (*it >= max)
-        throw std::runtime_error((boost::format("The pixel with value (%d) in the source image is higher than the number of bins (%d)") % *it % max).str());
-      ++histo(static_cast<uint16_t>(*it));
+      if ((unsigned)*it >= max)
+        throw std::runtime_error((boost::format("The pixel with value (%d) in the source image is higher than the number of bins (%d)") % (unsigned)*it % (unsigned)max).str());
+      ++histo(*it);
     }
   }
 
@@ -117,7 +117,7 @@ namespace bob { namespace ip { namespace base {
     // empty the histogram
     histo = 0;
 
-    uint32_t nb_bins = histo.extent(0);
+    int nb_bins = histo.extent(0);
 
     // Handle the special case nb_bins == 1
     if (nb_bins == 1) {
@@ -125,7 +125,7 @@ namespace bob { namespace ip { namespace base {
       return;
     }
 
-    T width = max - min;
+    double width = max - min;
     double bin_size = width / static_cast<double>(nb_bins);
 
     for(int i = src.lbound(0); i <= src.ubound(0); i++) {
@@ -134,8 +134,7 @@ namespace bob { namespace ip { namespace base {
         if (element < min || element > max)
           throw std::runtime_error((boost::format("The pixel with value (%1%) in the source image is not in the given range (%2%, %3%)") % element % min % max).str());
         // Convert a value into a bin index
-        // TODO: check that element value is in the range [min,max]
-        uint32_t index = static_cast<uint32_t>((element - min) / bin_size);
+        int index = static_cast<int>((element - min) / bin_size);
         index = std::min(index, nb_bins-1);
         ++(histo(index));
       }
@@ -190,8 +189,8 @@ namespace bob { namespace ip { namespace base {
         break;
       case bob::io::base::array::t_float32:
       case bob::io::base::array::t_float64:
-        dst_min = std::numeric_limits<T1>::min();
-        dst_max = std::numeric_limits<T1>::max();
+        dst_min = static_cast<T2>(std::numeric_limits<T1>::min());
+        dst_max = static_cast<T2>(std::numeric_limits<T1>::max());
         break;
       default:
         // Invalid type

@@ -12,9 +12,6 @@
 #include <bob.ip.base/Median.h>
 #include <bob.ip.base/Sobel.h>
 
-static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
-
-
 bob::extension::FunctionDoc s_median = bob::extension::FunctionDoc(
   "median",
   "Performs a median filtering of the input image with the given radius",
