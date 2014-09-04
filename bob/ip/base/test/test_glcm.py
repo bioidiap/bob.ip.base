@@ -82,7 +82,6 @@ def test_matrix_computation_additional_2():
   glcm = bob.ip.base.GLCM(numpy.array([0,19,55,92,128,164,201,237], dtype='uint16')) # thresholds selected according to Matlab quantization
   assert glcm.output_shape() == (8, 8, 1)
   nose.tools.eq_(glcm.levels,8)
-  nose.tools.eq_(glcm.max_level,65535)
   nose.tools.eq_(glcm.min_level,0)
   res = glcm(IMG_3x3_C)
   assert (res[:,:,0] == expected).all()

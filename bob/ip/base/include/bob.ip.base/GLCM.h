@@ -24,14 +24,14 @@ namespace bob { namespace ip { namespace base {
 
   /**
    * @brief This class allows to extract Grey-Level Co-occurence Matrix (GLCM). For more information, please refer to the
-   * following article: "Textural Features for Image calssification", from R. M. Haralick, K. Shanmugam, I. Dinstein
+   * following article: "Textural Features for Image Classification", from R. M. Haralick, K. Shanmugam, I. Dinstein
    * in the IEEE Transactions on Systems, Man and Cybernetics, vol.SMC-3, No. 6, p. 610-621.
    *
    * A thorough tutorial about GLCM and the textural (so-called Haralick) properties that can be derived from it, can be found at:
    * http://www.fp.ucalgary.ca/mhallbey/tutorial.htm
    *
    * List of references:
-   * [1] R. M. Haralick, K. Shanmugam, I. Dinstein; "Textural Features for Image calssification",
+   * [1] R. M. Haralick, K. Shanmugam, I. Dinstein; "Textural Features for Image Classification",
    * in IEEE Transactions on Systems, Man and Cybernetics, vol.SMC-3, No. 6, p. 610-621.
    * [2] http://www.mathworks.ch/ch/help/images/ref/graycomatrix.html
    */

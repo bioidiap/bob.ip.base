@@ -240,6 +240,11 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
     return -1;
   }
 
+  if (self->type_num == NPY_FLOAT64 && (levels == 0 || min == 0 || max == 0)){
+    PyErr_Format(PyExc_TypeError, "`%s' for dtype 'float' levels, min and max must be specified!", Py_TYPE(self)->tp_name);
+    return -1;
+  }
+
   if ((min == 0) != (max == 0)){
     PyErr_Format(PyExc_TypeError, "`%s' min_level and max_level can only be specified at the same time", Py_TYPE(self)->tp_name);
     return -1;
@@ -250,7 +255,6 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
     switch (self->type_num){
       case NPY_UINT8: self->cxx.reset(new bob::ip::base::GLCM<uint8_t>()); break;
       case NPY_UINT16: self->cxx.reset(new bob::ip::base::GLCM<uint16_t>()); break;
-      case NPY_FLOAT64: self->cxx.reset(new bob::ip::base::GLCM<double>()); break;
       default: break;// already handled
     }
   } else if (min == 0){
@@ -258,7 +262,6 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
     switch (self->type_num){
       case NPY_UINT8: self->cxx.reset(new bob::ip::base::GLCM<uint8_t>(static_cast<uint8_t>(PyInt_AS_LONG(levels)))); break;
       case NPY_UINT16: self->cxx.reset(new bob::ip::base::GLCM<uint16_t>(static_cast<uint16_t>(PyInt_AS_LONG(levels)))); break;
-      case NPY_FLOAT64: self->cxx.reset(new bob::ip::base::GLCM<double>(static_cast<uint8_t>(PyFloat_AsDouble(levels)))); break;
       default: break; // already handled
     }
   } else {
