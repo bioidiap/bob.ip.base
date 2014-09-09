@@ -52,7 +52,7 @@ static int PyBobIpBaseSIFT_init(PyBobIpBaseSIFTObject* self, PyObject* args, PyO
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseSIFT_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseSIFTObject* sift;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseSIFTType, &sift)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseSIFT_Type, &sift)) return -1;
 
     self->cxx.reset(new bob::ip::base::SIFT(*sift->cxx));
     return 0;
@@ -78,7 +78,7 @@ static void PyBobIpBaseSIFT_delete(PyBobIpBaseSIFTObject* self) {
 }
 
 int PyBobIpBaseSIFT_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseSIFTType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseSIFT_Type));
 }
 
 static PyObject* PyBobIpBaseSIFT_RichCompare(PyBobIpBaseSIFTObject* self, PyObject* other, int op) {
@@ -721,7 +721,7 @@ static PyMethodDef PyBobIpBaseSIFT_methods[] = {
 /******************************************************************/
 
 // Define the SIFT type struct; will be initialized later
-PyTypeObject PyBobIpBaseSIFTType = {
+PyTypeObject PyBobIpBaseSIFT_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -729,25 +729,25 @@ PyTypeObject PyBobIpBaseSIFTType = {
 bool init_BobIpBaseSIFT(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseSIFTType.tp_name = SIFT_doc.name();
-  PyBobIpBaseSIFTType.tp_basicsize = sizeof(PyBobIpBaseSIFTObject);
-  PyBobIpBaseSIFTType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseSIFTType.tp_doc = SIFT_doc.doc();
+  PyBobIpBaseSIFT_Type.tp_name = SIFT_doc.name();
+  PyBobIpBaseSIFT_Type.tp_basicsize = sizeof(PyBobIpBaseSIFTObject);
+  PyBobIpBaseSIFT_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseSIFT_Type.tp_doc = SIFT_doc.doc();
 
   // set the functions
-  PyBobIpBaseSIFTType.tp_new = PyType_GenericNew;
-  PyBobIpBaseSIFTType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseSIFT_init);
-  PyBobIpBaseSIFTType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseSIFT_delete);
-  PyBobIpBaseSIFTType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseSIFT_RichCompare);
-  PyBobIpBaseSIFTType.tp_methods = PyBobIpBaseSIFT_methods;
-  PyBobIpBaseSIFTType.tp_getset = PyBobIpBaseSIFT_getseters;
-  PyBobIpBaseSIFTType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseSIFT_computeDescriptor);
+  PyBobIpBaseSIFT_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseSIFT_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseSIFT_init);
+  PyBobIpBaseSIFT_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseSIFT_delete);
+  PyBobIpBaseSIFT_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseSIFT_RichCompare);
+  PyBobIpBaseSIFT_Type.tp_methods = PyBobIpBaseSIFT_methods;
+  PyBobIpBaseSIFT_Type.tp_getset = PyBobIpBaseSIFT_getseters;
+  PyBobIpBaseSIFT_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseSIFT_computeDescriptor);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseSIFTType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseSIFT_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseSIFTType);
-  return PyModule_AddObject(module, "SIFT", (PyObject*)&PyBobIpBaseSIFTType) >= 0;
+  Py_INCREF(&PyBobIpBaseSIFT_Type);
+  return PyModule_AddObject(module, "SIFT", (PyObject*)&PyBobIpBaseSIFT_Type) >= 0;
 }
 

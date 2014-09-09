@@ -55,7 +55,7 @@ static int PyBobIpBaseFaceEyesNorm_init(PyBobIpBaseFaceEyesNormObject* self, PyO
     case 1:{
       // copy constructor
       PyBobIpBaseFaceEyesNormObject* faceEyesNorm;
-      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist3, &PyBobIpBaseFaceEyesNormType, &faceEyesNorm)){
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist3, &PyBobIpBaseFaceEyesNorm_Type, &faceEyesNorm)){
         FaceEyesNorm_doc.print_usage();
         return -1;
       }
@@ -105,7 +105,7 @@ static void PyBobIpBaseFaceEyesNorm_delete(PyBobIpBaseFaceEyesNormObject* self) 
 }
 
 int PyBobIpBaseFaceEyesNorm_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseFaceEyesNormType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseFaceEyesNorm_Type));
 }
 
 static PyObject* PyBobIpBaseFaceEyesNorm_RichCompare(PyBobIpBaseFaceEyesNormObject* self, PyObject* other, int op) {
@@ -257,7 +257,7 @@ static auto geomNorm = bob::extension::VariableDoc(
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getGeomNorm(PyBobIpBaseFaceEyesNormObject* self, void*){
   TRY
-  PyBobIpBaseGeomNormObject* geomNorm = (PyBobIpBaseGeomNormObject*)PyBobIpBaseGeomNormType.tp_alloc(&PyBobIpBaseGeomNormType, 0);
+  PyBobIpBaseGeomNormObject* geomNorm = (PyBobIpBaseGeomNormObject*)PyBobIpBaseGeomNorm_Type.tp_alloc(&PyBobIpBaseGeomNorm_Type, 0);
   geomNorm->cxx = self->cxx->getGeomNorm();
   return Py_BuildValue("O", geomNorm);
   CATCH("geom_norm could not be read", 0)
@@ -482,7 +482,7 @@ static PyMethodDef PyBobIpBaseFaceEyesNorm_methods[] = {
 /******************************************************************/
 
 // Define the FaceEyesNorm type struct; will be initialized later
-PyTypeObject PyBobIpBaseFaceEyesNormType = {
+PyTypeObject PyBobIpBaseFaceEyesNorm_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -490,26 +490,25 @@ PyTypeObject PyBobIpBaseFaceEyesNormType = {
 bool init_BobIpBaseFaceEyesNorm(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseFaceEyesNormType.tp_name = FaceEyesNorm_doc.name();
-  PyBobIpBaseFaceEyesNormType.tp_basicsize = sizeof(PyBobIpBaseFaceEyesNormObject);
-  PyBobIpBaseFaceEyesNormType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseFaceEyesNormType.tp_doc = FaceEyesNorm_doc.doc();
+  PyBobIpBaseFaceEyesNorm_Type.tp_name = FaceEyesNorm_doc.name();
+  PyBobIpBaseFaceEyesNorm_Type.tp_basicsize = sizeof(PyBobIpBaseFaceEyesNormObject);
+  PyBobIpBaseFaceEyesNorm_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseFaceEyesNorm_Type.tp_doc = FaceEyesNorm_doc.doc();
 
   // set the functions
-  PyBobIpBaseFaceEyesNormType.tp_new = PyType_GenericNew;
-  PyBobIpBaseFaceEyesNormType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseFaceEyesNorm_init);
-  PyBobIpBaseFaceEyesNormType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseFaceEyesNorm_delete);
-  PyBobIpBaseFaceEyesNormType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseFaceEyesNorm_RichCompare);
-  PyBobIpBaseFaceEyesNormType.tp_methods = PyBobIpBaseFaceEyesNorm_methods;
-  PyBobIpBaseFaceEyesNormType.tp_getset = PyBobIpBaseFaceEyesNorm_getseters;
-  PyBobIpBaseFaceEyesNormType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseFaceEyesNorm_extract);
+  PyBobIpBaseFaceEyesNorm_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseFaceEyesNorm_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseFaceEyesNorm_init);
+  PyBobIpBaseFaceEyesNorm_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseFaceEyesNorm_delete);
+  PyBobIpBaseFaceEyesNorm_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseFaceEyesNorm_RichCompare);
+  PyBobIpBaseFaceEyesNorm_Type.tp_methods = PyBobIpBaseFaceEyesNorm_methods;
+  PyBobIpBaseFaceEyesNorm_Type.tp_getset = PyBobIpBaseFaceEyesNorm_getseters;
+  PyBobIpBaseFaceEyesNorm_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseFaceEyesNorm_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseFaceEyesNormType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseFaceEyesNorm_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseFaceEyesNormType);
-  return PyModule_AddObject(module, "FaceEyesNorm", (PyObject*)&PyBobIpBaseFaceEyesNormType) >= 0;
+  Py_INCREF(&PyBobIpBaseFaceEyesNorm_Type);
+  return PyModule_AddObject(module, "FaceEyesNorm", (PyObject*)&PyBobIpBaseFaceEyesNorm_Type) >= 0;
 }
 

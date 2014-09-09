@@ -44,9 +44,9 @@ static PyObject* createGradientMagnitude() {
 
 int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientMagnitudeType* b) {
   if (PyString_Check(o)){
-    PyObject* dict = PyBobIpBaseGradientMagnitudeType.tp_dict;
+    PyObject* dict = PyBobIpBaseGradientMagnitude_Type.tp_dict;
     if (!PyDict_Contains(dict, o)){
-      PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the integer values defined in `%s'", PyBobIpBaseGradientMagnitudeType.tp_name);
+      PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the integer values defined in `%s'", PyBobIpBaseGradientMagnitude_Type.tp_name);
       return 0;
     }
     o = PyDict_GetItem(dict, o);
@@ -60,7 +60,7 @@ int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientM
     return 1;
   }
 
-  PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGradientMagnitudeType.tp_name);
+  PyErr_Format(PyExc_ValueError, "gradient magnitude type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGradientMagnitude_Type.tp_name);
   return 0;
 }
 
@@ -102,9 +102,9 @@ static PyObject* createBlockNorm() {
 
 int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b) {
   if (PyString_Check(o)){
-    PyObject* dict = PyBobIpBaseBlockNormType.tp_dict;
+    PyObject* dict = PyBobIpBaseBlockNorm_Type.tp_dict;
     if (!PyDict_Contains(dict, o)){
-      PyErr_Format(PyExc_ValueError, "block norm type parameter parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseBlockNormType.tp_name);
+      PyErr_Format(PyExc_ValueError, "block norm type parameter parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseBlockNorm_Type.tp_name);
       return 0;
     }
     o = PyDict_GetItem(dict, o);
@@ -118,7 +118,7 @@ int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b) {
     return 1;
   }
 
-  PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseBlockNormType.tp_name);
+  PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseBlockNorm_Type.tp_name);
   return 0;
 }
 
@@ -181,7 +181,7 @@ static int PyBobIpBaseHOG_init(PyBobIpBaseHOGObject* self, PyObject* args, PyObj
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseHOG_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseHOGObject* hog;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseHOGType, &hog)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseHOG_Type, &hog)) return -1;
 
     self->cxx.reset(new bob::ip::base::HOG(*hog->cxx));
     return 0;
@@ -206,7 +206,7 @@ static void PyBobIpBaseHOG_delete(PyBobIpBaseHOGObject* self) {
 }
 
 int PyBobIpBaseHOG_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseHOGType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseHOG_Type));
 }
 
 static PyObject* PyBobIpBaseHOG_RichCompare(PyBobIpBaseHOGObject* self, PyObject* other, int op) {
@@ -754,17 +754,17 @@ static PyMethodDef PyBobIpBaseHOG_methods[] = {
 /******************************************************************/
 
 // Define the type structs; will be initialized later
-PyTypeObject PyBobIpBaseGradientMagnitudeType = {
+PyTypeObject PyBobIpBaseGradientMagnitude_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
 
-PyTypeObject PyBobIpBaseBlockNormType = {
+PyTypeObject PyBobIpBaseBlockNorm_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
 
-PyTypeObject PyBobIpBaseHOGType = {
+PyTypeObject PyBobIpBaseHOG_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -773,49 +773,49 @@ bool init_BobIpBaseHOG(PyObject* module)
 {
 
   // GradientMagnitude
-  PyBobIpBaseGradientMagnitudeType.tp_name = GradientMagnitude_doc.name();
-  PyBobIpBaseGradientMagnitudeType.tp_basicsize = sizeof(PyBobIpBaseGradientMagnitudeType);
-  PyBobIpBaseGradientMagnitudeType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGradientMagnitudeType.tp_doc = GradientMagnitude_doc.doc();
-  PyBobIpBaseGradientMagnitudeType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGradientMagnitude_init);
-  PyBobIpBaseGradientMagnitudeType.tp_dict = createGradientMagnitude();
+  PyBobIpBaseGradientMagnitude_Type.tp_name = GradientMagnitude_doc.name();
+  PyBobIpBaseGradientMagnitude_Type.tp_basicsize = sizeof(PyBobIpBaseGradientMagnitude_Type);
+  PyBobIpBaseGradientMagnitude_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGradientMagnitude_Type.tp_doc = GradientMagnitude_doc.doc();
+  PyBobIpBaseGradientMagnitude_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGradientMagnitude_init);
+  PyBobIpBaseGradientMagnitude_Type.tp_dict = createGradientMagnitude();
 
-  if (PyType_Ready(&PyBobIpBaseGradientMagnitudeType) < 0) return false;
-  Py_INCREF(&PyBobIpBaseGradientMagnitudeType);
-  if (PyModule_AddObject(module, "GradientMagnitude", (PyObject*)&PyBobIpBaseGradientMagnitudeType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGradientMagnitude_Type) < 0) return false;
+  Py_INCREF(&PyBobIpBaseGradientMagnitude_Type);
+  if (PyModule_AddObject(module, "GradientMagnitude", (PyObject*)&PyBobIpBaseGradientMagnitude_Type) < 0) return false;
 
   // BlockNorm
-  PyBobIpBaseBlockNormType.tp_name = BlockNorm_doc.name();
-  PyBobIpBaseBlockNormType.tp_basicsize = sizeof(PyBobIpBaseBlockNormType);
-  PyBobIpBaseBlockNormType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseBlockNormType.tp_doc = BlockNorm_doc.doc();
-  PyBobIpBaseBlockNormType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseBlockNorm_init);
-  PyBobIpBaseBlockNormType.tp_dict = createBlockNorm();
+  PyBobIpBaseBlockNorm_Type.tp_name = BlockNorm_doc.name();
+  PyBobIpBaseBlockNorm_Type.tp_basicsize = sizeof(PyBobIpBaseBlockNorm_Type);
+  PyBobIpBaseBlockNorm_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseBlockNorm_Type.tp_doc = BlockNorm_doc.doc();
+  PyBobIpBaseBlockNorm_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseBlockNorm_init);
+  PyBobIpBaseBlockNorm_Type.tp_dict = createBlockNorm();
 
-  if (PyType_Ready(&PyBobIpBaseBlockNormType) < 0) return false;
-  Py_INCREF(&PyBobIpBaseBlockNormType);
-  if (PyModule_AddObject(module, "BlockNorm", (PyObject*)&PyBobIpBaseBlockNormType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseBlockNorm_Type) < 0) return false;
+  Py_INCREF(&PyBobIpBaseBlockNorm_Type);
+  if (PyModule_AddObject(module, "BlockNorm", (PyObject*)&PyBobIpBaseBlockNorm_Type) < 0) return false;
 
   // initialize the type struct
-  PyBobIpBaseHOGType.tp_name = HOG_doc.name();
-  PyBobIpBaseHOGType.tp_basicsize = sizeof(PyBobIpBaseHOGObject);
-  PyBobIpBaseHOGType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseHOGType.tp_doc = HOG_doc.doc();
+  PyBobIpBaseHOG_Type.tp_name = HOG_doc.name();
+  PyBobIpBaseHOG_Type.tp_basicsize = sizeof(PyBobIpBaseHOGObject);
+  PyBobIpBaseHOG_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseHOG_Type.tp_doc = HOG_doc.doc();
 
   // set the functions
-  PyBobIpBaseHOGType.tp_new = PyType_GenericNew;
-  PyBobIpBaseHOGType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseHOG_init);
-  PyBobIpBaseHOGType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseHOG_delete);
-  PyBobIpBaseHOGType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseHOG_RichCompare);
-  PyBobIpBaseHOGType.tp_methods = PyBobIpBaseHOG_methods;
-  PyBobIpBaseHOGType.tp_getset = PyBobIpBaseHOG_getseters;
-  PyBobIpBaseHOGType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseHOG_extract);
+  PyBobIpBaseHOG_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseHOG_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseHOG_init);
+  PyBobIpBaseHOG_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseHOG_delete);
+  PyBobIpBaseHOG_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseHOG_RichCompare);
+  PyBobIpBaseHOG_Type.tp_methods = PyBobIpBaseHOG_methods;
+  PyBobIpBaseHOG_Type.tp_getset = PyBobIpBaseHOG_getseters;
+  PyBobIpBaseHOG_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseHOG_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseHOGType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseHOG_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseHOGType);
-  return PyModule_AddObject(module, "HOG", (PyObject*)&PyBobIpBaseHOGType) >= 0;
+  Py_INCREF(&PyBobIpBaseHOG_Type);
+  return PyModule_AddObject(module, "HOG", (PyObject*)&PyBobIpBaseHOG_Type) >= 0;
 }
 

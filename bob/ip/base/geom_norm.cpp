@@ -56,7 +56,7 @@ static int PyBobIpBaseGeomNorm_init(PyBobIpBaseGeomNormObject* self, PyObject* a
   if (nargs == 1){
     // copy constructor
     PyBobIpBaseGeomNormObject* geomNorm;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseGeomNormType, &geomNorm)){
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseGeomNorm_Type, &geomNorm)){
       GeomNorm_doc.print_usage();
       return -1;
     }
@@ -83,7 +83,7 @@ static void PyBobIpBaseGeomNorm_delete(PyBobIpBaseGeomNormObject* self) {
 }
 
 int PyBobIpBaseGeomNorm_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGeomNormType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGeomNorm_Type));
 }
 
 static PyObject* PyBobIpBaseGeomNorm_RichCompare(PyBobIpBaseGeomNormObject* self, PyObject* other, int op) {
@@ -370,7 +370,7 @@ static PyMethodDef PyBobIpBaseGeomNorm_methods[] = {
 /******************************************************************/
 
 // Define the GeomNorm type struct; will be initialized later
-PyTypeObject PyBobIpBaseGeomNormType = {
+PyTypeObject PyBobIpBaseGeomNorm_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -378,26 +378,25 @@ PyTypeObject PyBobIpBaseGeomNormType = {
 bool init_BobIpBaseGeomNorm(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseGeomNormType.tp_name = GeomNorm_doc.name();
-  PyBobIpBaseGeomNormType.tp_basicsize = sizeof(PyBobIpBaseGeomNormObject);
-  PyBobIpBaseGeomNormType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGeomNormType.tp_doc = GeomNorm_doc.doc();
+  PyBobIpBaseGeomNorm_Type.tp_name = GeomNorm_doc.name();
+  PyBobIpBaseGeomNorm_Type.tp_basicsize = sizeof(PyBobIpBaseGeomNormObject);
+  PyBobIpBaseGeomNorm_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGeomNorm_Type.tp_doc = GeomNorm_doc.doc();
 
   // set the functions
-  PyBobIpBaseGeomNormType.tp_new = PyType_GenericNew;
-  PyBobIpBaseGeomNormType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGeomNorm_init);
-  PyBobIpBaseGeomNormType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGeomNorm_delete);
-  PyBobIpBaseGeomNormType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGeomNorm_RichCompare);
-  PyBobIpBaseGeomNormType.tp_methods = PyBobIpBaseGeomNorm_methods;
-  PyBobIpBaseGeomNormType.tp_getset = PyBobIpBaseGeomNorm_getseters;
-  PyBobIpBaseGeomNormType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGeomNorm_process);
+  PyBobIpBaseGeomNorm_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseGeomNorm_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGeomNorm_init);
+  PyBobIpBaseGeomNorm_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGeomNorm_delete);
+  PyBobIpBaseGeomNorm_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGeomNorm_RichCompare);
+  PyBobIpBaseGeomNorm_Type.tp_methods = PyBobIpBaseGeomNorm_methods;
+  PyBobIpBaseGeomNorm_Type.tp_getset = PyBobIpBaseGeomNorm_getseters;
+  PyBobIpBaseGeomNorm_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGeomNorm_process);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseGeomNormType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseGeomNorm_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseGeomNormType);
-  return PyModule_AddObject(module, "GeomNorm", (PyObject*)&PyBobIpBaseGeomNormType) >= 0;
+  Py_INCREF(&PyBobIpBaseGeomNorm_Type);
+  return PyModule_AddObject(module, "GeomNorm", (PyObject*)&PyBobIpBaseGeomNorm_Type) >= 0;
 }
 

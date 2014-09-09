@@ -8,15 +8,15 @@
 #ifndef BOB_IP_BASE_MAIN_H
 #define BOB_IP_BASE_MAIN_H
 
-#include <Python.h>
-
 #include <bob.blitz/cppapi.h>
 #include <bob.blitz/cleanup.h>
 #include <bob.sp/api.h>
 #include <bob.io.base/api.h>
 #include <bob.extension/documentation.h>
 
-#include <bob.ip.base/LBP.h>
+#define BOB_IP_BASE_MODULE
+#include <bob.ip.base/api.h>
+
 #include <bob.ip.base/LBPTop.h>
 #include <bob.ip.base/DCTFeatures.h>
 #include <bob.ip.base/TanTriggs.h>
@@ -78,7 +78,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::GeomNorm> cxx;
 } PyBobIpBaseGeomNormObject;
 
-extern PyTypeObject PyBobIpBaseGeomNormType;
+extern PyTypeObject PyBobIpBaseGeomNorm_Type;
 bool init_BobIpBaseGeomNorm(PyObject* module);
 int PyBobIpBaseGeomNorm_Check(PyObject* o);
 
@@ -88,7 +88,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::FaceEyesNorm> cxx;
 } PyBobIpBaseFaceEyesNormObject;
 
-extern PyTypeObject PyBobIpBaseFaceEyesNormType;
+extern PyTypeObject PyBobIpBaseFaceEyesNorm_Type;
 bool init_BobIpBaseFaceEyesNorm(PyObject* module);
 int PyBobIpBaseFaceEyesNorm_Check(PyObject* o);
 
@@ -111,14 +111,7 @@ extern bob::extension::FunctionDoc s_extrapolateMask;
 
 
 // LBP
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::LBP> cxx;
-} PyBobIpBaseLBPObject;
-
-extern PyTypeObject PyBobIpBaseLBPType;
 bool init_BobIpBaseLBP(PyObject* module);
-int PyBobIpBaseLBP_Check(PyObject* o);
 
 
 // LBP-Top
@@ -127,7 +120,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::LBPTop> cxx;
 } PyBobIpBaseLBPTopObject;
 
-extern PyTypeObject PyBobIpBaseLBPTopType;
+extern PyTypeObject PyBobIpBaseLBPTop_Type;
 bool init_BobIpBaseLBPTop(PyObject* module);
 int PyBobIpBaseLBPTop_Check(PyObject* o);
 
@@ -138,7 +131,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::DCTFeatures> cxx;
 } PyBobIpBaseDCTFeaturesObject;
 
-extern PyTypeObject PyBobIpBaseDCTFeaturesType;
+extern PyTypeObject PyBobIpBaseDCTFeatures_Type;
 bool init_BobIpBaseDCTFeatures(PyObject* module);
 int PyBobIpBaseDCTFeatures_Check(PyObject* o);
 
@@ -153,7 +146,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::TanTriggs> cxx;
 } PyBobIpBaseTanTriggsObject;
 
-extern PyTypeObject PyBobIpBaseTanTriggsType;
+extern PyTypeObject PyBobIpBaseTanTriggs_Type;
 bool init_BobIpBaseTanTriggs(PyObject* module);
 int PyBobIpBaseTanTriggs_Check(PyObject* o);
 
@@ -164,7 +157,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::Gaussian> cxx;
 } PyBobIpBaseGaussianObject;
 
-extern PyTypeObject PyBobIpBaseGaussianType;
+extern PyTypeObject PyBobIpBaseGaussian_Type;
 bool init_BobIpBaseGaussian(PyObject* module);
 int PyBobIpBaseGaussian_Check(PyObject* o);
 
@@ -175,7 +168,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::MultiscaleRetinex> cxx;
 } PyBobIpBaseMultiscaleRetinexObject;
 
-extern PyTypeObject PyBobIpBaseMultiscaleRetinexType;
+extern PyTypeObject PyBobIpBaseMultiscaleRetinex_Type;
 bool init_BobIpBaseMultiscaleRetinex(PyObject* module);
 int PyBobIpBaseMultiscaleRetinex_Check(PyObject* o);
 
@@ -186,7 +179,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::WeightedGaussian> cxx;
 } PyBobIpBaseWeightedGaussianObject;
 
-extern PyTypeObject PyBobIpBaseWeightedGaussianType;
+extern PyTypeObject PyBobIpBaseWeightedGaussian_Type;
 bool init_BobIpBaseWeightedGaussian(PyObject* module);
 int PyBobIpBaseWeightedGaussian_Check(PyObject* o);
 
@@ -197,7 +190,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::SelfQuotientImage> cxx;
 } PyBobIpBaseSelfQuotientImageObject;
 
-extern PyTypeObject PyBobIpBaseSelfQuotientImageType;
+extern PyTypeObject PyBobIpBaseSelfQuotientImage_Type;
 bool init_BobIpBaseSelfQuotientImage(PyObject* module);
 int PyBobIpBaseSelfQuotientImage_Check(PyObject* o);
 
@@ -209,7 +202,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::GSSKeypoint> cxx;
 } PyBobIpBaseGSSKeypointObject;
 
-extern PyTypeObject PyBobIpBaseGSSKeypointType;
+extern PyTypeObject PyBobIpBaseGSSKeypoint_Type;
 int PyBobIpBaseGSSKeypoint_Check(PyObject* o);
 
 // .. Gaussian Scale Space KeypointInfo
@@ -218,7 +211,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::GSSKeypointInfo> cxx;
 } PyBobIpBaseGSSKeypointInfoObject;
 
-extern PyTypeObject PyBobIpBaseGSSKeypointInfoType;
+extern PyTypeObject PyBobIpBaseGSSKeypointInfo_Type;
 int PyBobIpBaseGSSKeypointInfo_Check(PyObject* o);
 
 // .. Gaussian Scale Space
@@ -227,7 +220,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::GaussianScaleSpace> cxx;
 } PyBobIpBaseGaussianScaleSpaceObject;
 
-extern PyTypeObject PyBobIpBaseGaussianScaleSpaceType;
+extern PyTypeObject PyBobIpBaseGaussianScaleSpace_Type;
 bool init_BobIpBaseGaussianScaleSpace(PyObject* module);
 int PyBobIpBaseGaussianScaleSpace_Check(PyObject* o);
 
@@ -237,7 +230,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::SIFT> cxx;
 } PyBobIpBaseSIFTObject;
 
-extern PyTypeObject PyBobIpBaseSIFTType;
+extern PyTypeObject PyBobIpBaseSIFT_Type;
 bool init_BobIpBaseSIFT(PyObject* module);
 int PyBobIpBaseSIFT_Check(PyObject* o);
 
@@ -248,7 +241,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::VLSIFT> cxx;
 } PyBobIpBaseVLSIFTObject;
 
-extern PyTypeObject PyBobIpBaseVLSIFTType;
+extern PyTypeObject PyBobIpBaseVLSIFT_Type;
 int PyBobIpBaseVLSIFT_Check(PyObject* o);
 
 // .. VLDSIFT
@@ -257,7 +250,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::VLDSIFT> cxx;
 } PyBobIpBaseVLDSIFTObject;
 
-extern PyTypeObject PyBobIpBaseVLDSIFTType;
+extern PyTypeObject PyBobIpBaseVLDSIFT_Type;
 int PyBobIpBaseVLDSIFT_Check(PyObject* o);
 
 bool init_BobIpBaseVLFEAT(PyObject* module);
@@ -266,12 +259,12 @@ bool init_BobIpBaseVLFEAT(PyObject* module);
 
 // HOG...
 // .. GradientMagnitude
-extern PyTypeObject PyBobIpBaseGradientMagnitudeType;
+extern PyTypeObject PyBobIpBaseGradientMagnitude_Type;
 int PyBobIpBaseGradientMagnitude_Check(PyObject* o);
 int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientMagnitudeType* b);
 
 // .. BlockNorm
-extern PyTypeObject PyBobIpBaseBlockNormType;
+extern PyTypeObject PyBobIpBaseBlockNorm_Type;
 int PyBobIpBaseBlockNorm_Check(PyObject* o);
 int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b);
 
@@ -281,7 +274,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::HOG> cxx;
 } PyBobIpBaseHOGObject;
 
-extern PyTypeObject PyBobIpBaseHOGType;
+extern PyTypeObject PyBobIpBaseHOG_Type;
 int PyBobIpBaseHOG_Check(PyObject* o);
 
 bool init_BobIpBaseHOG(PyObject* module);
@@ -296,7 +289,7 @@ typedef struct {
   boost::shared_ptr<bob::ip::base::GLCMProp> prop; // the GLMC property handler
 } PyBobIpBaseGLCMObject;
 
-extern PyTypeObject PyBobIpBaseGLCMType;
+extern PyTypeObject PyBobIpBaseGLCM_Type;
 int PyBobIpBaseGLCM_Check(PyObject* o);
 
 bool init_BobIpBaseGLCM(PyObject* module);

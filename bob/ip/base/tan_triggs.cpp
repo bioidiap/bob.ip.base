@@ -51,7 +51,7 @@ static int PyBobIpBaseTanTriggs_init(PyBobIpBaseTanTriggsObject* self, PyObject*
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseTanTriggs_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseTanTriggsObject* tt;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseTanTriggsType, &tt)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseTanTriggs_Type, &tt)) return -1;
 
     self->cxx.reset(new bob::ip::base::TanTriggs(*tt->cxx));
     return 0;
@@ -76,7 +76,7 @@ static void PyBobIpBaseTanTriggs_delete(PyBobIpBaseTanTriggsObject* self) {
 }
 
 int PyBobIpBaseTanTriggs_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseTanTriggsType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseTanTriggs_Type));
 }
 
 static PyObject* PyBobIpBaseTanTriggs_RichCompare(PyBobIpBaseTanTriggsObject* self, PyObject* other, int op) {
@@ -400,7 +400,7 @@ static PyMethodDef PyBobIpBaseTanTriggs_methods[] = {
 /******************************************************************/
 
 // Define the TanTriggs type struct; will be initialized later
-PyTypeObject PyBobIpBaseTanTriggsType = {
+PyTypeObject PyBobIpBaseTanTriggs_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -408,26 +408,25 @@ PyTypeObject PyBobIpBaseTanTriggsType = {
 bool init_BobIpBaseTanTriggs(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseTanTriggsType.tp_name = TanTriggs_doc.name();
-  PyBobIpBaseTanTriggsType.tp_basicsize = sizeof(PyBobIpBaseTanTriggsObject);
-  PyBobIpBaseTanTriggsType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseTanTriggsType.tp_doc = TanTriggs_doc.doc();
+  PyBobIpBaseTanTriggs_Type.tp_name = TanTriggs_doc.name();
+  PyBobIpBaseTanTriggs_Type.tp_basicsize = sizeof(PyBobIpBaseTanTriggsObject);
+  PyBobIpBaseTanTriggs_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseTanTriggs_Type.tp_doc = TanTriggs_doc.doc();
 
   // set the functions
-  PyBobIpBaseTanTriggsType.tp_new = PyType_GenericNew;
-  PyBobIpBaseTanTriggsType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseTanTriggs_init);
-  PyBobIpBaseTanTriggsType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseTanTriggs_delete);
-  PyBobIpBaseTanTriggsType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseTanTriggs_RichCompare);
-  PyBobIpBaseTanTriggsType.tp_methods = PyBobIpBaseTanTriggs_methods;
-  PyBobIpBaseTanTriggsType.tp_getset = PyBobIpBaseTanTriggs_getseters;
-  PyBobIpBaseTanTriggsType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseTanTriggs_process);
+  PyBobIpBaseTanTriggs_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseTanTriggs_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseTanTriggs_init);
+  PyBobIpBaseTanTriggs_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseTanTriggs_delete);
+  PyBobIpBaseTanTriggs_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseTanTriggs_RichCompare);
+  PyBobIpBaseTanTriggs_Type.tp_methods = PyBobIpBaseTanTriggs_methods;
+  PyBobIpBaseTanTriggs_Type.tp_getset = PyBobIpBaseTanTriggs_getseters;
+  PyBobIpBaseTanTriggs_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseTanTriggs_process);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseTanTriggsType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseTanTriggs_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseTanTriggsType);
-  return PyModule_AddObject(module, "TanTriggs", (PyObject*)&PyBobIpBaseTanTriggsType) >= 0;
+  Py_INCREF(&PyBobIpBaseTanTriggs_Type);
+  return PyModule_AddObject(module, "TanTriggs", (PyObject*)&PyBobIpBaseTanTriggs_Type) >= 0;
 }
 

@@ -50,7 +50,7 @@ static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject*
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseSelfQuotientImage_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseSelfQuotientImageObject* sqi;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseSelfQuotientImageType, &sqi)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseSelfQuotientImage_Type, &sqi)) return -1;
 
     self->cxx.reset(new bob::ip::base::SelfQuotientImage(*sqi->cxx));
     return 0;
@@ -75,7 +75,7 @@ static void PyBobIpBaseSelfQuotientImage_delete(PyBobIpBaseSelfQuotientImageObje
 }
 
 int PyBobIpBaseSelfQuotientImage_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseSelfQuotientImageType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseSelfQuotientImage_Type));
 }
 
 static PyObject* PyBobIpBaseSelfQuotientImage_RichCompare(PyBobIpBaseSelfQuotientImageObject* self, PyObject* other, int op) {
@@ -335,7 +335,7 @@ static PyMethodDef PyBobIpBaseSelfQuotientImage_methods[] = {
 /******************************************************************/
 
 // Define the SelfQuotientImage type struct; will be initialized later
-PyTypeObject PyBobIpBaseSelfQuotientImageType = {
+PyTypeObject PyBobIpBaseSelfQuotientImage_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -343,26 +343,25 @@ PyTypeObject PyBobIpBaseSelfQuotientImageType = {
 bool init_BobIpBaseSelfQuotientImage(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseSelfQuotientImageType.tp_name = SelfQuotientImage_doc.name();
-  PyBobIpBaseSelfQuotientImageType.tp_basicsize = sizeof(PyBobIpBaseSelfQuotientImageObject);
-  PyBobIpBaseSelfQuotientImageType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseSelfQuotientImageType.tp_doc = SelfQuotientImage_doc.doc();
+  PyBobIpBaseSelfQuotientImage_Type.tp_name = SelfQuotientImage_doc.name();
+  PyBobIpBaseSelfQuotientImage_Type.tp_basicsize = sizeof(PyBobIpBaseSelfQuotientImageObject);
+  PyBobIpBaseSelfQuotientImage_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseSelfQuotientImage_Type.tp_doc = SelfQuotientImage_doc.doc();
 
   // set the functions
-  PyBobIpBaseSelfQuotientImageType.tp_new = PyType_GenericNew;
-  PyBobIpBaseSelfQuotientImageType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseSelfQuotientImage_init);
-  PyBobIpBaseSelfQuotientImageType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseSelfQuotientImage_delete);
-  PyBobIpBaseSelfQuotientImageType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseSelfQuotientImage_RichCompare);
-  PyBobIpBaseSelfQuotientImageType.tp_methods = PyBobIpBaseSelfQuotientImage_methods;
-  PyBobIpBaseSelfQuotientImageType.tp_getset = PyBobIpBaseSelfQuotientImage_getseters;
-  PyBobIpBaseSelfQuotientImageType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseSelfQuotientImage_process);
+  PyBobIpBaseSelfQuotientImage_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseSelfQuotientImage_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseSelfQuotientImage_init);
+  PyBobIpBaseSelfQuotientImage_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseSelfQuotientImage_delete);
+  PyBobIpBaseSelfQuotientImage_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseSelfQuotientImage_RichCompare);
+  PyBobIpBaseSelfQuotientImage_Type.tp_methods = PyBobIpBaseSelfQuotientImage_methods;
+  PyBobIpBaseSelfQuotientImage_Type.tp_getset = PyBobIpBaseSelfQuotientImage_getseters;
+  PyBobIpBaseSelfQuotientImage_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseSelfQuotientImage_process);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseSelfQuotientImageType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseSelfQuotientImage_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseSelfQuotientImageType);
-  return PyModule_AddObject(module, "SelfQuotientImage", (PyObject*)&PyBobIpBaseSelfQuotientImageType) >= 0;
+  Py_INCREF(&PyBobIpBaseSelfQuotientImage_Type);
+  return PyModule_AddObject(module, "SelfQuotientImage", (PyObject*)&PyBobIpBaseSelfQuotientImage_Type) >= 0;
 }
 

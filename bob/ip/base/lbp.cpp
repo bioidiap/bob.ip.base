@@ -137,7 +137,7 @@ static int PyBobIpBaseLBP_init(PyBobIpBaseLBPObject* self, PyObject* args, PyObj
     ){
       // copy constructor
       PyBobIpBaseLBPObject* lbp;
-      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist4, &PyBobIpBaseLBPType, &lbp)){
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist4, &PyBobIpBaseLBP_Type, &lbp)){
         LBP_doc.print_usage();
         return -1;
       }
@@ -213,8 +213,17 @@ static void PyBobIpBaseLBP_delete(PyBobIpBaseLBPObject* self) {
 }
 
 int PyBobIpBaseLBP_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseLBPType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseLBP_Type));
 }
+
+int PyBobIpBaseLBP_Converter(PyObject* o, PyBobIpBaseLBPObject** a) {
+  if (!PyBobIpBaseLBP_Check(o)) return 0;
+  Py_INCREF(o);
+  *a = reinterpret_cast<PyBobIpBaseLBPObject*>(o);
+  return 1;
+}
+
+
 
 static PyObject* PyBobIpBaseLBP_RichCompare(PyBobIpBaseLBPObject* self, PyObject* other, int op) {
   TRY
@@ -1044,7 +1053,7 @@ static PyMethodDef PyBobIpBaseLBP_methods[] = {
 /******************************************************************/
 
 // Define the LBP type struct; will be initialized later
-PyTypeObject PyBobIpBaseLBPType = {
+PyTypeObject PyBobIpBaseLBP_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -1052,26 +1061,25 @@ PyTypeObject PyBobIpBaseLBPType = {
 bool init_BobIpBaseLBP(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseLBPType.tp_name = LBP_doc.name();
-  PyBobIpBaseLBPType.tp_basicsize = sizeof(PyBobIpBaseLBPObject);
-  PyBobIpBaseLBPType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseLBPType.tp_doc = LBP_doc.doc();
+  PyBobIpBaseLBP_Type.tp_name = LBP_doc.name();
+  PyBobIpBaseLBP_Type.tp_basicsize = sizeof(PyBobIpBaseLBPObject);
+  PyBobIpBaseLBP_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseLBP_Type.tp_doc = LBP_doc.doc();
 
   // set the functions
-  PyBobIpBaseLBPType.tp_new = PyType_GenericNew;
-  PyBobIpBaseLBPType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseLBP_init);
-  PyBobIpBaseLBPType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseLBP_delete);
-  PyBobIpBaseLBPType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseLBP_RichCompare);
-  PyBobIpBaseLBPType.tp_methods = PyBobIpBaseLBP_methods;
-  PyBobIpBaseLBPType.tp_getset = PyBobIpBaseLBP_getseters;
-  PyBobIpBaseLBPType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseLBP_extract);
+  PyBobIpBaseLBP_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseLBP_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseLBP_init);
+  PyBobIpBaseLBP_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseLBP_delete);
+  PyBobIpBaseLBP_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseLBP_RichCompare);
+  PyBobIpBaseLBP_Type.tp_methods = PyBobIpBaseLBP_methods;
+  PyBobIpBaseLBP_Type.tp_getset = PyBobIpBaseLBP_getseters;
+  PyBobIpBaseLBP_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseLBP_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseLBPType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseLBP_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseLBPType);
-  return PyModule_AddObject(module, "LBP", (PyObject*)&PyBobIpBaseLBPType) >= 0;
+  Py_INCREF(&PyBobIpBaseLBP_Type);
+  return PyModule_AddObject(module, "LBP", (PyObject*)&PyBobIpBaseLBP_Type) >= 0;
 }
 

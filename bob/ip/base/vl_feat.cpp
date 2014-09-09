@@ -49,7 +49,7 @@ static int PyBobIpBaseVLSIFT_init(PyBobIpBaseVLSIFTObject* self, PyObject* args,
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseVLSIFT_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseVLSIFTObject* sift;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseVLSIFTType, &sift)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseVLSIFT_Type, &sift)) return -1;
 
     self->cxx.reset(new bob::ip::base::VLSIFT(*sift->cxx));
     return 0;
@@ -74,7 +74,7 @@ static void PyBobIpBaseVLSIFT_delete(PyBobIpBaseVLSIFTObject* self) {
 }
 
 int PyBobIpBaseVLSIFT_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseVLSIFTType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseVLSIFT_Type));
 }
 
 static PyObject* PyBobIpBaseVLSIFT_RichCompare(PyBobIpBaseVLSIFTObject* self, PyObject* other, int op) {
@@ -429,7 +429,7 @@ static int PyBobIpBaseVLDSIFT_init(PyBobIpBaseVLDSIFTObject* self, PyObject* arg
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseVLDSIFT_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseVLDSIFTObject* sift;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseVLDSIFTType, &sift)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseVLDSIFT_Type, &sift)) return -1;
 
     self->cxx.reset(new bob::ip::base::VLDSIFT(*sift->cxx));
     return 0;
@@ -452,7 +452,7 @@ static void PyBobIpBaseVLDSIFT_delete(PyBobIpBaseVLDSIFTObject* self) {
 }
 
 int PyBobIpBaseVLDSIFT_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseVLDSIFTType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseVLDSIFT_Type));
 }
 
 static PyObject* PyBobIpBaseVLDSIFT_RichCompare(PyBobIpBaseVLDSIFTObject* self, PyObject* other, int op) {
@@ -734,13 +734,13 @@ static PyMethodDef PyBobIpBaseVLDSIFT_methods[] = {
 /******************************************************************/
 
 // Define the VLSIFT type struct; will be initialized later
-PyTypeObject PyBobIpBaseVLSIFTType = {
+PyTypeObject PyBobIpBaseVLSIFT_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
 
 // Define the VLDSIFT type struct; will be initialized later
-PyTypeObject PyBobIpBaseVLDSIFTType = {
+PyTypeObject PyBobIpBaseVLDSIFT_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -749,50 +749,50 @@ bool init_BobIpBaseVLFEAT(PyObject* module)
 {
   // VLSIFT
   // initialize the type struct
-  PyBobIpBaseVLSIFTType.tp_name = VLSIFT_doc.name();
-  PyBobIpBaseVLSIFTType.tp_basicsize = sizeof(PyBobIpBaseVLSIFTObject);
-  PyBobIpBaseVLSIFTType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseVLSIFTType.tp_doc = VLSIFT_doc.doc();
+  PyBobIpBaseVLSIFT_Type.tp_name = VLSIFT_doc.name();
+  PyBobIpBaseVLSIFT_Type.tp_basicsize = sizeof(PyBobIpBaseVLSIFTObject);
+  PyBobIpBaseVLSIFT_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseVLSIFT_Type.tp_doc = VLSIFT_doc.doc();
 
   // set the functions
-  PyBobIpBaseVLSIFTType.tp_new = PyType_GenericNew;
-  PyBobIpBaseVLSIFTType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseVLSIFT_init);
-  PyBobIpBaseVLSIFTType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseVLSIFT_delete);
-  PyBobIpBaseVLSIFTType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseVLSIFT_RichCompare);
-  PyBobIpBaseVLSIFTType.tp_methods = PyBobIpBaseVLSIFT_methods;
-  PyBobIpBaseVLSIFTType.tp_getset = PyBobIpBaseVLSIFT_getseters;
-  PyBobIpBaseVLSIFTType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseVLSIFT_extract);
+  PyBobIpBaseVLSIFT_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseVLSIFT_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseVLSIFT_init);
+  PyBobIpBaseVLSIFT_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseVLSIFT_delete);
+  PyBobIpBaseVLSIFT_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseVLSIFT_RichCompare);
+  PyBobIpBaseVLSIFT_Type.tp_methods = PyBobIpBaseVLSIFT_methods;
+  PyBobIpBaseVLSIFT_Type.tp_getset = PyBobIpBaseVLSIFT_getseters;
+  PyBobIpBaseVLSIFT_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseVLSIFT_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseVLSIFTType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseVLSIFT_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseVLSIFTType);
-  if (PyModule_AddObject(module, "VLSIFT", (PyObject*)&PyBobIpBaseVLSIFTType) < 0) return false;
+  Py_INCREF(&PyBobIpBaseVLSIFT_Type);
+  if (PyModule_AddObject(module, "VLSIFT", (PyObject*)&PyBobIpBaseVLSIFT_Type) < 0) return false;
 
 
   // VLDSIFT
   // initialize the type struct
-  PyBobIpBaseVLDSIFTType.tp_name = VLDSIFT_doc.name();
-  PyBobIpBaseVLDSIFTType.tp_basicsize = sizeof(PyBobIpBaseVLDSIFTObject);
-  PyBobIpBaseVLDSIFTType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseVLDSIFTType.tp_doc = VLDSIFT_doc.doc();
+  PyBobIpBaseVLDSIFT_Type.tp_name = VLDSIFT_doc.name();
+  PyBobIpBaseVLDSIFT_Type.tp_basicsize = sizeof(PyBobIpBaseVLDSIFTObject);
+  PyBobIpBaseVLDSIFT_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseVLDSIFT_Type.tp_doc = VLDSIFT_doc.doc();
 
   // set the functions
-  PyBobIpBaseVLDSIFTType.tp_new = PyType_GenericNew;
-  PyBobIpBaseVLDSIFTType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseVLDSIFT_init);
-  PyBobIpBaseVLDSIFTType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseVLDSIFT_delete);
-  PyBobIpBaseVLDSIFTType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseVLDSIFT_RichCompare);
-  PyBobIpBaseVLDSIFTType.tp_methods = PyBobIpBaseVLDSIFT_methods;
-  PyBobIpBaseVLDSIFTType.tp_getset = PyBobIpBaseVLDSIFT_getseters;
-  PyBobIpBaseVLDSIFTType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseVLDSIFT_extract);
+  PyBobIpBaseVLDSIFT_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseVLDSIFT_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseVLDSIFT_init);
+  PyBobIpBaseVLDSIFT_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseVLDSIFT_delete);
+  PyBobIpBaseVLDSIFT_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseVLDSIFT_RichCompare);
+  PyBobIpBaseVLDSIFT_Type.tp_methods = PyBobIpBaseVLDSIFT_methods;
+  PyBobIpBaseVLDSIFT_Type.tp_getset = PyBobIpBaseVLDSIFT_getseters;
+  PyBobIpBaseVLDSIFT_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseVLDSIFT_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseVLDSIFTType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseVLDSIFT_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseVLDSIFTType);
-  return PyModule_AddObject(module, "VLDSIFT", (PyObject*)&PyBobIpBaseVLDSIFTType) >= 0;
+  Py_INCREF(&PyBobIpBaseVLDSIFT_Type);
+  return PyModule_AddObject(module, "VLDSIFT", (PyObject*)&PyBobIpBaseVLDSIFT_Type) >= 0;
 }
 
 #endif // HAVE_VLFEAT

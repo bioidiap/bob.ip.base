@@ -37,8 +37,7 @@ static int dict_steal(PyObject* d, const char* key, PyObject* value) {
   if (!value) return 0;
   int retval = PyDict_SetItemString(d, key, value);
   Py_DECREF(value);
-  if (retval == 0) return 1; //all good
-  return 0; //a problem occurred
+  return retval == 0 ? 1 : 0;
 }
 
 /**
@@ -187,8 +186,7 @@ static PyObject* create_module (void) {
   auto m_ = make_safe(m); ///< protects against early returns
 
   /* register version numbers and constants */
-  if (PyModule_AddStringConstant(m, "module", BOB_EXT_MODULE_VERSION) < 0)
-    return 0;
+  if (PyModule_AddStringConstant(m, "module", BOB_EXT_MODULE_VERSION) < 0) return 0;
 
   PyObject* externals = build_version_dictionary();
   if (!externals) return 0;

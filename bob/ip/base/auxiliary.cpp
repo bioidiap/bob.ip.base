@@ -674,7 +674,7 @@ PyObject* PyBobIpBase_lbphs(PyObject*, PyObject* args, PyObject* kwds) {
   PyBobIpBaseLBPObject* lbp;
   blitz::TinyVector<int,2> size, overlap(0,0);
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&O!(ii)|(ii)O&", kwlist, &PyBlitzArray_Converter, &input, &PyBobIpBaseLBPType, &lbp, &size[0], &size[1], &overlap[0], &overlap[1], &PyBlitzArray_OutputConverter, &output)) return 0;
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&O!(ii)|(ii)O&", kwlist, &PyBlitzArray_Converter, &input, &PyBobIpBaseLBP_Type, &lbp, &size[0], &size[1], &overlap[0], &overlap[1], &PyBlitzArray_OutputConverter, &output)) return 0;
 
   auto input_ = make_safe(input), output_ = make_xsafe(output);
 
@@ -728,7 +728,7 @@ PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject* args, PyObject* kwds
   PyBobIpBaseLBPObject* lbp;
   blitz::TinyVector<int,2> size, overlap(0,0);
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&O!(ii)|(ii)", kwlist, &PyBlitzArray_Converter, &input, &PyBobIpBaseLBPType, &lbp, &size[0], &size[1], &overlap[0], &overlap[1])) return 0;
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&O!(ii)|(ii)", kwlist, &PyBlitzArray_Converter, &input, &PyBobIpBaseLBP_Type, &lbp, &size[0], &size[1], &overlap[0], &overlap[1])) return 0;
 
   auto input_ = make_safe(input);
 

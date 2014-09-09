@@ -48,7 +48,7 @@ static int PyBobIpBaseMultiscaleRetinex_init(PyBobIpBaseMultiscaleRetinexObject*
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseMultiscaleRetinex_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseMultiscaleRetinexObject* msrx;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseMultiscaleRetinexType, &msrx)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseMultiscaleRetinex_Type, &msrx)) return -1;
 
     self->cxx.reset(new bob::ip::base::MultiscaleRetinex(*msrx->cxx));
     return 0;
@@ -73,7 +73,7 @@ static void PyBobIpBaseMultiscaleRetinex_delete(PyBobIpBaseMultiscaleRetinexObje
 }
 
 int PyBobIpBaseMultiscaleRetinex_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseMultiscaleRetinexType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseMultiscaleRetinex_Type));
 }
 
 static PyObject* PyBobIpBaseMultiscaleRetinex_RichCompare(PyBobIpBaseMultiscaleRetinexObject* self, PyObject* other, int op) {
@@ -334,7 +334,7 @@ static PyMethodDef PyBobIpBaseMultiscaleRetinex_methods[] = {
 /******************************************************************/
 
 // Define the MultiscaleRetinex type struct; will be initialized later
-PyTypeObject PyBobIpBaseMultiscaleRetinexType = {
+PyTypeObject PyBobIpBaseMultiscaleRetinex_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -342,26 +342,25 @@ PyTypeObject PyBobIpBaseMultiscaleRetinexType = {
 bool init_BobIpBaseMultiscaleRetinex(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseMultiscaleRetinexType.tp_name = MultiscaleRetinex_doc.name();
-  PyBobIpBaseMultiscaleRetinexType.tp_basicsize = sizeof(PyBobIpBaseMultiscaleRetinexObject);
-  PyBobIpBaseMultiscaleRetinexType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseMultiscaleRetinexType.tp_doc = MultiscaleRetinex_doc.doc();
+  PyBobIpBaseMultiscaleRetinex_Type.tp_name = MultiscaleRetinex_doc.name();
+  PyBobIpBaseMultiscaleRetinex_Type.tp_basicsize = sizeof(PyBobIpBaseMultiscaleRetinexObject);
+  PyBobIpBaseMultiscaleRetinex_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseMultiscaleRetinex_Type.tp_doc = MultiscaleRetinex_doc.doc();
 
   // set the functions
-  PyBobIpBaseMultiscaleRetinexType.tp_new = PyType_GenericNew;
-  PyBobIpBaseMultiscaleRetinexType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseMultiscaleRetinex_init);
-  PyBobIpBaseMultiscaleRetinexType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseMultiscaleRetinex_delete);
-  PyBobIpBaseMultiscaleRetinexType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseMultiscaleRetinex_RichCompare);
-  PyBobIpBaseMultiscaleRetinexType.tp_methods = PyBobIpBaseMultiscaleRetinex_methods;
-  PyBobIpBaseMultiscaleRetinexType.tp_getset = PyBobIpBaseMultiscaleRetinex_getseters;
-  PyBobIpBaseMultiscaleRetinexType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseMultiscaleRetinex_process);
+  PyBobIpBaseMultiscaleRetinex_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseMultiscaleRetinex_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseMultiscaleRetinex_init);
+  PyBobIpBaseMultiscaleRetinex_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseMultiscaleRetinex_delete);
+  PyBobIpBaseMultiscaleRetinex_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseMultiscaleRetinex_RichCompare);
+  PyBobIpBaseMultiscaleRetinex_Type.tp_methods = PyBobIpBaseMultiscaleRetinex_methods;
+  PyBobIpBaseMultiscaleRetinex_Type.tp_getset = PyBobIpBaseMultiscaleRetinex_getseters;
+  PyBobIpBaseMultiscaleRetinex_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseMultiscaleRetinex_process);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseMultiscaleRetinexType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseMultiscaleRetinex_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseMultiscaleRetinexType);
-  return PyModule_AddObject(module, "MultiscaleRetinex", (PyObject*)&PyBobIpBaseMultiscaleRetinexType) >= 0;
+  Py_INCREF(&PyBobIpBaseMultiscaleRetinex_Type);
+  return PyModule_AddObject(module, "MultiscaleRetinex", (PyObject*)&PyBobIpBaseMultiscaleRetinex_Type) >= 0;
 }
 

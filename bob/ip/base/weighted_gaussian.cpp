@@ -47,7 +47,7 @@ static int PyBobIpBaseWeightedGaussian_init(PyBobIpBaseWeightedGaussianObject* s
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseWeightedGaussian_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseWeightedGaussianObject* gaussian;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseWeightedGaussianType, &gaussian)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseWeightedGaussian_Type, &gaussian)) return -1;
 
     self->cxx.reset(new bob::ip::base::WeightedGaussian(*gaussian->cxx));
     return 0;
@@ -75,7 +75,7 @@ static void PyBobIpBaseWeightedGaussian_delete(PyBobIpBaseWeightedGaussianObject
 }
 
 int PyBobIpBaseWeightedGaussian_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseWeightedGaussianType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseWeightedGaussian_Type));
 }
 
 static PyObject* PyBobIpBaseWeightedGaussian_RichCompare(PyBobIpBaseWeightedGaussianObject* self, PyObject* other, int op) {
@@ -285,7 +285,7 @@ static PyMethodDef PyBobIpBaseWeightedGaussian_methods[] = {
 /******************************************************************/
 
 // Define the WeightedGaussian type struct; will be initialized later
-PyTypeObject PyBobIpBaseWeightedGaussianType = {
+PyTypeObject PyBobIpBaseWeightedGaussian_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -293,26 +293,25 @@ PyTypeObject PyBobIpBaseWeightedGaussianType = {
 bool init_BobIpBaseWeightedGaussian(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseWeightedGaussianType.tp_name = WeightedGaussian_doc.name();
-  PyBobIpBaseWeightedGaussianType.tp_basicsize = sizeof(PyBobIpBaseWeightedGaussianObject);
-  PyBobIpBaseWeightedGaussianType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseWeightedGaussianType.tp_doc = WeightedGaussian_doc.doc();
+  PyBobIpBaseWeightedGaussian_Type.tp_name = WeightedGaussian_doc.name();
+  PyBobIpBaseWeightedGaussian_Type.tp_basicsize = sizeof(PyBobIpBaseWeightedGaussianObject);
+  PyBobIpBaseWeightedGaussian_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseWeightedGaussian_Type.tp_doc = WeightedGaussian_doc.doc();
 
   // set the functions
-  PyBobIpBaseWeightedGaussianType.tp_new = PyType_GenericNew;
-  PyBobIpBaseWeightedGaussianType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseWeightedGaussian_init);
-  PyBobIpBaseWeightedGaussianType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseWeightedGaussian_delete);
-  PyBobIpBaseWeightedGaussianType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseWeightedGaussian_RichCompare);
-  PyBobIpBaseWeightedGaussianType.tp_methods = PyBobIpBaseWeightedGaussian_methods;
-  PyBobIpBaseWeightedGaussianType.tp_getset = PyBobIpBaseWeightedGaussian_getseters;
-  PyBobIpBaseWeightedGaussianType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseWeightedGaussian_filter);
+  PyBobIpBaseWeightedGaussian_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseWeightedGaussian_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseWeightedGaussian_init);
+  PyBobIpBaseWeightedGaussian_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseWeightedGaussian_delete);
+  PyBobIpBaseWeightedGaussian_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseWeightedGaussian_RichCompare);
+  PyBobIpBaseWeightedGaussian_Type.tp_methods = PyBobIpBaseWeightedGaussian_methods;
+  PyBobIpBaseWeightedGaussian_Type.tp_getset = PyBobIpBaseWeightedGaussian_getseters;
+  PyBobIpBaseWeightedGaussian_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseWeightedGaussian_filter);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseWeightedGaussianType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseWeightedGaussian_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseWeightedGaussianType);
-  return PyModule_AddObject(module, "WeightedGaussian", (PyObject*)&PyBobIpBaseWeightedGaussianType) >= 0;
+  Py_INCREF(&PyBobIpBaseWeightedGaussian_Type);
+  return PyModule_AddObject(module, "WeightedGaussian", (PyObject*)&PyBobIpBaseWeightedGaussian_Type) >= 0;
 }
 

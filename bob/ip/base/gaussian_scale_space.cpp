@@ -13,7 +13,7 @@
 /************ GSSKeypoint Section *********************************/
 /******************************************************************/
 
-PyTypeObject PyBobIpBaseGSSKeypointType = {
+PyTypeObject PyBobIpBaseGSSKeypoint_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -61,7 +61,7 @@ static void PyBobIpBaseGSSKeypoint_delete(PyBobIpBaseGSSKeypointObject* self) {
 }
 
 int PyBobIpBaseGSSKeypoint_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGSSKeypointType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGSSKeypoint_Type));
 }
 
 static auto kpSigma = bob::extension::VariableDoc(
@@ -156,7 +156,7 @@ static PyGetSetDef PyBobIpBaseGSSKeypoint_getseters[] = {
 /************ GSSKeypointInfo Section *****************************/
 /******************************************************************/
 
-PyTypeObject PyBobIpBaseGSSKeypointInfoType = {
+PyTypeObject PyBobIpBaseGSSKeypointInfo_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -207,7 +207,7 @@ static void PyBobIpBaseGSSKeypointInfo_delete(PyBobIpBaseGSSKeypointInfoObject* 
 }
 
 int PyBobIpBaseGSSKeypointInfo_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGSSKeypointInfoType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGSSKeypointInfo_Type));
 }
 
 
@@ -398,7 +398,7 @@ static int PyBobIpBaseGaussianScaleSpace_init(PyBobIpBaseGaussianScaleSpaceObjec
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseGaussianScaleSpace_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseGaussianScaleSpaceObject* gss;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseGaussianScaleSpaceType, &gss)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseGaussianScaleSpace_Type, &gss)) return -1;
 
     self->cxx.reset(new bob::ip::base::GaussianScaleSpace(*gss->cxx));
     return 0;
@@ -424,7 +424,7 @@ static void PyBobIpBaseGaussianScaleSpace_delete(PyBobIpBaseGaussianScaleSpaceOb
 }
 
 int PyBobIpBaseGaussianScaleSpace_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGaussianScaleSpaceType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGaussianScaleSpace_Type));
 }
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_RichCompare(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* other, int op) {
@@ -720,7 +720,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_getGaussian(PyBobIpBaseGaussianSc
   int index;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i", kwlist, &index)) return 0;
 
-  PyBobIpBaseGaussianObject* gaussian = (PyBobIpBaseGaussianObject*)PyBobIpBaseGaussianType.tp_alloc(&PyBobIpBaseGaussianType, 0);
+  PyBobIpBaseGaussianObject* gaussian = (PyBobIpBaseGaussianObject*)PyBobIpBaseGaussian_Type.tp_alloc(&PyBobIpBaseGaussian_Type, 0);
   gaussian->cxx = self->cxx->getGaussian(index);
   return Py_BuildValue("O", gaussian);
 
@@ -909,7 +909,7 @@ static PyMethodDef PyBobIpBaseGaussianScaleSpace_methods[] = {
 /******************************************************************/
 
 // Define the GaussianScaleSpace type struct; will be initialized later
-PyTypeObject PyBobIpBaseGaussianScaleSpaceType = {
+PyTypeObject PyBobIpBaseGaussianScaleSpace_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -917,51 +917,51 @@ PyTypeObject PyBobIpBaseGaussianScaleSpaceType = {
 bool init_BobIpBaseGaussianScaleSpace(PyObject* module)
 {
   // initialize GSSKeypoint
-  PyBobIpBaseGSSKeypointType.tp_name = GSSKeypoint_doc.name();
-  PyBobIpBaseGSSKeypointType.tp_basicsize = sizeof(PyBobIpBaseGSSKeypointObject);
-  PyBobIpBaseGSSKeypointType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGSSKeypointType.tp_doc = GSSKeypoint_doc.doc();
-  PyBobIpBaseGSSKeypointType.tp_new = PyType_GenericNew;
-  PyBobIpBaseGSSKeypointType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGSSKeypoint_init);
-  PyBobIpBaseGSSKeypointType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGSSKeypoint_delete);
-  PyBobIpBaseGSSKeypointType.tp_getset = PyBobIpBaseGSSKeypoint_getseters;
+  PyBobIpBaseGSSKeypoint_Type.tp_name = GSSKeypoint_doc.name();
+  PyBobIpBaseGSSKeypoint_Type.tp_basicsize = sizeof(PyBobIpBaseGSSKeypointObject);
+  PyBobIpBaseGSSKeypoint_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGSSKeypoint_Type.tp_doc = GSSKeypoint_doc.doc();
+  PyBobIpBaseGSSKeypoint_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseGSSKeypoint_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGSSKeypoint_init);
+  PyBobIpBaseGSSKeypoint_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGSSKeypoint_delete);
+  PyBobIpBaseGSSKeypoint_Type.tp_getset = PyBobIpBaseGSSKeypoint_getseters;
 
   // initialize GSSKeypointInfo
-  PyBobIpBaseGSSKeypointInfoType.tp_name = GSSKeypointInfo_doc.name();
-  PyBobIpBaseGSSKeypointInfoType.tp_basicsize = sizeof(PyBobIpBaseGSSKeypointInfoObject);
-  PyBobIpBaseGSSKeypointInfoType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGSSKeypointInfoType.tp_doc = GSSKeypointInfo_doc.doc();
-  PyBobIpBaseGSSKeypointInfoType.tp_new = PyType_GenericNew;
-  PyBobIpBaseGSSKeypointInfoType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGSSKeypointInfo_init);
-  PyBobIpBaseGSSKeypointInfoType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGSSKeypointInfo_delete);
-  PyBobIpBaseGSSKeypointInfoType.tp_getset = PyBobIpBaseGSSKeypointInfo_getseters;
+  PyBobIpBaseGSSKeypointInfo_Type.tp_name = GSSKeypointInfo_doc.name();
+  PyBobIpBaseGSSKeypointInfo_Type.tp_basicsize = sizeof(PyBobIpBaseGSSKeypointInfoObject);
+  PyBobIpBaseGSSKeypointInfo_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGSSKeypointInfo_Type.tp_doc = GSSKeypointInfo_doc.doc();
+  PyBobIpBaseGSSKeypointInfo_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseGSSKeypointInfo_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGSSKeypointInfo_init);
+  PyBobIpBaseGSSKeypointInfo_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGSSKeypointInfo_delete);
+  PyBobIpBaseGSSKeypointInfo_Type.tp_getset = PyBobIpBaseGSSKeypointInfo_getseters;
 
   // initialize the type struct
-  PyBobIpBaseGaussianScaleSpaceType.tp_name = GaussianScaleSpace_doc.name();
-  PyBobIpBaseGaussianScaleSpaceType.tp_basicsize = sizeof(PyBobIpBaseGaussianScaleSpaceObject);
-  PyBobIpBaseGaussianScaleSpaceType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGaussianScaleSpaceType.tp_doc = GaussianScaleSpace_doc.doc();
+  PyBobIpBaseGaussianScaleSpace_Type.tp_name = GaussianScaleSpace_doc.name();
+  PyBobIpBaseGaussianScaleSpace_Type.tp_basicsize = sizeof(PyBobIpBaseGaussianScaleSpaceObject);
+  PyBobIpBaseGaussianScaleSpace_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGaussianScaleSpace_Type.tp_doc = GaussianScaleSpace_doc.doc();
 
   // set the functions
-  PyBobIpBaseGaussianScaleSpaceType.tp_new = PyType_GenericNew;
-  PyBobIpBaseGaussianScaleSpaceType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGaussianScaleSpace_init);
-  PyBobIpBaseGaussianScaleSpaceType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGaussianScaleSpace_delete);
-  PyBobIpBaseGaussianScaleSpaceType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGaussianScaleSpace_RichCompare);
-  PyBobIpBaseGaussianScaleSpaceType.tp_methods = PyBobIpBaseGaussianScaleSpace_methods;
-  PyBobIpBaseGaussianScaleSpaceType.tp_getset = PyBobIpBaseGaussianScaleSpace_getseters;
-  PyBobIpBaseGaussianScaleSpaceType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGaussianScaleSpace_process);
+  PyBobIpBaseGaussianScaleSpace_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseGaussianScaleSpace_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGaussianScaleSpace_init);
+  PyBobIpBaseGaussianScaleSpace_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGaussianScaleSpace_delete);
+  PyBobIpBaseGaussianScaleSpace_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGaussianScaleSpace_RichCompare);
+  PyBobIpBaseGaussianScaleSpace_Type.tp_methods = PyBobIpBaseGaussianScaleSpace_methods;
+  PyBobIpBaseGaussianScaleSpace_Type.tp_getset = PyBobIpBaseGaussianScaleSpace_getseters;
+  PyBobIpBaseGaussianScaleSpace_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGaussianScaleSpace_process);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseGSSKeypointType) < 0) return false;
-  if (PyType_Ready(&PyBobIpBaseGSSKeypointInfoType) < 0) return false;
-  if (PyType_Ready(&PyBobIpBaseGaussianScaleSpaceType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGSSKeypoint_Type) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGSSKeypointInfo_Type) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGaussianScaleSpace_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseGSSKeypointType);
-  if (PyModule_AddObject(module, "GSSKeypoint", (PyObject*)&PyBobIpBaseGSSKeypointType) < 0) return false;
-  Py_INCREF(&PyBobIpBaseGSSKeypointInfoType);
-  if (PyModule_AddObject(module, "GSSKeypointInfo", (PyObject*)&PyBobIpBaseGSSKeypointInfoType) < 0) return false;
-  Py_INCREF(&PyBobIpBaseGaussianScaleSpaceType);
-  return PyModule_AddObject(module, "GaussianScaleSpace", (PyObject*)&PyBobIpBaseGaussianScaleSpaceType) >= 0;
+  Py_INCREF(&PyBobIpBaseGSSKeypoint_Type);
+  if (PyModule_AddObject(module, "GSSKeypoint", (PyObject*)&PyBobIpBaseGSSKeypoint_Type) < 0) return false;
+  Py_INCREF(&PyBobIpBaseGSSKeypointInfo_Type);
+  if (PyModule_AddObject(module, "GSSKeypointInfo", (PyObject*)&PyBobIpBaseGSSKeypointInfo_Type) < 0) return false;
+  Py_INCREF(&PyBobIpBaseGaussianScaleSpace_Type);
+  return PyModule_AddObject(module, "GaussianScaleSpace", (PyObject*)&PyBobIpBaseGaussianScaleSpace_Type) >= 0;
 }
 

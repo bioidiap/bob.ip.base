@@ -48,7 +48,7 @@ static int PyBobIpBaseGaussian_init(PyBobIpBaseGaussianObject* self, PyObject* a
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseGaussian_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseGaussianObject* gaussian;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseGaussianType, &gaussian)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseGaussian_Type, &gaussian)) return -1;
 
     self->cxx.reset(new bob::ip::base::Gaussian(*gaussian->cxx));
     return 0;
@@ -76,7 +76,7 @@ static void PyBobIpBaseGaussian_delete(PyBobIpBaseGaussianObject* self) {
 }
 
 int PyBobIpBaseGaussian_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGaussianType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGaussian_Type));
 }
 
 static PyObject* PyBobIpBaseGaussian_RichCompare(PyBobIpBaseGaussianObject* self, PyObject* other, int op) {
@@ -322,7 +322,7 @@ static PyMethodDef PyBobIpBaseGaussian_methods[] = {
 /******************************************************************/
 
 // Define the Gaussian type struct; will be initialized later
-PyTypeObject PyBobIpBaseGaussianType = {
+PyTypeObject PyBobIpBaseGaussian_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -330,26 +330,25 @@ PyTypeObject PyBobIpBaseGaussianType = {
 bool init_BobIpBaseGaussian(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseGaussianType.tp_name = Gaussian_doc.name();
-  PyBobIpBaseGaussianType.tp_basicsize = sizeof(PyBobIpBaseGaussianObject);
-  PyBobIpBaseGaussianType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGaussianType.tp_doc = Gaussian_doc.doc();
+  PyBobIpBaseGaussian_Type.tp_name = Gaussian_doc.name();
+  PyBobIpBaseGaussian_Type.tp_basicsize = sizeof(PyBobIpBaseGaussianObject);
+  PyBobIpBaseGaussian_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGaussian_Type.tp_doc = Gaussian_doc.doc();
 
   // set the functions
-  PyBobIpBaseGaussianType.tp_new = PyType_GenericNew;
-  PyBobIpBaseGaussianType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGaussian_init);
-  PyBobIpBaseGaussianType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGaussian_delete);
-  PyBobIpBaseGaussianType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGaussian_RichCompare);
-  PyBobIpBaseGaussianType.tp_methods = PyBobIpBaseGaussian_methods;
-  PyBobIpBaseGaussianType.tp_getset = PyBobIpBaseGaussian_getseters;
-  PyBobIpBaseGaussianType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGaussian_filter);
+  PyBobIpBaseGaussian_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseGaussian_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGaussian_init);
+  PyBobIpBaseGaussian_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGaussian_delete);
+  PyBobIpBaseGaussian_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGaussian_RichCompare);
+  PyBobIpBaseGaussian_Type.tp_methods = PyBobIpBaseGaussian_methods;
+  PyBobIpBaseGaussian_Type.tp_getset = PyBobIpBaseGaussian_getseters;
+  PyBobIpBaseGaussian_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGaussian_filter);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseGaussianType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseGaussian_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseGaussianType);
-  return PyModule_AddObject(module, "Gaussian", (PyObject*)&PyBobIpBaseGaussianType) >= 0;
+  Py_INCREF(&PyBobIpBaseGaussian_Type);
+  return PyModule_AddObject(module, "Gaussian", (PyObject*)&PyBobIpBaseGaussian_Type) >= 0;
 }
 

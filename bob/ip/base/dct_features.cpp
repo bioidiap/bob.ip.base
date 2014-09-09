@@ -54,7 +54,7 @@ static int PyBobIpBaseDCTFeatures_init(PyBobIpBaseDCTFeaturesObject* self, PyObj
   if (nargs == 1 && ((args && PyTuple_Size(args) == 1 && PyBobIpBaseDCTFeatures_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
     // copy construct
     PyBobIpBaseDCTFeaturesObject* dct;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseDCTFeaturesType, &dct)) return -1;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist2, &PyBobIpBaseDCTFeatures_Type, &dct)) return -1;
 
     self->cxx.reset(new bob::ip::base::DCTFeatures(*dct->cxx));
     return 0;
@@ -82,7 +82,7 @@ static void PyBobIpBaseDCTFeatures_delete(PyBobIpBaseDCTFeaturesObject* self) {
 }
 
 int PyBobIpBaseDCTFeatures_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseDCTFeaturesType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseDCTFeatures_Type));
 }
 
 static PyObject* PyBobIpBaseDCTFeatures_RichCompare(PyBobIpBaseDCTFeaturesObject* self, PyObject* other, int op) {
@@ -600,7 +600,7 @@ static PyMethodDef PyBobIpBaseDCTFeatures_methods[] = {
 /******************************************************************/
 
 // Define the DCTFeatures type struct; will be initialized later
-PyTypeObject PyBobIpBaseDCTFeaturesType = {
+PyTypeObject PyBobIpBaseDCTFeatures_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -608,26 +608,25 @@ PyTypeObject PyBobIpBaseDCTFeaturesType = {
 bool init_BobIpBaseDCTFeatures(PyObject* module)
 {
   // initialize the type struct
-  PyBobIpBaseDCTFeaturesType.tp_name = DCTFeatures_doc.name();
-  PyBobIpBaseDCTFeaturesType.tp_basicsize = sizeof(PyBobIpBaseDCTFeaturesObject);
-  PyBobIpBaseDCTFeaturesType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseDCTFeaturesType.tp_doc = DCTFeatures_doc.doc();
+  PyBobIpBaseDCTFeatures_Type.tp_name = DCTFeatures_doc.name();
+  PyBobIpBaseDCTFeatures_Type.tp_basicsize = sizeof(PyBobIpBaseDCTFeaturesObject);
+  PyBobIpBaseDCTFeatures_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseDCTFeatures_Type.tp_doc = DCTFeatures_doc.doc();
 
   // set the functions
-  PyBobIpBaseDCTFeaturesType.tp_new = PyType_GenericNew;
-  PyBobIpBaseDCTFeaturesType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseDCTFeatures_init);
-  PyBobIpBaseDCTFeaturesType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseDCTFeatures_delete);
-  PyBobIpBaseDCTFeaturesType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseDCTFeatures_RichCompare);
-  PyBobIpBaseDCTFeaturesType.tp_methods = PyBobIpBaseDCTFeatures_methods;
-  PyBobIpBaseDCTFeaturesType.tp_getset = PyBobIpBaseDCTFeatures_getseters;
-  PyBobIpBaseDCTFeaturesType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseDCTFeatures_extract);
+  PyBobIpBaseDCTFeatures_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseDCTFeatures_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseDCTFeatures_init);
+  PyBobIpBaseDCTFeatures_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseDCTFeatures_delete);
+  PyBobIpBaseDCTFeatures_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseDCTFeatures_RichCompare);
+  PyBobIpBaseDCTFeatures_Type.tp_methods = PyBobIpBaseDCTFeatures_methods;
+  PyBobIpBaseDCTFeatures_Type.tp_getset = PyBobIpBaseDCTFeatures_getseters;
+  PyBobIpBaseDCTFeatures_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseDCTFeatures_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseDCTFeaturesType) < 0)
-    return false;
+  if (PyType_Ready(&PyBobIpBaseDCTFeatures_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseDCTFeaturesType);
-  return PyModule_AddObject(module, "DCTFeatures", (PyObject*)&PyBobIpBaseDCTFeaturesType) >= 0;
+  Py_INCREF(&PyBobIpBaseDCTFeatures_Type);
+  return PyModule_AddObject(module, "DCTFeatures", (PyObject*)&PyBobIpBaseDCTFeatures_Type) >= 0;
 }
 

@@ -43,7 +43,7 @@ typedef enum {
 } GLCMProperty;
 
 
-PyTypeObject PyBobIpBaseGLCMPropertyType = {
+PyTypeObject PyBobIpBaseGLCMProperty_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -126,9 +126,9 @@ static PyObject* createGLCMProperty() {
 
 static int PyBobIpBaseGLCMProperty_Converter(PyObject* o, GLCMProperty* b) {
   if (PyString_Check(o)){
-    PyObject* dict = PyBobIpBaseGLCMPropertyType.tp_dict;
+    PyObject* dict = PyBobIpBaseGLCMProperty_Type.tp_dict;
     if (!PyDict_Contains(dict, o)){
-      PyErr_Format(PyExc_ValueError, "GLCMProperty parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGLCMPropertyType.tp_name);
+      PyErr_Format(PyExc_ValueError, "GLCMProperty parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGLCMProperty_Type.tp_name);
       return 0;
     }
     o = PyDict_GetItem(dict, o);
@@ -142,7 +142,7 @@ static int PyBobIpBaseGLCMProperty_Converter(PyObject* o, GLCMProperty* b) {
     return 1;
   }
 
-  PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGLCMPropertyType.tp_name);
+  PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGLCMProperty_Type.tp_name);
   return 0;
 }
 
@@ -195,7 +195,7 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
     if (((args && PyTuple_Size(args) == 1 && PyBobIpBaseGLCM_Check(PyTuple_GET_ITEM(args,0))) || (kwargs && PyDict_Contains(kwargs, k)))){
       // copy construct
       PyBobIpBaseGLCMObject* glcm;
-      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist3, &PyBobIpBaseGLCMType, &glcm)) return -1;
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!", kwlist3, &PyBobIpBaseGLCM_Type, &glcm)) return -1;
 
       self->type_num = glcm->type_num;
       switch (self->type_num){
@@ -284,7 +284,7 @@ static void PyBobIpBaseGLCM_delete(PyBobIpBaseGLCMObject* self) {
 }
 
 int PyBobIpBaseGLCM_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGLCMType));
+  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGLCM_Type));
 }
 
 static PyObject* PyBobIpBaseGLCM_RichCompare(PyBobIpBaseGLCMObject* self, PyObject* other, int op) {
@@ -786,7 +786,7 @@ static PyMethodDef PyBobIpBaseGLCM_methods[] = {
 /******************************************************************/
 
 // Define the GLCM type struct; will be initialized later
-PyTypeObject PyBobIpBaseGLCMType = {
+PyTypeObject PyBobIpBaseGLCM_Type = {
   PyVarObject_HEAD_INIT(0,0)
   0
 };
@@ -794,38 +794,38 @@ PyTypeObject PyBobIpBaseGLCMType = {
 bool init_BobIpBaseGLCM(PyObject* module)
 {
   // GLCMProperty
-  PyBobIpBaseGLCMPropertyType.tp_name = GLCMProperty_doc.name();
-  PyBobIpBaseGLCMPropertyType.tp_basicsize = sizeof(PyBobIpBaseGLCMPropertyType);
-  PyBobIpBaseGLCMPropertyType.tp_flags = Py_TPFLAGS_DEFAULT;
-  PyBobIpBaseGLCMPropertyType.tp_doc = GLCMProperty_doc.doc();
-  PyBobIpBaseGLCMPropertyType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGLCMProperty_init);
-  PyBobIpBaseGLCMPropertyType.tp_dict = createGLCMProperty();
+  PyBobIpBaseGLCMProperty_Type.tp_name = GLCMProperty_doc.name();
+  PyBobIpBaseGLCMProperty_Type.tp_basicsize = sizeof(PyBobIpBaseGLCMProperty_Type);
+  PyBobIpBaseGLCMProperty_Type.tp_flags = Py_TPFLAGS_DEFAULT;
+  PyBobIpBaseGLCMProperty_Type.tp_doc = GLCMProperty_doc.doc();
+  PyBobIpBaseGLCMProperty_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGLCMProperty_init);
+  PyBobIpBaseGLCMProperty_Type.tp_dict = createGLCMProperty();
 
-  if (PyType_Ready(&PyBobIpBaseGLCMPropertyType) < 0) return false;
-  Py_INCREF(&PyBobIpBaseGLCMPropertyType);
-  if (PyModule_AddObject(module, "GLCMProperty", (PyObject*)&PyBobIpBaseGLCMPropertyType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGLCMProperty_Type) < 0) return false;
+  Py_INCREF(&PyBobIpBaseGLCMProperty_Type);
+  if (PyModule_AddObject(module, "GLCMProperty", (PyObject*)&PyBobIpBaseGLCMProperty_Type) < 0) return false;
 
   // initialize the type struct
-  PyBobIpBaseGLCMType.tp_name = GLCM_doc.name();
-  PyBobIpBaseGLCMType.tp_basicsize = sizeof(PyBobIpBaseGLCMObject);
-  PyBobIpBaseGLCMType.tp_flags = Py_TPFLAGS_DEFAULT |  Py_TPFLAGS_BASETYPE;
-  PyBobIpBaseGLCMType.tp_doc = GLCM_doc.doc();
+  PyBobIpBaseGLCM_Type.tp_name = GLCM_doc.name();
+  PyBobIpBaseGLCM_Type.tp_basicsize = sizeof(PyBobIpBaseGLCMObject);
+  PyBobIpBaseGLCM_Type.tp_flags = Py_TPFLAGS_DEFAULT |  Py_TPFLAGS_BASETYPE;
+  PyBobIpBaseGLCM_Type.tp_doc = GLCM_doc.doc();
 
   // set the functions
-  PyBobIpBaseGLCMType.tp_new = PyType_GenericNew;
-  PyBobIpBaseGLCMType.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGLCM_init);
-  PyBobIpBaseGLCMType.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGLCM_delete);
-  PyBobIpBaseGLCMType.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGLCM_RichCompare);
-  PyBobIpBaseGLCMType.tp_methods = PyBobIpBaseGLCM_methods;
-  PyBobIpBaseGLCMType.tp_getset = PyBobIpBaseGLCM_getseters;
-  PyBobIpBaseGLCMType.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGLCM_extract);
+  PyBobIpBaseGLCM_Type.tp_new = PyType_GenericNew;
+  PyBobIpBaseGLCM_Type.tp_init = reinterpret_cast<initproc>(PyBobIpBaseGLCM_init);
+  PyBobIpBaseGLCM_Type.tp_dealloc = reinterpret_cast<destructor>(PyBobIpBaseGLCM_delete);
+  PyBobIpBaseGLCM_Type.tp_richcompare = reinterpret_cast<richcmpfunc>(PyBobIpBaseGLCM_RichCompare);
+  PyBobIpBaseGLCM_Type.tp_methods = PyBobIpBaseGLCM_methods;
+  PyBobIpBaseGLCM_Type.tp_getset = PyBobIpBaseGLCM_getseters;
+  PyBobIpBaseGLCM_Type.tp_call = reinterpret_cast<ternaryfunc>(PyBobIpBaseGLCM_extract);
 
   // check that everything is fine
-  if (PyType_Ready(&PyBobIpBaseGLCMType) < 0) return false;
+  if (PyType_Ready(&PyBobIpBaseGLCM_Type) < 0) return false;
 
   // add the type to the module
-  Py_INCREF(&PyBobIpBaseGLCMType);
+  Py_INCREF(&PyBobIpBaseGLCM_Type);
   // here we actually bind the _GLCM class, which will be sub-typed in python later on (I cannot set attributes in C++ classes directly)
-  return PyModule_AddObject(module, "_GLCM", (PyObject*)&PyBobIpBaseGLCMType) >= 0;
+  return PyModule_AddObject(module, "_GLCM", (PyObject*)&PyBobIpBaseGLCM_Type) >= 0;
 }
 
