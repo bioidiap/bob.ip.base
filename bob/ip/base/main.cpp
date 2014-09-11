@@ -119,6 +119,9 @@ static PyMethodDef module_methods[] = {
 
 PyDoc_STRVAR(module_docstr, "Bob Image Processing Base Routines");
 
+int PyBobIpBase_APIVersion = BOB_IP_BASE_API_VERSION;
+
+
 #if PY_VERSION_HEX >= 0x03000000
 static PyModuleDef module_definition = {
   PyModuleDef_HEAD_INIT,
@@ -160,7 +163,44 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseVLFEAT(module)) return 0;
 #endif // HAVE_VLFEAT
 
-  /* imports bob.blitz C-API + dependencies */
+
+  static void* PyBobIpBase_API[PyBobIpBase_API_pointers];
+
+  /* exhaustive list of C APIs */
+
+  /**************
+   * Versioning *
+   **************/
+
+  PyBobIpBase_API[PyBobIpBase_APIVersion_NUM] = (void *)&PyBobIpBase_APIVersion;
+
+  /********************************
+   * Bindings for bob.ip.base.LBP *
+   ********************************/
+
+  PyBobIpBase_API[PyBobIpBaseLBP_Type_NUM] = (void *)&PyBobIpBaseLBP_Type;
+  PyBobIpBase_API[PyBobIpBaseLBP_Check_NUM] = (void *)&PyBobIpBaseLBP_Check;
+  PyBobIpBase_API[PyBobIpBaseLBP_Converter_NUM] = (void *)&PyBobIpBaseLBP_Converter;
+
+#if PY_VERSION_HEX >= 0x02070000
+
+  /* defines the PyCapsule */
+
+  PyObject* c_api_object = PyCapsule_New((void *)PyBobIpBase_API,
+      BOB_EXT_MODULE_PREFIX "." BOB_EXT_MODULE_NAME "._C_API", 0);
+
+#else
+
+  PyObject* c_api_object = PyCObject_FromVoidPtr((void *)PyBobIpBase_API, 0);
+
+#endif
+
+  if (!c_api_object) return 0;
+
+  if (PyModule_AddObject(module, "_C_API", c_api_object) < 0) return 0;
+
+
+  /* imports bob.ip.base's C-API dependencies */
   if (import_bob_blitz() < 0) return 0;
   if (import_bob_io_base() < 0) return 0;
   if (import_bob_sp() < 0) return 0;

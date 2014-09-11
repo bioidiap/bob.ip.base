@@ -66,8 +66,8 @@ typedef struct {
    **********************************/
 
   extern PyTypeObject PyBobIpBaseLBP_Type;
-  int PyBobIpBaseLBP_Check(PyObject* o);
-  int PyBobIpBaseLBP_Converter(PyObject* o, PyObject** b);
+  int PyBobIpBaseLBP_Check(PyObject*);
+  int PyBobIpBaseLBP_Converter(PyObject*, PyBobIpBaseLBPObject**);
 
 #else // BOB_IP_BASE_MODULE
 
@@ -92,8 +92,8 @@ typedef struct {
    ********************************/
 
 #define PyBobIpBaseLBP_Type (*(PyTypeObject *)PyBobIpBase_API[PyBobIpBaseLBP_Type_NUM])
-#define PyBobIpBaseLBP_Check (*(int (*)(PyObject* o)) PyBobIpBase_API[PyBobIpBaseLBP_Check_NUM])
-#define PyBobIpBaseLBP_Converter (*(PyBobIoHDF5File_Converter_RET (*)PyBobIoHDF5File_Converter_PROTO) PyBobIpBase_API[PyBobIpBaseLBP_Converter_NUM])
+#define PyBobIpBaseLBP_Check (*(int (*)(PyObject*)) PyBobIpBase_API[PyBobIpBaseLBP_Check_NUM])
+#define PyBobIpBaseLBP_Converter (*(int (*)(PyObject*, PyBobIpBaseLBPObject**)) PyBobIpBase_API[PyBobIpBaseLBP_Converter_NUM])
 
 #if !defined(NO_IMPORT_ARRAY)
 
