@@ -6,9 +6,12 @@
 bob_packages = ['bob.core', 'bob.io.base', 'bob.sp', 'bob.math']
 
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['bob.blitz'] + bob_packages))
+dist.Distribution(dict(setup_requires=['bob.extension', 'bob.blitz'] + bob_packages))
 import bob.extension.utils
 from bob.blitz.extension import Extension, Library, build_ext
+
+from bob.extension.utils import load_requirements
+build_requires = load_requirements()
 
 import os
 
@@ -91,15 +94,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
 
-    install_requires=[
-      'setuptools',
-      'matplotlib',
-      'bob.blitz',
-      'bob.core',
-      'bob.sp',
-      'bob.io.base',
-      'bob.math',
-    ],
+    setup_requires = build_requires,
+    install_requires = build_requires,
 
     namespace_packages=[
       "bob",

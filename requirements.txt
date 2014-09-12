@@ -1,0 +1,8 @@
+setuptools
+matplotlib
+bob.extension
+bob.blitz
+bob.core
+bob.sp
+bob.io.base
+bob.math
