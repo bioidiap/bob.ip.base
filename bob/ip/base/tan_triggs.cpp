@@ -72,6 +72,7 @@ static int PyBobIpBaseTanTriggs_init(PyBobIpBaseTanTriggsObject* self, PyObject*
 }
 
 static void PyBobIpBaseTanTriggs_delete(PyBobIpBaseTanTriggsObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

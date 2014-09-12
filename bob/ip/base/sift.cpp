@@ -74,6 +74,7 @@ static int PyBobIpBaseSIFT_init(PyBobIpBaseSIFTObject* self, PyObject* args, PyO
 }
 
 static void PyBobIpBaseSIFT_delete(PyBobIpBaseSIFTObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

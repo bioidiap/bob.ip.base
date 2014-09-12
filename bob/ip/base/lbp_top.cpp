@@ -55,6 +55,7 @@ static int PyBobIpBaseLBPTop_init(PyBobIpBaseLBPTopObject* self, PyObject* args,
 }
 
 static void PyBobIpBaseLBPTop_delete(PyBobIpBaseLBPTopObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

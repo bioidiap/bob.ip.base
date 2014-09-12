@@ -209,6 +209,7 @@ static int PyBobIpBaseLBP_init(PyBobIpBaseLBPObject* self, PyObject* args, PyObj
 }
 
 static void PyBobIpBaseLBP_delete(PyBobIpBaseLBPObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

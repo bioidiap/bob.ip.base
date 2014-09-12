@@ -78,6 +78,7 @@ static int PyBobIpBaseDCTFeatures_init(PyBobIpBaseDCTFeaturesObject* self, PyObj
 }
 
 static void PyBobIpBaseDCTFeatures_delete(PyBobIpBaseDCTFeaturesObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

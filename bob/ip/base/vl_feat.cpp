@@ -70,6 +70,7 @@ static int PyBobIpBaseVLSIFT_init(PyBobIpBaseVLSIFTObject* self, PyObject* args,
 }
 
 static void PyBobIpBaseVLSIFT_delete(PyBobIpBaseVLSIFTObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -448,6 +449,7 @@ static int PyBobIpBaseVLDSIFT_init(PyBobIpBaseVLDSIFTObject* self, PyObject* arg
 }
 
 static void PyBobIpBaseVLDSIFT_delete(PyBobIpBaseVLDSIFTObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

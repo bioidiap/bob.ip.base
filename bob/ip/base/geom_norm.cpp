@@ -79,6 +79,7 @@ static int PyBobIpBaseGeomNorm_init(PyBobIpBaseGeomNormObject* self, PyObject* a
 }
 
 static void PyBobIpBaseGeomNorm_delete(PyBobIpBaseGeomNormObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

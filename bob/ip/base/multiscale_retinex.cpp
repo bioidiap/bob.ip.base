@@ -69,6 +69,7 @@ static int PyBobIpBaseMultiscaleRetinex_init(PyBobIpBaseMultiscaleRetinexObject*
 }
 
 static void PyBobIpBaseMultiscaleRetinex_delete(PyBobIpBaseMultiscaleRetinexObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

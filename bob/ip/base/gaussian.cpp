@@ -72,6 +72,7 @@ static int PyBobIpBaseGaussian_init(PyBobIpBaseGaussianObject* self, PyObject* a
 }
 
 static void PyBobIpBaseGaussian_delete(PyBobIpBaseGaussianObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

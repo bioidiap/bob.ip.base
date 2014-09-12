@@ -202,6 +202,7 @@ static int PyBobIpBaseHOG_init(PyBobIpBaseHOGObject* self, PyObject* args, PyObj
 }
 
 static void PyBobIpBaseHOG_delete(PyBobIpBaseHOGObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

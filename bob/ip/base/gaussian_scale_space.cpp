@@ -57,6 +57,7 @@ static int PyBobIpBaseGSSKeypoint_init(PyBobIpBaseGSSKeypointObject* self, PyObj
 }
 
 static void PyBobIpBaseGSSKeypoint_delete(PyBobIpBaseGSSKeypointObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -203,6 +204,7 @@ static int PyBobIpBaseGSSKeypointInfo_init(PyBobIpBaseGSSKeypointInfoObject* sel
 }
 
 static void PyBobIpBaseGSSKeypointInfo_delete(PyBobIpBaseGSSKeypointInfoObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -420,6 +422,7 @@ static int PyBobIpBaseGaussianScaleSpace_init(PyBobIpBaseGaussianScaleSpaceObjec
 }
 
 static void PyBobIpBaseGaussianScaleSpace_delete(PyBobIpBaseGaussianScaleSpaceObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

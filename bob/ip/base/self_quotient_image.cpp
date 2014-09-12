@@ -71,6 +71,7 @@ static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject*
 }
 
 static void PyBobIpBaseSelfQuotientImage_delete(PyBobIpBaseSelfQuotientImageObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

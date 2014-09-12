@@ -280,6 +280,7 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
 }
 
 static void PyBobIpBaseGLCM_delete(PyBobIpBaseGLCMObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 

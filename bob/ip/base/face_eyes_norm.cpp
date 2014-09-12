@@ -101,6 +101,7 @@ static int PyBobIpBaseFaceEyesNorm_init(PyBobIpBaseFaceEyesNormObject* self, PyO
 }
 
 static void PyBobIpBaseFaceEyesNorm_delete(PyBobIpBaseFaceEyesNormObject* self) {
+  self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
