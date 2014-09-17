@@ -29,7 +29,7 @@ bob::ip::base::FaceEyesNorm::FaceEyesNorm(
 {
   double dy = leftEye[0] - rightEye[0], dx = leftEye[1] - rightEye[1];
   m_eyesDistance = std::sqrt(dx * dx + dy * dy);
-  m_eyesAngle = std::atan2(leftEye[0] - rightEye[0], leftEye[1] - rightEye[1]);
+  m_eyesAngle = std::atan2(dy, dx) * 180. / M_PI;
   blitz::TinyVector<double,2> eyeCenter((leftEye[0] + rightEye[0]) / 2., (leftEye[1] + rightEye[1]) / 2.);
   m_geomNorm = boost::shared_ptr<GeomNorm>(new GeomNorm(0., 0., cropSize, eyeCenter));
 }

@@ -198,7 +198,8 @@ namespace bob { namespace ip { namespace base {
   ) const
   {
     // Get angle to horizontal
-    double angle = std::atan2(leftEye[0] - rightEye[0], leftEye[1] - rightEye[1]);
+    double dy = leftEye[0] - rightEye[0], dx = leftEye[1] - rightEye[1];
+    double angle = std::atan2(dy, dx);
     m_geomNorm->setRotationAngle(angle * 180. / M_PI - m_eyesAngle);
 
     // Get scaling factor
