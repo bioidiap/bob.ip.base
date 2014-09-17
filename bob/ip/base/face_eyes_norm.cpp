@@ -66,7 +66,7 @@ static int PyBobIpBaseFaceEyesNorm_init(PyBobIpBaseFaceEyesNormObject* self, PyO
       // check the second parameter
       PyObject* k = Py_BuildValue("s", kwlist2[1]);
       auto k_ = make_safe(k);
-      if ((args && PyTuple_Size(args) > 1 && PySequence_Check(PyList_GET_ITEM(args,1))) ||
+      if ((args && PyTuple_Size(args) > 1 && PySequence_Check(PyTuple_GET_ITEM(args,1))) ||
           (kwargs && PyDict_Contains(kwargs, k))){
         // with two eyes
         blitz::TinyVector<int,2> size;

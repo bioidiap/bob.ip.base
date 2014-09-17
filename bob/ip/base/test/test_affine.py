@@ -328,3 +328,12 @@ def test_face_eyes_norm():
   assert numpy.allclose(new_right_eye, (offset[0], 10.))
   assert numpy.allclose(new_left_eye, (offset[0], 30.))
 
+  # create FaceEyesNorm with eye positions
+  fen = bob.ip.base.FaceEyesNorm((40,40), new_right_eye, new_left_eye)
+
+  # Process giving the coordinates of the eyes
+  fen(test_image, processed, right_eye, left_eye)
+  normalized = numpy.round(processed).astype(numpy.uint8)
+  assert numpy.allclose(normalized, reference_image)
+
+
