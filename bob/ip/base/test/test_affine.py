@@ -332,7 +332,7 @@ def test_face_eyes_norm():
   fen = bob.ip.base.FaceEyesNorm((40,40), new_right_eye, new_left_eye)
 
   # Process giving the coordinates of the eyes
-  fen(test_image, processed, right_eye, left_eye)
+  processed = fen(test_image, right_eye, left_eye)
   normalized = numpy.round(processed).astype(numpy.uint8)
   assert numpy.allclose(normalized, reference_image)
 

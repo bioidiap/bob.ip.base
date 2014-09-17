@@ -376,10 +376,11 @@ static PyObject* PyBobIpBaseFaceEyesNorm_extract(PyBobIpBaseFaceEyesNormObject* 
   switch (nargs){
     case 3:{
       // with input only
-      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&(dd)(dd)", kwlist1, PyBlitzArray_Converter, &input, &right[0], &right[1], &left[0], &left[1])){
+      if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&(dd)(dd)", kwlist1, &PyBlitzArray_Converter, &input, &right[0], &right[1], &left[0], &left[1])){
         extract.print_usage();
         return 0;
       }
+      break;
     }
     case 4:{
       // with input and output
