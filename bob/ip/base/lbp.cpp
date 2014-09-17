@@ -120,7 +120,7 @@ static int PyBobIpBaseLBP_init(PyBobIpBaseLBPObject* self, PyObject* args, PyObj
     auto k4_ = make_safe(k4), k5_ = make_safe(k5);
     if (
       (kwargs && PyDict_Contains(kwargs, k5)) ||
-      (args && PyBobIoHDF5File_Check(PyTuple_GetItem(args, 0)))
+      (args && PyTuple_Size(args) && PyBobIoHDF5File_Check(PyTuple_GetItem(args, 0)))
     ){
       // create from HDF5 file
       PyBobIoHDF5FileObject* hdf5;
@@ -133,7 +133,7 @@ static int PyBobIpBaseLBP_init(PyBobIpBaseLBPObject* self, PyObject* args, PyObj
       return 0;
     } else if (
       (kwargs && PyDict_Contains(kwargs, k4)) ||
-      (args && PyBobIpBaseLBP_Check(PyTuple_GetItem(args, 0)))
+      (args && PyTuple_Size(args) && PyBobIpBaseLBP_Check(PyTuple_GetItem(args, 0)))
     ){
       // copy constructor
       PyBobIpBaseLBPObject* lbp;
@@ -783,7 +783,7 @@ static PyObject* PyBobIpBaseLBP_getShape(PyBobIpBaseLBPObject* self, PyObject* a
   PyObject* k = Py_BuildValue("s", kwlist2[0]);
   if (
     (kwargs && PyDict_Contains(kwargs, k)) ||
-    (args && (PyTuple_Check(PyTuple_GetItem(args, 0)) || PyList_Check(PyTuple_GetItem(args, 0))))
+    (args && PyTuple_Size(args) && (PyTuple_Check(PyTuple_GetItem(args, 0)) || PyList_Check(PyTuple_GetItem(args, 0))))
   ){
     // by shape
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(ii)|O!", kwlist2, &shape[0], &shape[1], &PyBool_Type, &iii)){
