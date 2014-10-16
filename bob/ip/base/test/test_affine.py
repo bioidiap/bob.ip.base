@@ -107,11 +107,11 @@ fill_src_image = numpy.array([
 fill_src_mask = fill_src_image != 0
 
 fill_ref_image = numpy.array([
-  [ 254.92403178,  248.80260484,  273.83435981,  258.89285116,  275.46358833],
-  [ 245.16871117,  255.,          255.,          255.,          258.25902114],
-  [ 132.21354398,  127.,          127.,          264.01868874,  230.26216691],
-  [  62.62939096,   63.,          123.96536032,  261.42647217,  258.1188652 ],
-  [ 127.83015059,  131.98817506,   65.01620464,  278.40144769,  259.87150537]
+  [ 246.32156874 , 249.3017102  , 267.47367932 , 250.18328228 , 250.99448144],
+  [ 130.81580817 , 255.         , 255.         , 255.         , 252.49633169],
+  [  56.88830006 , 127.         , 127.         , 264.01868874 , 132.49000491],
+  [ 139.74314545 ,  63.         , 131.18533899 , 130.85030597 , 123.67230802],
+  [ 134.72139907 , 132.86194994 , 127.25849129 , 134.8082927  , 127.723664  ]
 ], numpy.float64)
 
 def test_extrapolate_random():
@@ -124,11 +124,7 @@ def test_extrapolate_random():
 
   # test that the random values are applied correctly
   image = fill_src_image.astype(numpy.float64)
-#  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
-  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0., neighbors = 1)
-
-  # DEBUG Travis:
-  print (image)
+  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
 
   assert numpy.allclose(image, fill_ref_image)
 
