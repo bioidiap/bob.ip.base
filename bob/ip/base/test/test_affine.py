@@ -121,10 +121,13 @@ def test_extrapolate_random():
   assert numpy.all(image != 0)
   # assert that the masked area is not touched
   assert numpy.all(image[fill_src_mask] == fill_src_image[fill_src_mask])
+  print image
 
   # test that the random values are applied correctly
   image = fill_src_image.astype(numpy.float64)
-  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
+  print (image)
+#  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
+  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1)
 
   # DEBUG Travis:
   print (image)
