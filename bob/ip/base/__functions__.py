@@ -117,7 +117,7 @@ def crop(src, crop_offset, crop_size = None, dst = None, src_mask = None, dst_ma
   src_offset = [max(crop_offset[i], 0) for i in range(2)]
   src_size = [min(crop_size[i] + crop_offset[i], src_shape[i]) for i in range(2)]
   dst_offset = [max(-crop_offset[i], 0) for i in range(2)]
-  dst_size = [min(src_shape[i] - src_offset[i], crop_size[i])  for i in range(2)]
+  dst_size = [min(dst_offset[i] + crop_size[i], src_size[i] + dst_offset[i] - src_offset[i]) for i in range(2)]
 
   # copy data
   dst.fill(fill_pattern)
@@ -175,5 +175,4 @@ def shift(src, offset, dst = None, src_mask = None, dst_mask = None, fill_patter
 
   # shift image by cropping
   return crop(src, offset, dst=dst, src_mask=src_mask, dst_mask=dst_mask, fill_pattern=fill_pattern)
-
 
