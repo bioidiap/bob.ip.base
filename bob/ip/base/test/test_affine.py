@@ -125,6 +125,10 @@ def test_extrapolate_random():
   # test that the random values are applied correctly
   image = fill_src_image.astype(numpy.float64)
   bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
+
+  # DEBUG Travis:
+  print (image)
+
   assert numpy.allclose(image, fill_ref_image)
 
 
