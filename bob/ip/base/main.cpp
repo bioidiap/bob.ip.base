@@ -202,6 +202,7 @@ static PyObject* create_module (void) {
 
   /* imports bob.ip.base's C-API dependencies */
   if (import_bob_blitz() < 0) return 0;
+  if (import_bob_core_random() < 0) return 0;
   if (import_bob_io_base() < 0) return 0;
   if (import_bob_sp() < 0) return 0;
 

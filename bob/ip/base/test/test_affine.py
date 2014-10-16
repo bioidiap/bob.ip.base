@@ -17,6 +17,7 @@ import bob.io.base
 import bob.io.base.test_utils
 
 import bob.ip.base
+import bob.core.random
 
 regenerate_reference = False
 
@@ -90,6 +91,42 @@ def test_extrapolate_mask():
   i2_5_3 = numpy.copy(i2_5)
   bob.ip.base.extrapolate_mask(a2_5_3, i2_5_3)
   assert numpy.allclose(i2_5_3, s2_5_3)
+
+
+###############################################
+#### random image extrapolartion with mask ####
+###############################################
+
+fill_src_image = numpy.array([
+  [ 0,   0,   0,   0, 0],
+  [ 0, 255, 255, 255, 0],
+  [ 0, 127, 127,   0, 0],
+  [ 0,  63,   0,   0, 0],
+  [ 0,   0,   0,   0, 0]
+], numpy.uint8)
+fill_src_mask = fill_src_image != 0
+
+fill_ref_image = numpy.array([
+  [ 254.92403178,  248.80260484,  273.83435981,  258.89285116,  275.46358833],
+  [ 245.16871117,  255.,          255.,          255.,          258.25902114],
+  [ 132.21354398,  127.,          127.,          264.01868874,  230.26216691],
+  [  62.62939096,   63.,          123.96536032,  261.42647217,  258.1188652 ],
+  [ 127.83015059,  131.98817506,   65.01620464,  278.40144769,  259.87150537]
+], numpy.float64)
+
+def test_extrapolate_random():
+  # test that 0 neighbors and 0 sigma does something useful
+  image = fill_src_image.copy()
+  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0., neighbors = 0)
+  assert numpy.all(image != 0)
+  # assert that the masked area is not touched
+  assert numpy.all(image[fill_src_mask] == fill_src_image[fill_src_mask])
+
+  # test that the random values are applied correctly
+  image = fill_src_image.astype(numpy.float64)
+  bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
+  assert numpy.allclose(image, fill_ref_image)
+
 
 
 ###############################################

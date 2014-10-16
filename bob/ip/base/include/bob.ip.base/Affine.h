@@ -13,6 +13,9 @@
 #include <boost/shared_ptr.hpp>
 #include <bob.core/assert.h>
 #include <bob.core/check.h>
+#include <bob.core/logging.h>
+
+#include <boost/random.hpp>
 
 
 namespace bob { namespace ip { namespace base {
@@ -87,26 +90,31 @@ namespace bob { namespace ip { namespace base {
 
         // add the four values bi-linearly interpolated
         if (mask){
-          bool& new_mask = target_mask(y,x) = false;
+          bool& new_mask = target_mask(y,x) = true;
           // upper left
           if (ox >= 0 && oy >= 0 && ox <= w && oy <= h && source_mask(oy,ox)){
             res += (1.-mx) * (1.-my) * source(oy,ox);
-            new_mask = true;
+          } else if ((1.-mx) * (1.-my) > 0.){
+            new_mask = false;
           }
+
           // upper right
           if (ox >= -1 && oy >= 0 && ox < w && oy <= h && source_mask(oy,ox+1)){
             res += mx * (1.-my) * source(oy,ox+1);
-            new_mask = true;
+          } else if (mx * (1.-my) > 0.){
+            new_mask = false;
           }
           // lower left
           if (ox >= 0 && oy >= -1 && ox <= w && oy < h && source_mask(oy+1,ox)){
             res += (1.-mx) * my * source(oy+1,ox);
-            new_mask = true;
+          } else if ((1.-mx) * my > 0.){
+            new_mask = false;
           }
           // lower right
           if (ox >= -1 && oy >= -1 && ox < w && oy < h && source_mask(oy+1,ox+1)){
             res += mx * my * source(oy+1,ox+1);
-            new_mask = true;
+          } else if (mx * my > 0.){
+            new_mask = false;
           }
         } else {
           // upper left
@@ -423,6 +431,139 @@ namespace bob { namespace ip { namespace base {
       for(int i=0; i<src_mask.extent(0); ++i)
         img(i,r_right) = img(i,true_max_index);
     }
+  }
+
+
+  /**
+    * @brief Function which fills  unmasked pixel areas of an image with pixel values from the border of the masked part of the image
+    *   by adding some random noise.
+    * @param src_mask The 2D input blitz array mask.
+    * @param img The 2D input/output blitz array/image.
+    * @param rng The random number generatir to consider
+    * @param random_factor The standard deviation of a normal distribution to multiply pixel values with
+    * @param neighbors The (maximum) number of additional neighboring border values to choose from
+    * @warning The function assumes that the true values on the mask form
+    *   a convex area.
+    * @warning img is used as both an input and output, in order to provide
+    *   high performance. A copy might be done by the user before calling
+    *   the function if required.
+    */
+  template <typename T>
+  void extrapolateMaskRandom(const blitz::Array<bool,2>& mask, blitz::Array<T,2>& img, boost::mt19937& rng, double random_factor = 0.01, int neighbors = 5){
+    // Check input and output size
+    bob::core::array::assertSameShape(mask, img);
+
+    // get the masked center
+    int miny = mask.extent(0)-1, maxy = 0, minx = mask.extent(1)-1, maxx = 0;
+    for (int y = 0; y < mask.extent(0); ++y)
+      for (int x = 0; x < mask.extent(1); ++x)
+        if (mask(y,x)){
+          miny = std::min(miny, y);
+          maxy = std::max(maxy, y);
+          minx = std::min(minx, x);
+          maxx = std::max(maxx, x);
+    }
+
+    int center_y = (miny + maxy)/2;
+    int center_x = (minx + maxx)/2;
+
+    if (!mask(center_y, center_x)) throw std::runtime_error("The center of the masked area is not masked. Is your mask convex?");
+
+    blitz::Array<bool,2> filled_mask(mask.shape());
+    filled_mask = mask;
+
+    // the four directions to go (in this order):
+    // right, down, left, up
+    int directions_y[] = {0, 1, 0, -1};
+    int directions_x[] = {1, 0, -1, 0};
+    // the border values for the four directions
+    int border[] = {img.extent(1), img.extent(0), 1, 1};
+    bool at_border[4] = {false};
+
+    // the current maxima
+    int maxima_y[4], maxima_x[4];
+    for (int i = 0; i < 4; ++i){
+      maxima_y[i] = center_y + directions_y[i];
+      maxima_x[i] = center_x + directions_x[i];
+    }
+    // the current index (i.e., direction) to go
+    int current_index = 0;
+    int current_dir_y = directions_y[current_index];
+    int current_dir_x = directions_x[current_index];
+
+    // we start from the center
+    int current_pos_y = center_y;
+    int current_pos_x = center_x;
+
+    // go from the mask center in all directions, using a spiral
+    while (!at_border[0] || !at_border[1] || !at_border[2] || !at_border[3]){
+      // check that we haven't reached our limits yet
+      if (current_dir_y * current_pos_y + current_dir_x * current_pos_x >= maxima_y[current_index] * current_dir_y + maxima_x[current_index] * current_dir_x){
+        // increase the maxima
+        maxima_y[current_index] += current_dir_y;
+        maxima_x[current_index] += current_dir_x;
+        // check if we are at the border
+        if (current_pos_y * current_dir_y + current_pos_x * current_dir_x >= border[current_index]){
+          at_border[current_index] = true;
+        }
+        // change direction
+        current_index = (current_index + 1) % 4;
+        current_dir_y = directions_y[current_index];
+        current_dir_x = directions_x[current_index];
+      }
+
+      // check if we have to write a value
+      if (current_pos_y >= 0 && current_pos_y < img.extent(0) && current_pos_x >= 0 && current_pos_x < img.extent(1) && !mask(current_pos_y, current_pos_x)){
+        // fill with pixel from the inner part of the spiral
+        int next_index = (current_index + 1) % 4;
+        int next_dir_y = directions_y[next_index];
+        int next_dir_x = directions_x[next_index];
+
+        // .. get valid border pixel (e.g. that has been set before)
+        int valid_y = current_pos_y + next_dir_y;
+        int valid_x = current_pos_x + next_dir_x;
+        while (valid_y * next_dir_y + valid_x * next_dir_x < border[next_index] && !filled_mask(valid_y, valid_x)){
+          valid_y += next_dir_y;
+          valid_x += next_dir_x;
+        }
+
+        // check if we have found some part that is not connected anywhere
+        if (valid_y * next_dir_y + valid_x * next_dir_x >= border[next_index]){
+          bob::core::warn << "Could not find valid pixel in direction (" << next_dir_y << ", " << next_dir_x << ") at pixel position (" << current_pos_y << ", " << current_pos_x << "); is your mask convex?";
+        } else {
+          T value = static_cast<T>(0);
+          // choose one of the next pixels
+          if (neighbors >= 1){
+            std::vector<T> values;
+            for (int c = -neighbors; c <= neighbors; ++c){
+              int pos_y = valid_y + c * current_dir_y;
+              int pos_x = valid_x + c * current_dir_x;
+              if (pos_y >= 0 && pos_y < img.extent(0) && pos_x >= 0 && pos_x < img.extent(1) && filled_mask(pos_y, pos_x)){
+                values.push_back(img(pos_y, pos_x));
+              }
+            }
+            if (!values.size()){
+              bob::core::warn << "Could not find valid pixel in range " << neighbors << " close to the border at pixel position (" << current_pos_y << ", " << current_pos_x << "); is your mask convex?";
+            } else {
+              // choose random value
+              value = values[boost::uniform_int<int>(0, values.size()-1)(rng)];
+            }
+          } else { // neighbors == 1
+            value = img(valid_y, valid_x);
+          }
+          if (random_factor){
+            value = static_cast<T>(boost::normal_distribution<double>(1., random_factor)(rng) * value);
+          }
+          img(current_pos_y, current_pos_x) = value;
+          filled_mask(current_pos_y, current_pos_x) = true;
+        }
+      } // write value
+
+      // move one step towards the current direction
+      current_pos_y += current_dir_y;
+      current_pos_x += current_dir_x;
+
+    } // while
   }
 
 
