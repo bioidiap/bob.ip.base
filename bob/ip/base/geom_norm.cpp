@@ -236,7 +236,7 @@ static PyGetSetDef PyBobIpBaseGeomNorm_getseters[] = {
 static auto process = bob::extension::FunctionDoc(
   "process",
   "This function geometrically normalizes an image or a position in the image",
-  "The function rotates and scales the given image, or a position in image coordinates, such that the result is **visually** rotated and scaled with the :py:attr:`rotation_angle` and :py:attr:`scaling_factor`. "
+  "The function rotates and scales the given image, or a position in image coordinates, such that the result is **visually** rotated and scaled with the :py:attr:`rotation_angle` and :py:attr:`scaling_factor`.\n\n"
   ".. note:: The :py:func:`__call__` function is an alias for this method.",
   true
 )

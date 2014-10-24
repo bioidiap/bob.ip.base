@@ -10,7 +10,6 @@
 
 import math
 import numpy
-import sys
 import nose.tools
 from nose.plugins.skip import SkipTest
 
@@ -108,11 +107,11 @@ fill_src_image = numpy.array([
 fill_src_mask = fill_src_image != 0
 
 fill_ref_image = numpy.array([
-  [ 246.32156874 , 249.3017102  , 267.47367932 , 250.18328228 , 250.99448144],
-  [ 130.81580817 , 255.         , 255.         , 255.         , 252.49633169],
-  [  56.88830006 , 127.         , 127.         , 264.01868874 , 132.49000491],
-  [ 139.74314545 ,  63.         , 131.18533899 , 130.85030597 , 123.67230802],
-  [ 134.72139907 , 132.86194994 , 127.25849129 , 134.8082927  , 127.723664  ]
+  [ 125.57368423 , 117.00587265 , 260.69431128 , 229.86038173 , 230.67618385],
+  [ 114.31978062 , 255.         , 255.         , 255.         , 275.35599683],
+  [ 277.36618842 , 127.         , 127.         , 270.12369219 , 252.23747063],
+  [ 132.63876879 ,  63.         , 134.10415134 , 118.95924361 , 248.51244191],
+  [  59.14331103 ,  64.90119476 , 124.52554278 , 129.64407822 , 246.48701023]
 ], numpy.float64)
 
 def test_extrapolate_random():
@@ -127,8 +126,6 @@ def test_extrapolate_random():
   image = fill_src_image.astype(numpy.float64)
   bob.ip.base.extrapolate_mask(fill_src_mask, image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
 
-  if sys.platform == 'darwin':
-    raise SkipTest("Skipping last test since the RNG seems to generate different sequences on MacOS")
   assert numpy.allclose(image, fill_ref_image)
 
 
