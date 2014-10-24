@@ -16,6 +16,7 @@
 #include <bob.core/logging.h>
 
 #include <boost/random.hpp>
+#include <bob.core/random.h>
 
 
 namespace bob { namespace ip { namespace base {
@@ -552,11 +553,7 @@ namespace bob { namespace ip { namespace base {
             value = img(valid_y, valid_x);
           }
           if (random_factor){
-            // The boost::normal_distribution seems to be unstable.
-            //double factor = boost::variate_generator<boost::mt19937, boost::normal_distribution<double>>(rng,boost::normal_distribution<double>(1., random_factor))();
-            // so we use a uniform distribution
-            double factor = boost::uniform_real<double>(1.-2.*random_factor, 1.+2.*random_factor)(rng);
-            value = static_cast<T>(factor * value);
+            value = static_cast<T>(bob::core::random::normal_distribution<double>(1., random_factor)(rng) * value);
           }
           img(current_pos_y, current_pos_x) = value;
           filled_mask(current_pos_y, current_pos_x) = true;

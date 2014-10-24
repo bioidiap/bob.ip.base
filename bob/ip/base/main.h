@@ -10,7 +10,7 @@
 
 #include <bob.blitz/cppapi.h>
 #include <bob.blitz/cleanup.h>
-#include <bob.core/random.h>
+#include <bob.core/random_api.h>
 #include <bob.sp/api.h>
 #include <bob.io.base/api.h>
 #include <bob.extension/documentation.h>
