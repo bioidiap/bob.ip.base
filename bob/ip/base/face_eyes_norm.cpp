@@ -253,7 +253,7 @@ PyObject* PyBobIpBaseFaceEyesNorm_getLastOffset(PyBobIpBaseFaceEyesNormObject* s
 
 static auto geomNorm = bob::extension::VariableDoc(
   "geom_norm",
-  ":py:class:`bob.ip.base.GeonNorm`",
+  ":py:class:`bob.ip.base.GeomNorm`",
   "The geometric normalization class that was used to compute the last normalization, read access only"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getGeomNorm(PyBobIpBaseFaceEyesNormObject* self, void*){
@@ -344,12 +344,12 @@ static auto extract = bob::extension::FunctionDoc(
 .add_prototype("input, output, right_eye, left_eye")
 .add_prototype("input, input_mask, output, output_mask, right_eye, left_eye")
 .add_parameter("input", "array_like (2D)", "The input image to which FaceEyesNorm should be applied")
-.add_parameter("output", "array_like (2D, float)", "The output image, which must be of size :py:attr:`cropped_size`")
+.add_parameter("output", "array_like (2D, float)", "The output image, which must be of size :py:attr:`crop_size`")
 .add_parameter("right_eye", "(float, float)", "The position of the right eye (or another landmark) in ``input`` image coordinates.")
 .add_parameter("left_eye", "(float, float)", "The position of the left eye (or another landmark) in ``input`` image coordinates.")
 .add_parameter("input_mask", "array_like (2D, bool)", "An input mask of valid pixels before geometric normalization, must be of same size as ``input``")
 .add_parameter("output_mask", "array_like (2D, bool)", "The output mask of valid pixels after geometric normalization, must be of same size as ``output``")
-.add_return("output", "array_like(2D, float)", "The resulting normalized face image, which is of size :py:attr:`cropped_size`")
+.add_return("output", "array_like(2D, float)", "The resulting normalized face image, which is of size :py:attr:`crop_size`")
 ;
 
 template <typename T>

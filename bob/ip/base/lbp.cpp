@@ -321,7 +321,7 @@ static auto blockOverlap = bob::extension::VariableDoc(
   "(int, int)",
   "The block overlap in both vertical and horizontal direction of the Multi-Block-LBP extractor, with read and write access",
   ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
-  "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_and_overlap` function."
+  "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_size_and_overlap` function."
 );
 PyObject* PyBobIpBaseLBP_getBlockOverlap(PyBobIpBaseLBPObject* self, void*){
   TRY
@@ -346,7 +346,7 @@ static auto points = bob::extension::VariableDoc(
   "int",
   "The number of neighbors (usually 4, 8 or 16), with read and write access",
   ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
-  "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_and_overlap` function."
+  "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_size_and_overlap` function."
 );
 PyObject* PyBobIpBaseLBP_getPoints(PyBobIpBaseLBPObject* self, void*){
   TRY

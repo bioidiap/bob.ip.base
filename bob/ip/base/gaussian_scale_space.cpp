@@ -20,7 +20,7 @@ PyTypeObject PyBobIpBaseGSSKeypoint_Type = {
 
 static auto GSSKeypoint_doc = bob::extension::ClassDoc(
   BOB_EXT_MODULE_PREFIX ".GSSKeypoint",
-  "Structure to describe a keypoint on the :py:class:`GaussianScaleSpace`",
+  "Structure to describe a keypoint on the :py:class:`bob.ip.base.GaussianScaleSpace`",
   "It consists of a scale sigma, a location (y,x) and an orientation."
 ).add_constructor(
   bob::extension::FunctionDoc(

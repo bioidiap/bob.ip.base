@@ -159,7 +159,7 @@ static int PyBobIpBaseGLCMProperty_init(PyObject* self, PyObject*, PyObject*) {
 
 static auto GLCM_doc = bob::extension::ClassDoc(
   BOB_EXT_MODULE_PREFIX ".GLCM",
-  "Objects of this class, after configuration, can compute Grey-Level Co-occurence Matrix of an image"
+  "Objects of this class, after configuration, can compute Grey-Level Co-occurence Matrix of an image",
   "This class allows to extract a Grey-Level Co-occurence Matrix (GLCM) [Haralick1973]_. "
   "A thorough tutorial about GLCM and the textural (so-called Haralick) properties that can be derived from it, can be found at: http://www.fp.ucalgary.ca/mhallbey/tutorial.htm. "
   "A MatLab implementation can be found at: http://www.mathworks.ch/ch/help/images/ref/graycomatrix.html"

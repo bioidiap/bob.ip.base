@@ -4,14 +4,13 @@
 ..
 .. Copyright (C) 2014 Idiap Research Institute, Martigny, Switzerland
 
-=================================
- Bob's Image Processing Routines
-=================================
+=======================================
+ Bob's Basic Image Processing Routines
+=======================================
 
 .. todolist::
 
-This module contains base functionality from Bob bound to Python, available in
-the C++ counter-part ``bob::ip``.
+This Python module contains base functionality from Bob bound to Python, available in the C++ counter-part ``bob::ip::base``.
 
 Documentation
 -------------

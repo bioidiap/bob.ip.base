@@ -46,7 +46,7 @@ first creating the image and then initializing the larger image:
    [4 5 6]]
   >>> B = numpy.ndarray( (3, 5), dtype = numpy.float64 )               # A larger image of size 3x5
 
-the scale function of |project| is then called to up-scale the image:
+the :py:func:`bob.ip.base.scale` function of |project| is then called to up-scale the image:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
@@ -137,7 +137,7 @@ Two types of Sobel filters exist: The vertical filter :math:`S_y` and the horizo
    S_y = \left\lgroup\begin{array}{ccc} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{array}\right\rgroup \qquad
    S_x = \left\lgroup\begin{array}{ccc} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{array}\right\rgroup
 
-Both filters can be applied at the same time using the :py:func:`bob.ip.base.sobel` function, where the result of :math:`S_y`will be put to the first layer and :math:`S_x` to the second layer.
+Both filters can be applied at the same time using the :py:func:`bob.ip.base.sobel` function, where the result of :math:`S_y` will be put to the first layer and :math:`S_x` to the second layer.
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
@@ -157,12 +157,12 @@ To compute rotation-dependent results, use the rotation matrix on the gradient v
    :include-source: True
 
 
-Normalizing images according to eye positions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Normalizing face images according to eye positions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For many biometric applications, for instance face recognition, the images are
+For many face biometrics applications, for instance face recognition, the images are
 geometrically normalized according to the eye positions.  In such a case, the
-first thing to do is to create an object of the class defining the image
+first thing to do is to create an object of the :py:class:`bob.ip.base.FaceEyesNorm` class defining the image
 properties of the geometrically normalized image (that will be generated when
 applying the object):
 
@@ -182,7 +182,12 @@ left eye usually has a higher x-coordinate than the right eye:
 
   >>> face_image = bob.io.base.load( image_path )
   >>> cropped_image = numpy.ndarray( (128, 128), dtype = numpy.float64 )
-  >>> face_eyes_norm( face_image, cropped_image, right_eye = (67, 47), left_eye = (62, 71) )
+  >>> face_eyes_norm( face_image, cropped_image, right_eye = (66, 47), left_eye = (62, 70) )
+
+Now, let's have a look at the original and normalized face:
+
+.. plot:: plot/face_eyes_norm.py
+   :include-source: True
 
 
 Simple feature extraction
@@ -206,10 +211,10 @@ position:
   >>> lbp_local = lbp_extractor ( cropped_image, (69, 62) )
   >>> # print the binary representation of the LBP
   >>> print(bin ( lbp_local ))
-  0b11110000
+  0b1111000
 
 or you can extract the LBP features for all pixels in the image. In this case
-you need to get the required shape of the output image:
+you need to get the required shape of the output image using the :py:class:`bob.ip.base.LBP` feature extractor:
 
 .. doctest:: iptest
   :options: +NORMALIZE_WHITESPACE
@@ -222,7 +227,7 @@ you need to get the required shape of the output image:
   >>> # print the binary representation of the pixel at the same location as above;
   >>> # note that the index is shifted by 1 since the lbp image is smaller than the original
   >>> print(bin ( lbp_output_image [ 68, 61 ] ))
-  0b11110000
+  0b1111000
 
 .. Place here your external references
 .. include:: links.rst

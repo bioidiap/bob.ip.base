@@ -160,8 +160,7 @@ static auto blockOverlap = bob::extension::VariableDoc(
   "block_overlap",
   "(int, int)",
   "The block overlap in both vertical and horizontal direction of the Multi-Block-DCTFeatures extractor, with read and write access",
-  ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
-  "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_and_overlap` function."
+  ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`."
 );
 PyObject* PyBobIpBaseDCTFeatures_getBlockOverlap(PyBobIpBaseDCTFeaturesObject* self, void*){
   TRY

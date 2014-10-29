@@ -244,7 +244,7 @@ static auto process = bob::extension::FunctionDoc(
 .add_prototype("input, input_mask, output, output_mask, center")
 .add_prototype("position, center", "transformed")
 .add_parameter("input", "array_like (2D or 3D)", "The input image to which GeomNorm should be applied")
-.add_parameter("output", "array_like (2D or 3D, float)", "The output image, which must be of size :py:attr:`cropped_size`")
+.add_parameter("output", "array_like (2D or 3D, float)", "The output image, which must be of size :py:attr:`crop_size`")
 .add_parameter("center", "(float, float)", "The transformation center in the given image; this will be placed to :py:attr:`crop_offset` in the output image")
 .add_parameter("input_mask", "array_like (bool, 2D or 3D)", "An input mask of valid pixels before geometric normalization, must be of same size as ``input``")
 .add_parameter("output_mask", "array_like (bool, 2D or 3D)", "The output mask of valid pixels after geometric normalization, must be of same size as ``output``")
