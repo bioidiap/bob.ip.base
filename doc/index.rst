@@ -4,6 +4,8 @@
 ..
 .. Copyright (C) 2014 Idiap Research Institute, Martigny, Switzerland
 
+.. _bob.ip.base:
+
 =======================================
  Bob's Basic Image Processing Routines
 =======================================
