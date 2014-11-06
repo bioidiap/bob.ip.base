@@ -13,11 +13,12 @@ from bob.blitz.extension import Extension, Library, build_ext
 from bob.extension.utils import load_requirements
 build_requires = load_requirements()
 
-import os
+# Define package version
+version = open("version.txt").read().rstrip()
 
+import os
 packages = ['boost']
 boost_modules = ['system']
-version = '2.0.0a0'
 
 class vl:
 
