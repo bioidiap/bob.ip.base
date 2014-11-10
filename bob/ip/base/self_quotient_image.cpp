@@ -255,7 +255,7 @@ static auto process = bob::extension::FunctionDoc(
   "process",
   "Applies the Self Quotient Image algorithm to an image (2D/grayscale or 3D/color) of type uint8, uint16 or double",
   "If given, the ``dst`` array should have the type float and the same size as the ``src`` array.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [dst]", "dst")

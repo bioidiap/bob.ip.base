@@ -108,7 +108,7 @@ static auto sigma = bob::extension::VariableDoc(
   "sigma",
   "(float, float)",
   "The standard deviation of the weighted Gaussian along the y- and x-axes; with read and write access",
-  ".. note:: The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
+  ".. note::\n\n  The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
 );
 PyObject* PyBobIpBaseWeightedGaussian_getSigma(PyBobIpBaseWeightedGaussianObject* self, void*){
   TRY
@@ -205,7 +205,7 @@ static auto filter = bob::extension::FunctionDoc(
   "filter",
   "Smooths an image (2D/grayscale or 3D/color)",
   "If given, the dst array should have the expected type (numpy.float64) and the same size as the src array.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [dst]", "dst")

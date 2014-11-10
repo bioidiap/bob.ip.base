@@ -23,7 +23,7 @@ static auto Gaussian_doc = bob::extension::ClassDoc(
     "Constructs a new Gaussian filter",
     "The Gaussian kernel is generated in both directions independently, using the given standard deviation and the given radius, where the size of the kernels is actually ``2*radius+1``. "
     "When the radius is not given or negative, it will be automatically computed ad ``3*sigma``.\n\n"
-    ".. note:: Since the Gaussian smoothing is done by convolution, a larger radius will lead to longer execution time.",
+    ".. note::\n\n  Since the Gaussian smoothing is done by convolution, a larger radius will lead to longer execution time.",
     true
   )
   .add_prototype("sigma, [radius], [border]","")
@@ -109,7 +109,7 @@ static auto sigma = bob::extension::VariableDoc(
   "sigma",
   "(float, float)",
   "The standard deviation of the Gaussian along the y- and x-axes; with read and write access",
-  ".. note:: The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
+  ".. note::\n\n  The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
 );
 PyObject* PyBobIpBaseGaussian_getSigma(PyBobIpBaseGaussianObject* self, void*){
   TRY
@@ -242,7 +242,7 @@ static auto filter = bob::extension::FunctionDoc(
   "filter",
   "Smooths an image (2D/grayscale or 3D/color)",
   "If given, the dst array should have the expected type (numpy.float64) and the same size as the src array.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [dst]", "dst")

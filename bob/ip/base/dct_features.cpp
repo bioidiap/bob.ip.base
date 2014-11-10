@@ -30,7 +30,7 @@ static auto DCTFeatures_doc = bob::extension::ClassDoc(
   )
   .add_prototype("coefficients, block_size, [block_overlap], [normalize_block], [normalize_dct], [square_pattern]", "")
   .add_prototype("dct_features", "")
-  .add_parameter("coefficients", "int", "The number of DCT coefficients;\n\n.. note:: the real number of DCT coefficient returned by the extractor is ``coefficients-1`` when the block normalization is enabled by setting ``normalize_block=True`` (as the first coefficient is always 0 in this case)")
+  .add_parameter("coefficients", "int", "The number of DCT coefficients;\n\n.. note::\n\n  the real number of DCT coefficient returned by the extractor is ``coefficients-1`` when the block normalization is enabled by setting ``normalize_block=True`` (as the first coefficient is always 0 in this case)")
   .add_parameter("block_size", "(int, int)", "The size of the blocks, in which the image is decomposed")
   .add_parameter("block_overlap", "(int, int)", "[default: ``(0, 0)``] The overlap of the blocks")
   .add_parameter("normalize_block", "bool", "[default: ``False``] Normalize each block to zero mean and unit variance before extracting DCT coefficients? In this case, the first coefficient will always be zero and hence will not be returned")
@@ -115,7 +115,7 @@ static auto coefficients = bob::extension::VariableDoc(
   "coefficients",
   "int",
   "The number of DCT coefficients, with read and write access",
-  ".. note:: The real number of DCT coefficient returned by the extractor is ``coefficients-1`` when the block normalization is enabled (as the first coefficient is always 0 in this case)"
+  ".. note::\n\n  The real number of DCT coefficient returned by the extractor is ``coefficients-1`` when the block normalization is enabled (as the first coefficient is always 0 in this case)"
 );
 PyObject* PyBobIpBaseDCTFeatures_getCoefficients(PyBobIpBaseDCTFeaturesObject* self, void*){
   TRY
@@ -160,7 +160,7 @@ static auto blockOverlap = bob::extension::VariableDoc(
   "block_overlap",
   "(int, int)",
   "The block overlap in both vertical and horizontal direction of the Multi-Block-DCTFeatures extractor, with read and write access",
-  ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`."
+  ".. note::\n\n  The ``block_overlap`` must be smaller than the :py:attr:`block_size`."
 );
 PyObject* PyBobIpBaseDCTFeatures_getBlockOverlap(PyBobIpBaseDCTFeaturesObject* self, void*){
   TRY
@@ -184,7 +184,7 @@ static auto normalizeBlock = bob::extension::VariableDoc(
   "normalize_block",
   "bool",
   "Normalize each block to zero mean and unit variance before extracting DCT coefficients (read and write access)",
-  ".. note:: In case ``normalize_block`` is set to ``True`` the first coefficient will always be zero and, hence, will not be returned."
+  ".. note::\n\n  In case ``normalize_block`` is set to ``True`` the first coefficient will always be zero and, hence, will not be returned."
 );
 PyObject* PyBobIpBaseDCTFeatures_getNormalizeBlock(PyBobIpBaseDCTFeaturesObject* self, void*){
   TRY
@@ -229,7 +229,7 @@ static auto squarePattern = bob::extension::VariableDoc(
   "square_pattern",
   "bool",
   "Tells whether a zigzag pattern or a square pattern is used for the DCT extraction (read and write access)?",
-  ".. note:: For a square pattern, the number of DCT coefficients must be a square integer."
+  ".. note::\n\n  For a square pattern, the number of DCT coefficients must be a square integer."
 );
 PyObject* PyBobIpBaseDCTFeatures_getSquarePattern(PyBobIpBaseDCTFeaturesObject* self, void*){
   TRY
@@ -395,7 +395,7 @@ static auto extract = bob::extension::FunctionDoc(
   "The destination array, if given, should be a 2D or 3D array of type float64 and allocated with the correct dimensions (see :py:func:`output_shape`). "
   "If the destination array is not given (first version), it is generated in the required size. "
   "The blocks can be split into either a 2D array of shape ``(block_index, coefficients)`` by setting ``flat=True``, or into a 3D array of shape ``(block_index_y, block_index_x, coefficients)`` with ``flat=False``.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [flat]", "output")

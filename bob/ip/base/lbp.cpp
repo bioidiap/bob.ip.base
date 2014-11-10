@@ -64,7 +64,7 @@ static auto LBP_doc = bob::extension::ClassDoc(
     "Finally, the border handling of the image can be selected. "
     "With the ``'shrink'`` option, no LBP code is computed for the border pixels and the resulting image is :math:`2\\times` ``radius`` or :math:`3\\times` ``block_size`` :math:`-1` pixels smaller in both directions, see :py:func:`lbp_shape`. "
     "The ``'wrap'`` option will wrap around the border and no truncation is performed.\n\n"
-    ".. note:: To compute MB-LBP features, it is possible to compute an integral image before to speed up the calculation.",
+    ".. note::\n\n  To compute MB-LBP features, it is possible to compute an integral image before to speed up the calculation.",
     true
   )
   .add_prototype("neighbors, [radius], [circular], [to_average], [add_average_bit], [uniform], [rotation_invariant], [elbp_type], [border_handling]", "")
@@ -320,7 +320,7 @@ static auto blockOverlap = bob::extension::VariableDoc(
   "block_overlap",
   "(int, int)",
   "The block overlap in both vertical and horizontal direction of the Multi-Block-LBP extractor, with read and write access",
-  ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
+  ".. note::\n\n  The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
   "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_size_and_overlap` function."
 );
 PyObject* PyBobIpBaseLBP_getBlockOverlap(PyBobIpBaseLBPObject* self, void*){
@@ -345,7 +345,7 @@ static auto points = bob::extension::VariableDoc(
   "points",
   "int",
   "The number of neighbors (usually 4, 8 or 16), with read and write access",
-  ".. note:: The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
+  ".. note::\n\n  The ``block_overlap`` must be smaller than the :py:attr:`block_size`. "
   "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_size_and_overlap` function."
 );
 PyObject* PyBobIpBaseLBP_getPoints(PyBobIpBaseLBPObject* self, void*){
@@ -580,7 +580,7 @@ static auto offset = bob::extension::VariableDoc(
   "offset",
   "(int, int)",
   "The offset in the image, where the first LBP code can be extracted (read access only)",
-  ".. note:: When extracting LBP features from an image with a specific ``shape``, positions might be in range ``[offset, shape - offset[`` only. "
+  ".. note::\n\n  When extracting LBP features from an image with a specific ``shape``, positions might be in range ``[offset, shape - offset[`` only. "
   "Otherwise, an exception will be raised."
 );
 PyObject* PyBobIpBaseLBP_getOffset(PyBobIpBaseLBPObject* self, void*){
@@ -819,7 +819,7 @@ static auto extract = bob::extension::FunctionDoc(
   "When MB-LBP features will be extracted, an integral image will be computed to speed up the calculation. "
   "The integral image calculation can be done **before** this function is called, and the integral image can be passed to this function directly. "
   "In this case, please set the ``is_integral_image`` parameter to ``True``.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [is_integral_image]", "output")

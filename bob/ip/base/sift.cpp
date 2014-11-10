@@ -617,7 +617,7 @@ static auto computeDescriptor = bob::extension::FunctionDoc(
   "compute_descriptor",
   "Computes SIFT descriptor for a 2D/grayscale image, at the given keypoints",
   "If given, the results are put in the output ``dst``, which output should be of type float and allocated in the shape :py:func:`output_shape` method).\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, keypoints, [dst]", "dst")

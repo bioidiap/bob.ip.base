@@ -19,7 +19,7 @@ bob::extension::FunctionDoc s_scale = bob::extension::FunctionDoc(
   "1. Given a source image and a scale factor, the scaled image is returned in the size :py:func:`bob.ip.base.scaled_output_shape`\n\n"
   "2. Given source and destination image, the source image is scaled such that it fits into the destination image.\n\n"
   "3. Same as 2., but additionally boolean masks will be read and filled with according values.\n\n"
-  ".. note:: For 2. and 3., scale factors are computed for both directions independently. "
+  ".. note::\n\n  For 2. and 3., scale factors are computed for both directions independently. "
   "Factually, this means that the image **might be** stretched in either direction, i.e., the aspect ratio is **not** identical for the horizontal and vertical direction. "
   "Even for 1. this might apply, e.g., when ``src.shape * scaling_factor`` does not result in integral values."
 )
@@ -198,7 +198,7 @@ bob::extension::FunctionDoc s_rotate = bob::extension::FunctionDoc(
   "1. Given a source image and a rotation angle, the rotated image is returned in the size :py:func:`bob.ip.base.rotated_output_shape`\n\n"
   "2. Given source and destination image and the rotation angle, the source image is rotated and filled into the destination image.\n\n"
   "3. Same as 2., but additionally boolean masks will be read and filled with according values.\n\n"
-  ".. note:: Since the implementation uses a different interpolation style than before, results might *slightly* differ."
+  ".. note::\n\n  Since the implementation uses a different interpolation style than before, results might *slightly* differ."
 )
 .add_prototype("src, rotation_angle", "dst")
 .add_prototype("src, dst, rotation_angle")
@@ -415,7 +415,7 @@ bob::extension::FunctionDoc s_extrapolateMask = bob::extension::FunctionDoc(
   "3. A normal distributed random value with mean 1 and standard deviation ``random_sigma`` is added to the pixel value\n"
   "4. The pixel value is set to the image at the current position\n\n"
   "Any action considering a random number will use the given ``rng`` to create random numbers.\n\n"
-  ".. note:: For the second variant, images of type ``float`` are preferred."
+  ".. note::\n\n  For the second variant, images of type ``float`` are preferred."
 )
 .add_prototype("mask, img")
 .add_prototype("mask, img, random_sigma, [neighbors], [rng]")

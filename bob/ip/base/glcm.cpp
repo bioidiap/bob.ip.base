@@ -453,7 +453,7 @@ static auto symmetric = bob::extension::VariableDoc(
   "symmetric",
   "bool",
   "Tells whether a zigzag pattern or a square pattern is used for the DCT extraction (read and write access)?",
-  ".. note:: For a square pattern, the number of DCT coefficients must be a square integer."
+  ".. note::\n\n  For a square pattern, the number of DCT coefficients must be a square integer."
 );
 PyObject* PyBobIpBaseGLCM_getSymmetric(PyBobIpBaseGLCMObject* self, void*){
   TRY
@@ -486,7 +486,7 @@ static auto normalized = bob::extension::VariableDoc(
   "normalized",
   "bool",
   "Tells whether a zigzag pattern or a square pattern is used for the DCT extraction (read and write access)?",
-  ".. note:: For a square pattern, the number of DCT coefficients must be a square integer."
+  ".. note::\n\n  For a square pattern, the number of DCT coefficients must be a square integer."
 );
 PyObject* PyBobIpBaseGLCM_getNormalized(PyBobIpBaseGLCMObject* self, void*){
   TRY
@@ -618,7 +618,7 @@ static auto extract = bob::extension::FunctionDoc(
   "extract",
   "Extracts the GLCM matrix from the given input image",
   "If given, the output array should have the expected type (numpy.float64) and the size as defined by :py:func:`output_shape` .\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [output]", "output")

@@ -334,10 +334,10 @@ static auto extract = bob::extension::FunctionDoc(
   "This function extracts the facial image based on the eye locations (or the location of other fixed point, see note below). "
   "The geometric normalization is applied such that the eyes are placed to **fixed positions** in the normalized image. "
   "The image is cropped at the same time, so that no unnecessary operations are executed.\n\n"
-  ".. note:: Instead of the eyes, any two fixed positions can be used to normalize the face. "
+  ".. note::\n\n  Instead of the eyes, any two fixed positions can be used to normalize the face. "
   "This can simply be achieved by selecting two other nodes in the constructor (see :py:class:`FaceEyesNorm`) and in this function. "
   "Just make sure that 'right' and 'left' refer to the same landmarks in both functions.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, right_eye, left_eye", "output")

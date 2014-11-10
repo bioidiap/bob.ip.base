@@ -415,7 +415,7 @@ bob::extension::FunctionDoc s_integral = bob::extension::FunctionDoc(
   "It is the responsibility of the user to select an appropriate type for the numpy array ``dst`` (and ``sqr``), which will contain the integral image. "
   "By default, ``src`` and ``dst`` should have the same size. "
   "When the ``sqr`` matrix is given as well, it will be filled with the squared integral image (useful to compute variances of pixels).\n\n"
-  ".. note:: The ``sqr`` image is expected to have the same data type as the ``dst`` image.\n\n"
+  ".. note::\n\n  The ``sqr`` image is expected to have the same data type as the ``dst`` image.\n\n"
   "If ``add_zero_border`` is set to ``True``, ``dst`` (and ``sqr``) should be one pixel larger than ``src`` in each dimension. "
   "In this case, an extra zero pixel will be added at the beginning of each row and column."
 
@@ -641,7 +641,7 @@ bob::extension::FunctionDoc s_lbphs = bob::extension::FunctionDoc(
   "Now, the LBP's are extracted first, and then the image is split into blocks.\n\n"
   "This function computes the LBP features for the whole image, using the given :py:class:`bob.ip.base.LBP` instance. "
   "Afterwards, the resulting image is split into several blocks with the given block size and overlap, and local LBH histograms are extracted from each region.\n\n"
-  ".. note:: To get the required output shape, you can use :py:func:`lbphs_output_shape` function."
+  ".. note::\n\n  To get the required output shape, you can use :py:func:`lbphs_output_shape` function."
 )
 .add_prototype("input, lbp, block_size, [block_overlap], [output]", "output")
 .add_parameter("input", "array_like (2D)", "The source image to compute the LBPHS for")

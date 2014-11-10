@@ -657,7 +657,7 @@ static auto extract = bob::extension::FunctionDoc(
   "Extract the HOG descriptors",
   "This extracts HOG descriptors from the input image. "
   "The output is 3D, the first two dimensions being the y- and x- indices of the block, and the last one the index of the bin (among the concatenated cell histograms for this block).\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [output]", "output")

@@ -322,7 +322,7 @@ static auto process = bob::extension::FunctionDoc(
   "The input array is a 2D array/grayscale image. "
   "The destination array, if given, should be a 2D array of type float64 and allocated in the same size as the input. "
   "If the destination array is not given, it is generated in the required size.\n\n"
-  ".. note:: The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [output]", "output")
