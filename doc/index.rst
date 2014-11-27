@@ -35,6 +35,7 @@ References
 .. [Lowe2004]        *D. Lowe*. **Distinctive Image Features from Scale-Invariant Keypoints,** In International Journal of Computer Vision, 2004.
 .. [Dalal2005]       *N. Dalal, B. Triggs*. **Histograms of Oriented Gradients for Human Detection,** In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, 2005.
 .. [Haralick1973]    *R. M. Haralick, K. Shanmugam, I. Dinstein*. **Textural Features for Image Classification,** In IEEE Transactions on Systems, Man and Cybernetics, vol. SMC-3, No. 6, p. 610-621, 1973.
+.. [Szeliski2010]    *Richard Szeliski*. **Computer Vision: Algorithms and Applications** (1st ed.). Springer-Verlag New York, USA, 2010.
 
 Indices and tables
 ------------------

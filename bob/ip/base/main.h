@@ -31,6 +31,7 @@
 #include <bob.ip.base/GeomNorm.h>
 #include <bob.ip.base/FaceEyesNorm.h>
 #include <bob.ip.base/GLCM.h>
+#include <bob.ip.base/Wiener.h>
 
 
 /// inserts the given key, value pair into the given dictionaries
@@ -262,6 +263,18 @@ extern PyTypeObject PyBobIpBaseGLCM_Type;
 int PyBobIpBaseGLCM_Check(PyObject* o);
 
 bool init_BobIpBaseGLCM(PyObject* module);
+
+
+// .. Wiener filter
+typedef struct {
+  PyObject_HEAD
+  boost::shared_ptr<bob::ip::base::Wiener> cxx;
+} PyBobIpBaseWienerObject;
+
+extern PyTypeObject PyBobIpBaseWiener_Type;
+int PyBobIpBaseWiener_Check(PyObject* o);
+
+bool init_BobIpBaseWiener(PyObject* module);
 
 
 // block

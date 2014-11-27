@@ -21,6 +21,7 @@ Classes
 
    bob.ip.base.TanTriggs
    bob.ip.base.Gaussian
+   bob.ip.base.Wiener
    bob.ip.base.MultiscaleRetinex
    bob.ip.base.WeightedGaussian
    bob.ip.base.SelfQuotientImage
