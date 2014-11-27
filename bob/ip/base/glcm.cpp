@@ -86,6 +86,7 @@ auto GLCMProperty_doc = bob::extension::ClassDoc(
 );
 
 static PyObject* createGLCMProperty() {
+  BOB_TRY
   auto retval = PyDict_New();
   if (!retval) return 0;
   auto retval_ = make_safe(retval);
@@ -122,9 +123,11 @@ static PyObject* createGLCMProperty() {
 
   Py_INCREF(retval);
   return retval;
+  BOB_CATCH_FUNCTION("create glmc", 0)
 }
 
 static int PyBobIpBaseGLCMProperty_Converter(PyObject* o, GLCMProperty* b) {
+  BOB_TRY
   if (PyString_Check(o)){
     PyObject* dict = PyBobIpBaseGLCMProperty_Type.tp_dict;
     if (!PyDict_Contains(dict, o)){
@@ -144,6 +147,7 @@ static int PyBobIpBaseGLCMProperty_Converter(PyObject* o, GLCMProperty* b) {
 
   PyErr_Format(PyExc_ValueError, "block norm type parameter must be set to one of the str or int values defined in `%s'", PyBobIpBaseGLCMProperty_Type.tp_name);
   return 0;
+  BOB_CATCH_FUNCTION("property converter", 0)
 }
 
 static int PyBobIpBaseGLCMProperty_init(PyObject* self, PyObject*, PyObject*) {
@@ -171,18 +175,18 @@ static auto GLCM_doc = bob::extension::ClassDoc(
     true
   )
   .add_prototype("[levels], [min_level], [max_level], [dtype]","")
-  .add_prototype("quantization_table, [dtype]","")
+  .add_prototype("quantization_table","")
   .add_prototype("glcm", "")
   .add_parameter("dtype", ":py:attr:`numpy.dtype`", "[default: ``numpy.uint8``] The data-type for the GLCM class")
   .add_parameter("glcm", ":py:class:`bob.ip.base.GLCM`", "The GLCM object to use for copy-construction")
 );
 
 static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("levels"), c("min_level"), c("max_level"), c("dtype"), NULL};
-  char* kwlist2[] = {c("quantization_table"), NULL};
-  char* kwlist3[] = {c("glcm"), NULL};
+  char** kwlist1 = GLCM_doc.kwlist(0);
+  char** kwlist2 = GLCM_doc.kwlist(1);
+  char** kwlist3 = GLCM_doc.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -276,7 +280,7 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
 
   return PyErr_Occurred() ? -1 : 0;
 
-  CATCH("cannot create GLCM", -1)
+  BOB_CATCH_MEMBER("cannot create GLCM", -1)
 }
 
 static void PyBobIpBaseGLCM_delete(PyBobIpBaseGLCMObject* self) {
@@ -285,11 +289,11 @@ static void PyBobIpBaseGLCM_delete(PyBobIpBaseGLCMObject* self) {
 }
 
 int PyBobIpBaseGLCM_Check(PyObject* o) {
-  return PyObject_IsInstance(o, reinterpret_cast<PyObject*>(&PyBobIpBaseGLCM_Type));
+  return PyObject_TypeCheck(o, &PyBobIpBaseGLCM_Type);
 }
 
 static PyObject* PyBobIpBaseGLCM_RichCompare(PyBobIpBaseGLCMObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseGLCM_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -323,7 +327,7 @@ static PyObject* PyBobIpBaseGLCM_RichCompare(PyBobIpBaseGLCMObject* self, PyObje
   PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
   return 0;
 
-  CATCH("cannot compare GLCM objects", 0)
+  BOB_CATCH_MEMBER("cannot compare GLCM objects", 0)
 }
 
 
@@ -338,11 +342,11 @@ static auto dtype = bob::extension::VariableDoc(
   "Only images of this data type can be processed in the :py:func:`extract` function."
 );
 PyObject* PyBobIpBaseGLCM_getDtype(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   PyArray_Descr* dtype = PyArray_DescrNewFromType(self->type_num);
   auto dtype_ = make_safe(dtype);
   return Py_BuildValue("O", dtype);
-  CATCH("dtype could not be read", 0)
+  BOB_CATCH_MEMBER("dtype could not be read", 0)
 }
 
 static auto offset = bob::extension::VariableDoc(
@@ -352,17 +356,17 @@ static auto offset = bob::extension::VariableDoc(
   "The shape of this array is (num_offsets, 2), where num_offsets is the total number of offsets to be taken into account when computing GLCM."
 );
 PyObject* PyBobIpBaseGLCM_getOffset(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: return PyBlitzArrayCxx_AsConstNumpy(reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getOffset());
     case NPY_UINT16: return PyBlitzArrayCxx_AsConstNumpy(reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getOffset());
     case NPY_FLOAT64: return PyBlitzArrayCxx_AsConstNumpy(reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getOffset());
     default: return 0;
   }
-  CATCH("offset could not be read", 0)
+  BOB_CATCH_MEMBER("offset could not be read", 0)
 }
 int PyBobIpBaseGLCM_setOffset(PyBobIpBaseGLCMObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   PyBlitzArrayObject* v;
   if (!PyBlitzArray_Converter(value, &v)) return 0;
   auto v_ = make_safe(v);
@@ -375,7 +379,7 @@ int PyBobIpBaseGLCM_setOffset(PyBobIpBaseGLCMObject* self, PyObject* value, void
     default: return -1;
   }
   return 0;
-  CATCH("offset could not be set", -1)
+  BOB_CATCH_MEMBER("offset could not be set", -1)
 }
 
 static auto quantizationTable = bob::extension::VariableDoc(
@@ -387,14 +391,14 @@ static auto quantizationTable = bob::extension::VariableDoc(
   "Input values in the range [0,4] will be quantized to level 0, input values in the range[5,9] will be quantized to level 1 and input values in the range [10-max_level] will be quantized to level 2."
 );
 PyObject* PyBobIpBaseGLCM_getQuantizationTable(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: return PyBlitzArrayCxx_AsConstNumpy(reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getQuantizationTable());
     case NPY_UINT16: return PyBlitzArrayCxx_AsConstNumpy(reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getQuantizationTable());
     case NPY_FLOAT64: return PyBlitzArrayCxx_AsConstNumpy(reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getQuantizationTable());
     default: return 0;
   }
-  CATCH("quantization_table could not be read", 0)
+  BOB_CATCH_MEMBER("quantization_table could not be read", 0)
 }
 
 static auto levels = bob::extension::VariableDoc(
@@ -405,14 +409,14 @@ static auto levels = bob::extension::VariableDoc(
   "The default is the total number of gray values permitted by the type of the input image."
 );
 PyObject* PyBobIpBaseGLCM_getLevels(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getNumLevels());
     case NPY_UINT16: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getNumLevels());
     case NPY_FLOAT64: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getNumLevels());
     default: return 0;
   }
-  CATCH("levels could not be read", 0)
+  BOB_CATCH_MEMBER("levels could not be read", 0)
 }
 
 static auto maxLevel = bob::extension::VariableDoc(
@@ -422,14 +426,14 @@ static auto maxLevel = bob::extension::VariableDoc(
   " The default is the maximum gray-level permitted by the type of input image."
 );
 PyObject* PyBobIpBaseGLCM_getMaxLevel(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getMaxLevel());
     case NPY_UINT16: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getMaxLevel());
     case NPY_FLOAT64: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getMaxLevel());
     default: return 0;
   }
-  CATCH("max_level could not be read", 0)
+  BOB_CATCH_MEMBER("max_level could not be read", 0)
 }
 
 static auto minLevel = bob::extension::VariableDoc(
@@ -439,14 +443,14 @@ static auto minLevel = bob::extension::VariableDoc(
   "The default is the minimum gray-level permitted by the type of input image."
 );
 PyObject* PyBobIpBaseGLCM_getMinLevel(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getMinLevel());
     case NPY_UINT16: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getMinLevel());
     case NPY_FLOAT64: return Py_BuildValue("i", reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getMinLevel());
     default: return 0;
   }
-  CATCH("min_level could not be read", 0)
+  BOB_CATCH_MEMBER("min_level could not be read", 0)
 }
 
 static auto symmetric = bob::extension::VariableDoc(
@@ -456,17 +460,17 @@ static auto symmetric = bob::extension::VariableDoc(
   ".. note::\n\n  For a square pattern, the number of DCT coefficients must be a square integer."
 );
 PyObject* PyBobIpBaseGLCM_getSymmetric(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: if (reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getSymmetric()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     case NPY_UINT16: if (reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getSymmetric()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     case NPY_FLOAT64: if (reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getSymmetric()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     default: return 0;
   }
-  CATCH("symmetric could not be read", 0)
+  BOB_CATCH_MEMBER("symmetric could not be read", 0)
 }
 int PyBobIpBaseGLCM_setSymmetric(PyBobIpBaseGLCMObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, symmetric.name());
@@ -479,7 +483,7 @@ int PyBobIpBaseGLCM_setSymmetric(PyBobIpBaseGLCMObject* self, PyObject* value, v
     default: return -1;
   }
 
-  CATCH("symmetric could not be set", -1)
+  BOB_CATCH_MEMBER("symmetric could not be set", -1)
 }
 
 static auto normalized = bob::extension::VariableDoc(
@@ -489,17 +493,17 @@ static auto normalized = bob::extension::VariableDoc(
   ".. note::\n\n  For a square pattern, the number of DCT coefficients must be a square integer."
 );
 PyObject* PyBobIpBaseGLCM_getNormalized(PyBobIpBaseGLCMObject* self, void*){
-  TRY
+  BOB_TRY
   switch (self->type_num){
     case NPY_UINT8: if (reinterpret_cast<bob::ip::base::GLCM<uint8_t>*>(self->cxx.get())->getNormalized()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     case NPY_UINT16: if (reinterpret_cast<bob::ip::base::GLCM<uint16_t>*>(self->cxx.get())->getNormalized()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     case NPY_FLOAT64: if (reinterpret_cast<bob::ip::base::GLCM<double>*>(self->cxx.get())->getNormalized()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
     default: return 0;
   }
-  CATCH("normalized could not be read", 0)
+  BOB_CATCH_MEMBER("normalized could not be read", 0)
 }
 int PyBobIpBaseGLCM_setNormalized(PyBobIpBaseGLCMObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, normalized.name());
@@ -512,7 +516,7 @@ int PyBobIpBaseGLCM_setNormalized(PyBobIpBaseGLCMObject* self, PyObject* value, 
     default: return -1;
   }
 
-  CATCH("normalized could not be set", -1)
+  BOB_CATCH_MEMBER("normalized could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseGLCM_getseters[] = {
@@ -602,16 +606,16 @@ blitz::TinyVector<int,3> _getShape(PyBobIpBaseGLCMObject* self){
 }
 
 static PyObject* PyBobIpBaseGLCM_outputShape(PyBobIpBaseGLCMObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   auto shape = _getShape(self);
   return Py_BuildValue("(iii)", shape[0], shape[1], shape[2]);
 
-  CATCH("cannot compute output shape", 0)
+  BOB_CATCH_MEMBER("cannot compute output shape", 0)
 }
 
 static auto extract = bob::extension::FunctionDoc(
@@ -628,8 +632,8 @@ static auto extract = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseGLCM_extract(PyBobIpBaseGLCMObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("input"), c("output"), 0};
+  BOB_TRY
+  char** kwlist = extract.kwlist();
 
   PyBlitzArrayObject* input,* output = 0;
 
@@ -672,7 +676,7 @@ static PyObject* PyBobIpBaseGLCM_extract(PyBobIpBaseGLCMObject* self, PyObject* 
   Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 
-  CATCH("cannot extract GLCM matrix from image", 0)
+  BOB_CATCH_MEMBER("cannot extract GLCM matrix from image", 0)
 }
 
 
@@ -690,8 +694,8 @@ static auto propertiesByName = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseGLCM_propertiesByName(PyBobIpBaseGLCMObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("glcm_matrix"), c("prop_names"), 0};
+  BOB_TRY
+  char** kwlist = propertiesByName.kwlist();
 
   PyBlitzArrayObject* matrix;
   PyObject* list;
@@ -755,7 +759,7 @@ static PyObject* PyBobIpBaseGLCM_propertiesByName(PyBobIpBaseGLCMObject* self, P
   Py_INCREF(result);
   return result;
 
-  CATCH("cannot extract GLCM matrix from image", 0)
+  BOB_CATCH_MEMBER("cannot extract GLCM matrix from image", 0)
 }
 
 

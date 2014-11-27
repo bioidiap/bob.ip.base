@@ -38,10 +38,10 @@ static auto GeomNorm_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseGeomNorm_init(PyBobIpBaseGeomNormObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("rotation_angle"), c("scaling_factor"), c("crop_size"), c("crop_offset"), NULL};
-  char* kwlist2[] = {c("other"), NULL};
+  char** kwlist1 = GeomNorm_doc.kwlist(0);
+  char** kwlist2 = GeomNorm_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -75,7 +75,7 @@ static int PyBobIpBaseGeomNorm_init(PyBobIpBaseGeomNormObject* self, PyObject* a
   self->cxx.reset(new bob::ip::base::GeomNorm(scale, angle, size, offset));
   return 0;
 
-  CATCH("cannot create GeomNorm object", -1)
+  BOB_CATCH_MEMBER("cannot create GeomNorm object", -1)
 }
 
 static void PyBobIpBaseGeomNorm_delete(PyBobIpBaseGeomNormObject* self) {
@@ -88,7 +88,7 @@ int PyBobIpBaseGeomNorm_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseGeomNorm_RichCompare(PyBobIpBaseGeomNormObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseGeomNorm_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -104,7 +104,7 @@ static PyObject* PyBobIpBaseGeomNorm_RichCompare(PyBobIpBaseGeomNormObject* self
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare GeomNorm objects", 0)
+  BOB_CATCH_MEMBER("cannot compare GeomNorm objects", 0)
 }
 
 
@@ -118,17 +118,17 @@ static auto angle = bob::extension::VariableDoc(
   "The rotation angle, with read and write access"
 );
 PyObject* PyBobIpBaseGeomNorm_getAngle(PyBobIpBaseGeomNormObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getRotationAngle());
-  CATCH("rotation_angle could not be read", 0)
+  BOB_CATCH_MEMBER("rotation_angle could not be read", 0)
 }
 int PyBobIpBaseGeomNorm_setAngle(PyBobIpBaseGeomNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setRotationAngle(d);
   return 0;
-  CATCH("rotation_angle could not be set", -1)
+  BOB_CATCH_MEMBER("rotation_angle could not be set", -1)
 }
 
 static auto scale = bob::extension::VariableDoc(
@@ -137,17 +137,17 @@ static auto scale = bob::extension::VariableDoc(
   "The scale factor, with read and write access"
 );
 PyObject* PyBobIpBaseGeomNorm_getScale(PyBobIpBaseGeomNormObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getScalingFactor());
-  CATCH("scaling_factor could not be read", 0)
+  BOB_CATCH_MEMBER("scaling_factor could not be read", 0)
 }
 int PyBobIpBaseGeomNorm_setScale(PyBobIpBaseGeomNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setScalingFactor(d);
   return 0;
-  CATCH("scaling_factor could not be set", -1)
+  BOB_CATCH_MEMBER("scaling_factor could not be set", -1)
 }
 
 static auto cropSize = bob::extension::VariableDoc(
@@ -156,13 +156,13 @@ static auto cropSize = bob::extension::VariableDoc(
   "The size of the processed image, with read and write access"
 );
 PyObject* PyBobIpBaseGeomNorm_getCropSize(PyBobIpBaseGeomNormObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getCropSize();
   return Py_BuildValue("(ii)", r[0], r[1]);
-  CATCH("crop_size could not be read", 0)
+  BOB_CATCH_MEMBER("crop_size could not be read", 0)
 }
 int PyBobIpBaseGeomNorm_setCropSize(PyBobIpBaseGeomNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, cropSize.name());
@@ -170,7 +170,7 @@ int PyBobIpBaseGeomNorm_setCropSize(PyBobIpBaseGeomNormObject* self, PyObject* v
   }
   self->cxx->setCropSize(r);
   return 0;
-  CATCH("crop_size could not be set", -1)
+  BOB_CATCH_MEMBER("crop_size could not be set", -1)
 }
 
 static auto cropOffset = bob::extension::VariableDoc(
@@ -179,13 +179,13 @@ static auto cropOffset = bob::extension::VariableDoc(
   "The transformation center in the processed image, with read and write access"
 );
 PyObject* PyBobIpBaseGeomNorm_getCropOffset(PyBobIpBaseGeomNormObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getCropOffset();
   return Py_BuildValue("(dd)", r[0], r[1]);
-  CATCH("crop_offset could not be read", 0)
+  BOB_CATCH_MEMBER("crop_offset could not be read", 0)
 }
 int PyBobIpBaseGeomNorm_setCropOffset(PyBobIpBaseGeomNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, cropOffset.name());
@@ -193,7 +193,7 @@ int PyBobIpBaseGeomNorm_setCropOffset(PyBobIpBaseGeomNormObject* self, PyObject*
   }
   self->cxx->setCropOffset(r);
   return 0;
-  CATCH("crop_offset could not be set", -1)
+  BOB_CATCH_MEMBER("crop_offset could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseGeomNorm_getseters[] = {
@@ -263,10 +263,10 @@ static PyObject* process_inner(PyBobIpBaseGeomNormObject* self, PyBlitzArrayObje
 }
 
 static PyObject* PyBobIpBaseGeomNorm_process(PyBobIpBaseGeomNormObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist1[] = {c("input"), c("output"), c("center"), 0};
-  static char* kwlist2[] = {c("input"), c("input_mask"), c("output"), c("output_mask"), c("center"), 0};
-  static char* kwlist3[] = {c("position"), c("center"), 0};
+  BOB_TRY
+  char** kwlist1 = process.kwlist(0);
+  char** kwlist2 = process.kwlist(1);
+  char** kwlist3 = process.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -352,7 +352,7 @@ static PyObject* PyBobIpBaseGeomNorm_process(PyBobIpBaseGeomNormObject* self, Py
       return 0;
   }
 
-  CATCH("cannot process image", 0)
+  BOB_CATCH_MEMBER("cannot process image", 0)
 }
 
 static PyMethodDef PyBobIpBaseGeomNorm_methods[] = {

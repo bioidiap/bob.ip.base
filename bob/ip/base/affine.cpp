@@ -44,11 +44,11 @@ static void scale_inner(PyBlitzArrayObject* input, PyBlitzArrayObject* input_mas
 }
 
 PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist1[] = {c("src"), c("scaling_factor"), NULL};
-  static char* kwlist2[] = {c("src"), c("dst"), NULL};
-  static char* kwlist3[] = {c("src"), c("src_mask"), c("dst"), c("dst_mask"), NULL};
+  char** kwlist1 = s_scale.kwlist(0);
+  char** kwlist2 = s_scale.kwlist(1);
+  char** kwlist3 = s_scale.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -138,11 +138,11 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   Py_RETURN_NONE;
-  CATCH_("scale", 0)
+  BOB_CATCH_FUNCTION("scale", 0)
 }
 
 
-bob::extension::FunctionDoc s_getScaledOutputShape = bob::extension::FunctionDoc(
+bob::extension::FunctionDoc s_scaledOutputShape = bob::extension::FunctionDoc(
   "scaled_output_shape",
   "This function returns the shape of the scaled image for the given image and scale",
   "The function tries its best to compute an integral-valued shape given the shape of the input image and the given scale factor. "
@@ -157,10 +157,10 @@ bob::extension::FunctionDoc s_getScaledOutputShape = bob::extension::FunctionDoc
 .add_return("scaled_shape", "(int, int) or (int, int, int)", "The shape of the scaled ``dst`` image required in a call to :py:func:`bob.ip.base.scale`")
 ;
 
-PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+PyObject* PyBobIpBase_scaledOutputShape(PyObject*, PyObject* args, PyObject* kwargs) {
+  BOB_TRY
 
-  static char* kwlist1[] = {c("src"), c("scaling_factor"), 0};
+  char** kwlist1 = s_scaledOutputShape.kwlist();
 // TODO: implement from shape
 //  static char* kwlist2[] = {c("shape"), c("scale"), 0};
 
@@ -185,7 +185,7 @@ PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject* args, PyObject* 
   }
 
   return 0;
-  CATCH_("cannot get scaled output shape", 0)
+  BOB_CATCH_FUNCTION("cannot get scaled output shape", 0)
 }
 
 
@@ -221,11 +221,11 @@ static void rotate_inner(PyBlitzArrayObject* input, PyBlitzArrayObject* input_ma
 }
 
 PyObject* PyBobIpBase_rotate(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist1[] = {c("src"), c("angle"), NULL};
-  static char* kwlist2[] = {c("src"), c("dst"), c("angle"), NULL};
-  static char* kwlist3[] = {c("src"), c("src_mask"), c("dst"), c("dst_mask"), c("angle"), NULL};
+  char** kwlist1 = s_rotate.kwlist(0);
+  char** kwlist2 = s_rotate.kwlist(1);
+  char** kwlist3 = s_rotate.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -309,11 +309,11 @@ PyObject* PyBobIpBase_rotate(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   Py_RETURN_NONE;
-  CATCH_("rotate", 0)
+  BOB_CATCH_FUNCTION("rotate", 0)
 }
 
 
-bob::extension::FunctionDoc s_getRotatedOutputShape = bob::extension::FunctionDoc(
+bob::extension::FunctionDoc s_rotatedOutputShape = bob::extension::FunctionDoc(
   "rotated_output_shape",
   "This function returns the shape of the rotated image for the given image and angle",
   0,
@@ -327,10 +327,10 @@ bob::extension::FunctionDoc s_getRotatedOutputShape = bob::extension::FunctionDo
 .add_return("rotated_shape", "(int, int) or (int, int, int)", "The shape of the rotated ``dst`` image required in a call to :py:func:`bob.ip.base.rotate`")
 ;
 
-PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+PyObject* PyBobIpBase_rotatedOutputShape(PyObject*, PyObject* args, PyObject* kwargs) {
+  BOB_TRY
 
-  static char* kwlist1[] = {c("src"), c("angle"), 0};
+  char** kwlist1 = s_rotatedOutputShape.kwlist();
 // TODO: implement from shape
 //  static char* kwlist2[] = {c("shape"), c("scale"), 0};
 
@@ -355,7 +355,7 @@ PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject* args, PyObject*
   }
 
   return 0;
-  CATCH_("cannot get rotated output shape", 0)
+  BOB_CATCH_FUNCTION("cannot get rotated output shape", 0)
 }
 
 
@@ -374,9 +374,9 @@ bob::extension::FunctionDoc s_maxRectInMask = bob::extension::FunctionDoc(
 ;
 
 PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("mask"), NULL};
+  char** kwlist = s_maxRectInMask.kwlist();
 
   PyBlitzArrayObject* mask = 0;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&", kwlist, &PyBlitzArray_Converter, &mask)) return 0;
@@ -392,7 +392,7 @@ PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject* args, PyObject* kwargs)
 
   return Py_BuildValue("(iiii)", rect[0], rect[1], rect[2], rect[3]);
 
-  CATCH_("in max_rect_in_mask", 0)
+  BOB_CATCH_FUNCTION("in max_rect_in_mask", 0)
 }
 
 
@@ -427,9 +427,9 @@ bob::extension::FunctionDoc s_extrapolateMask = bob::extension::FunctionDoc(
 ;
 
 PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("mask"), c("img"), c("random_sigma"), c("neighbors"), c("rng"), NULL};
+  char** kwlist = s_extrapolateMask.kwlist(1);
 
   PyBlitzArrayObject* mask,* img;
   double sigma = -1.;
@@ -479,7 +479,7 @@ PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject* args, PyObject* kwarg
 
   Py_RETURN_NONE;
 
-  CATCH_("in extrapolate_mask", 0)
+  BOB_CATCH_FUNCTION("in extrapolate_mask", 0)
 }
 
 

@@ -90,13 +90,13 @@ static auto LBP_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseLBP_init(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("neighbors"), c("radius"), c("circular"), c("to_average"), c("add_average_bit"), c("uniform"), c("rotation_invariant"), c("elbp_type"), c("border_handling"), NULL};
-  char* kwlist2[] = {c("neighbors"), c("radius_y"), c("radius_x"), c("circular"), c("to_average"), c("add_average_bit"), c("uniform"), c("rotation_invariant"), c("elbp_type"), c("border_handling"), NULL};
-  char* kwlist3[] = {c("neighbors"), c("block_size"), c("block_overlap"), c("to_average"), c("add_average_bit"), c("uniform"), c("rotation_invariant"), c("elbp_type"), c("border_handling"), NULL};
-  char* kwlist4[] = {c("lbp"), NULL};
-  char* kwlist5[] = {c("hdf5"), NULL};
+  char** kwlist1 = LBP_doc.kwlist(0);
+  char** kwlist2 = LBP_doc.kwlist(1);
+  char** kwlist3 = LBP_doc.kwlist(2);
+  char** kwlist4 = LBP_doc.kwlist(3);
+  char** kwlist5 = LBP_doc.kwlist(4);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -205,7 +205,7 @@ static int PyBobIpBaseLBP_init(PyBobIpBaseLBPObject* self, PyObject* args, PyObj
     }
   }
 
-  CATCH("cannot create LBP extractor", -1)
+  BOB_CATCH_MEMBER("cannot create LBP extractor", -1)
 }
 
 static void PyBobIpBaseLBP_delete(PyBobIpBaseLBPObject* self) {
@@ -227,7 +227,7 @@ int PyBobIpBaseLBP_Converter(PyObject* o, PyBobIpBaseLBPObject** a) {
 
 
 static PyObject* PyBobIpBaseLBP_RichCompare(PyBobIpBaseLBPObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseLBP_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -243,7 +243,7 @@ static PyObject* PyBobIpBaseLBP_RichCompare(PyBobIpBaseLBPObject* self, PyObject
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare LBP objects", 0)
+  BOB_CATCH_MEMBER("cannot compare LBP objects", 0)
 }
 
 
@@ -257,17 +257,17 @@ static auto radius = bob::extension::VariableDoc(
   "The radius of the round or square LBP extractor, with read and write access"
 );
 PyObject* PyBobIpBaseLBP_getRadius(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getRadius());
-  CATCH("radius could not be read", 0)
+  BOB_CATCH_MEMBER("radius could not be read", 0)
 }
 int PyBobIpBaseLBP_setRadius(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setRadius(d);
   return 0;
-  CATCH("radius could not be set", -1)
+  BOB_CATCH_MEMBER("radius could not be set", -1)
 }
 
 static auto radii = bob::extension::VariableDoc(
@@ -276,13 +276,13 @@ static auto radii = bob::extension::VariableDoc(
   "The radii in both vertical and horizontal direction of the elliptical or rectangular LBP extractor, with read and write access"
 );
 PyObject* PyBobIpBaseLBP_getRadii(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getRadii();
   return Py_BuildValue("(dd)", r[0], r[1]);
-  CATCH("radii could not be read", 0)
+  BOB_CATCH_MEMBER("radii could not be read", 0)
 }
 int PyBobIpBaseLBP_setRadii(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, radii.name());
@@ -290,7 +290,7 @@ int PyBobIpBaseLBP_setRadii(PyBobIpBaseLBPObject* self, PyObject* value, void*){
   }
   self->cxx->setRadii(r);
   return 0;
-  CATCH("radii could not be set", -1)
+  BOB_CATCH_MEMBER("radii could not be set", -1)
 }
 
 static auto blockSize = bob::extension::VariableDoc(
@@ -299,13 +299,13 @@ static auto blockSize = bob::extension::VariableDoc(
   "The block size in both vertical and horizontal direction of the Multi-Block-LBP extractor, with read and write access"
 );
 PyObject* PyBobIpBaseLBP_getBlockSize(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   auto s = self->cxx->getBlockSize();
   return Py_BuildValue("(ii)", s[0], s[1]);
-  CATCH("block size could not be read", 0)
+  BOB_CATCH_MEMBER("block size could not be read", 0)
 }
 int PyBobIpBaseLBP_setBlockSize(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> s;
   if (!PyArg_ParseTuple(value, "ii", &s[0], &s[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, blockSize.name());
@@ -313,7 +313,7 @@ int PyBobIpBaseLBP_setBlockSize(PyBobIpBaseLBPObject* self, PyObject* value, voi
   }
   self->cxx->setBlockSize(s);
   return 0;
-  CATCH("block size could not be set", -1)
+  BOB_CATCH_MEMBER("block size could not be set", -1)
 }
 
 static auto blockOverlap = bob::extension::VariableDoc(
@@ -324,13 +324,13 @@ static auto blockOverlap = bob::extension::VariableDoc(
   "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_size_and_overlap` function."
 );
 PyObject* PyBobIpBaseLBP_getBlockOverlap(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   auto s = self->cxx->getBlockOverlap();
   return Py_BuildValue("(ii)", s[0], s[1]);
-  CATCH("block overlap could not be read", 0)
+  BOB_CATCH_MEMBER("block overlap could not be read", 0)
 }
 int PyBobIpBaseLBP_setBlockOverlap(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> s;
   if (!PyArg_ParseTuple(value, "ii", &s[0], &s[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, blockOverlap.name());
@@ -338,7 +338,7 @@ int PyBobIpBaseLBP_setBlockOverlap(PyBobIpBaseLBPObject* self, PyObject* value, 
   }
   self->cxx->setBlockOverlap(s);
   return 0;
-  CATCH("block overlap could not be set", -1)
+  BOB_CATCH_MEMBER("block overlap could not be set", -1)
 }
 
 static auto points = bob::extension::VariableDoc(
@@ -349,19 +349,19 @@ static auto points = bob::extension::VariableDoc(
   "To set both the block size and the block overlap at the same time, use the :py:func:`set_block_size_and_overlap` function."
 );
 PyObject* PyBobIpBaseLBP_getPoints(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNNeighbours());
-  CATCH("points could not be read", 0)
+  BOB_CATCH_MEMBER("points could not be read", 0)
 }
 int PyBobIpBaseLBP_setPoints(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, points.name());
     return -1;
   }
   self->cxx->setNNeighbours(PyInt_AS_LONG(value));
   return 0;
-  CATCH("points could not be set", -1)
+  BOB_CATCH_MEMBER("points could not be set", -1)
 }
 
 static auto circular = bob::extension::VariableDoc(
@@ -370,12 +370,12 @@ static auto circular = bob::extension::VariableDoc(
   "Should circular or rectangular LBP's be extracted (read and write access)?"
 );
 PyObject* PyBobIpBaseLBP_getCircular(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getCircular()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("circular could not be read", 0)
+  BOB_CATCH_MEMBER("circular could not be read", 0)
 }
 int PyBobIpBaseLBP_setCircular(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, circular.name());
@@ -383,7 +383,7 @@ int PyBobIpBaseLBP_setCircular(PyBobIpBaseLBPObject* self, PyObject* value, void
   }
   self->cxx->setCircular(r>0);
   return 0;
-  CATCH("circular could not be set", -1)
+  BOB_CATCH_MEMBER("circular could not be set", -1)
 }
 
 static auto toAverage = bob::extension::VariableDoc(
@@ -392,12 +392,12 @@ static auto toAverage = bob::extension::VariableDoc(
   "Should the neighboring pixels be compared with the average of all pixels, or to the central one (read and write access)?"
 );
 PyObject* PyBobIpBaseLBP_getToAverage(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getToAverage()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("to_average could not be read", 0)
+  BOB_CATCH_MEMBER("to_average could not be read", 0)
 }
 int PyBobIpBaseLBP_setToAverage(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, toAverage.name());
@@ -405,7 +405,7 @@ int PyBobIpBaseLBP_setToAverage(PyBobIpBaseLBPObject* self, PyObject* value, voi
   }
   self->cxx->setToAverage(r>0);
   return 0;
-  CATCH("to_average could not be set", -1)
+  BOB_CATCH_MEMBER("to_average could not be set", -1)
 }
 
 static auto addAverage = bob::extension::VariableDoc(
@@ -414,12 +414,12 @@ static auto addAverage = bob::extension::VariableDoc(
   "Should the bit for the comparison of the central pixel with the average be added as well (read and write access)?"
 );
 PyObject* PyBobIpBaseLBP_getAddAverage(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getAddAverageBit()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("add_average_bit could not be read", 0)
+  BOB_CATCH_MEMBER("add_average_bit could not be read", 0)
 }
 int PyBobIpBaseLBP_setAddAverage(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, addAverage.name());
@@ -427,7 +427,7 @@ int PyBobIpBaseLBP_setAddAverage(PyBobIpBaseLBPObject* self, PyObject* value, vo
   }
   self->cxx->setAddAverageBit(r>0);
   return 0;
-  CATCH("add_average_bit could not be set", -1)
+  BOB_CATCH_MEMBER("add_average_bit could not be set", -1)
 }
 
 static auto uniform = bob::extension::VariableDoc(
@@ -439,12 +439,12 @@ static auto uniform = bob::extension::VariableDoc(
   "All non-uniform bit strings will be collected in a single LBP code."
 );
 PyObject* PyBobIpBaseLBP_getUniform(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getUniform()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("uniform could not be read", 0)
+  BOB_CATCH_MEMBER("uniform could not be read", 0)
 }
 int PyBobIpBaseLBP_setUniform(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, uniform.name());
@@ -452,7 +452,7 @@ int PyBobIpBaseLBP_setUniform(PyBobIpBaseLBPObject* self, PyObject* value, void*
   }
   self->cxx->setUniform(r>0);
   return 0;
-  CATCH("uniform could not be set", -1)
+  BOB_CATCH_MEMBER("uniform could not be set", -1)
 }
 
 static auto rotationInvariant = bob::extension::VariableDoc(
@@ -463,12 +463,12 @@ static auto rotationInvariant = bob::extension::VariableDoc(
   "Hence, ``00111000`` and ``10000011`` will result in the same LBP code."
 );
 PyObject* PyBobIpBaseLBP_getRotationInvariant(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getRotationInvariant()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("rotation_invariant could not be read", 0)
+  BOB_CATCH_MEMBER("rotation_invariant could not be read", 0)
 }
 int PyBobIpBaseLBP_setRotationInvariant(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, rotationInvariant.name());
@@ -476,7 +476,7 @@ int PyBobIpBaseLBP_setRotationInvariant(PyBobIpBaseLBPObject* self, PyObject* va
   }
   self->cxx->setRotationInvariant(r>0);
   return 0;
-  CATCH("rotation_invariant could not be set", -1)
+  BOB_CATCH_MEMBER("rotation_invariant could not be set", -1)
 }
 
 static auto elbpType = bob::extension::VariableDoc(
@@ -486,19 +486,19 @@ static auto elbpType = bob::extension::VariableDoc(
   "Possible values are: ('regular', 'transitional', 'direction-coded')"
 );
 PyObject* PyBobIpBaseLBP_getELBPType(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("s", e(self->cxx->get_eLBP()).c_str());
-  CATCH("elbp_type could not be read", 0)
+  BOB_CATCH_MEMBER("elbp_type could not be read", 0)
 }
 int PyBobIpBaseLBP_setELBPType(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyString_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an str", Py_TYPE(self)->tp_name, elbpType.name());
     return -1;
   }
   self->cxx->set_eLBP(e(PyString_AS_STRING(value)));
   return 0;
-  CATCH("elbp_type could not be set", -1)
+  BOB_CATCH_MEMBER("elbp_type could not be set", -1)
 }
 
 static auto borderHandling = bob::extension::VariableDoc(
@@ -508,19 +508,19 @@ static auto borderHandling = bob::extension::VariableDoc(
   "Possible values are: ('shrink', 'wrap')"
 );
 PyObject* PyBobIpBaseLBP_getBorderHandling(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("s", b(self->cxx->getBorderHandling()).c_str());
-  CATCH("border_handling could not be read", 0)
+  BOB_CATCH_MEMBER("border_handling could not be read", 0)
 }
 int PyBobIpBaseLBP_setBorderHandling(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyString_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an str", Py_TYPE(self)->tp_name, borderHandling.name());
     return -1;
   }
   self->cxx->setBorderHandling(b(PyString_AS_STRING(value)));
   return 0;
-  CATCH("border_handling could not be set", -1)
+  BOB_CATCH_MEMBER("border_handling could not be set", -1)
 }
 
 static auto lookUpTable = bob::extension::VariableDoc(
@@ -532,12 +532,12 @@ static auto lookUpTable = bob::extension::VariableDoc(
   ".. warning:: For the time being, the look up tables are **not** saved by the :py:func:`save` function!"
 );
 PyObject* PyBobIpBaseLBP_getLUT(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return PyBlitzArrayCxx_AsNumpy(self->cxx->getLookUpTable());
-  CATCH("look_up_table could not be read", 0)
+  BOB_CATCH_MEMBER("look_up_table could not be read", 0)
 }
 int PyBobIpBaseLBP_setLUT(PyBobIpBaseLBPObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   PyBlitzArrayObject* lut = 0;
   if (!PyBlitzArray_Converter(value, &lut)) return -1;
   auto lut_ = make_safe(lut);
@@ -548,7 +548,7 @@ int PyBobIpBaseLBP_setLUT(PyBobIpBaseLBPObject* self, PyObject* value, void*){
   }
   self->cxx->setLookUpTable(*PyBlitzArrayCxx_AsBlitz<uint16_t,1>(lut));
   return 0;
-  CATCH("look_up_table could not be set", -1)
+  BOB_CATCH_MEMBER("look_up_table could not be set", -1)
 }
 
 static auto maxLabel = bob::extension::VariableDoc(
@@ -559,9 +559,9 @@ static auto maxLabel = bob::extension::VariableDoc(
   "Depending on the values of :py:attr:`uniform` and :py:attr:`rotation_invariant`, bit strings might be converted into different LBP codes."
 );
 PyObject* PyBobIpBaseLBP_getMaxLabel(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getMaxLabel());
-  CATCH("max_label could not be read", 0)
+  BOB_CATCH_MEMBER("max_label could not be read", 0)
 }
 
 static auto relativePositions = bob::extension::VariableDoc(
@@ -571,9 +571,9 @@ static auto relativePositions = bob::extension::VariableDoc(
   "The list is defined as relative positions, where the central pixel is considered to be at ``(0, 0)``."
 );
 PyObject* PyBobIpBaseLBP_getRelativePositions(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   return PyBlitzArrayCxx_AsConstNumpy(self->cxx->getRelativePositions());
-  CATCH("relative_positions could not be read", 0)
+  BOB_CATCH_MEMBER("relative_positions could not be read", 0)
 }
 
 static auto offset = bob::extension::VariableDoc(
@@ -584,10 +584,10 @@ static auto offset = bob::extension::VariableDoc(
   "Otherwise, an exception will be raised."
 );
 PyObject* PyBobIpBaseLBP_getOffset(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   auto o = self->cxx->getOffset();
   return Py_BuildValue("(ii)", o[0], o[1]);
-  CATCH("offset could not be read", 0)
+  BOB_CATCH_MEMBER("offset could not be read", 0)
 }
 
 static auto isMulti = bob::extension::VariableDoc(
@@ -596,9 +596,9 @@ static auto isMulti = bob::extension::VariableDoc(
   "Is the current configuration of the LBP extractor set up to extract Multi-Block LBP's (read access only)?"
 );
 PyObject* PyBobIpBaseLBP_getIsMulti(PyBobIpBaseLBPObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->isMultiBlockLBP()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("is_multi_block_lbp could not be read", 0)
+  BOB_CATCH_MEMBER("is_multi_block_lbp could not be read", 0)
 }
 
 static PyGetSetDef PyBobIpBaseLBP_getseters[] = {
@@ -742,9 +742,9 @@ static auto setBlockSizeAndOverlap = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseLBP_setBlockSizeAndOverlap(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {c("block_size"), c("block_overlap"), 0};
+  char** kwlist = setBlockSizeAndOverlap.kwlist();
 
   blitz::TinyVector<int,2> size, overlap;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(ii)(ii)", kwlist, &size[0], &size[1], &overlap[0], &overlap[1])){
@@ -754,7 +754,7 @@ static PyObject* PyBobIpBaseLBP_setBlockSizeAndOverlap(PyBobIpBaseLBPObject* sel
   self->cxx->setBlockSizeAndOverlap(size, overlap);
   Py_RETURN_NONE;
 
-  CATCH("cannot set block size and overlap", 0)
+  BOB_CATCH_MEMBER("cannot set block size and overlap", 0)
 }
 
 static auto getShape = bob::extension::FunctionDoc(
@@ -773,10 +773,10 @@ static auto getShape = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseLBP_getShape(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist1[] = {c("input"), c("is_integral_image"), 0};
-  static char* kwlist2[] = {c("shape"), c("is_integral_image"), 0};
+  char** kwlist1 = getShape.kwlist(0);
+  char** kwlist2 = getShape.kwlist(1);
 
   blitz::TinyVector<int,2> shape;
   PyObject* iii = 0; // is_integral_image
@@ -809,7 +809,7 @@ static PyObject* PyBobIpBaseLBP_getShape(PyBobIpBaseLBPObject* self, PyObject* a
   auto lbp_shape = self->cxx->getLBPShape(shape, f(iii));
   return Py_BuildValue("(ii)", lbp_shape[0], lbp_shape[1]);
 
-  CATCH("cannot get LBP output shape", 0)
+  BOB_CATCH_MEMBER("cannot get LBP output shape", 0)
 }
 
 static auto extract = bob::extension::FunctionDoc(
@@ -850,10 +850,10 @@ static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* i
 }
 
 static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist1[] = {c("input"), c("is_integral_image"), 0};
-  static char* kwlist2[] = {c("input"), c("position"), c("is_integral_image"), 0};
-  static char* kwlist3[] = {c("input"), c("output"), c("is_integral_image"), 0};
+  BOB_TRY
+  char** kwlist1 = extract.kwlist(0);
+  char** kwlist2 = extract.kwlist(1);
+  char** kwlist3 = extract.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -950,7 +950,7 @@ static PyObject* PyBobIpBaseLBP_extract(PyBobIpBaseLBPObject* self, PyObject* ar
       PyErr_Format(PyExc_TypeError, "`%s' extracts only from images of types uint8, uint16 or float, and not from %s", Py_TYPE(self)->tp_name, PyBlitzArray_TypenumAsString(input->type_num));
       return 0;
   }
-  CATCH("cannot extract LBP from image", 0)
+  BOB_CATCH_MEMBER("cannot extract LBP from image", 0)
 }
 
 static auto load = bob::extension::FunctionDoc(
@@ -964,9 +964,9 @@ static auto load = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseLBP_load(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
   // get list of arguments
-  char* kwlist[] = {c("hdf5"), NULL};
+  char** kwlist = load.kwlist();
   PyBobIoHDF5FileObject* hdf5 = 0;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&", kwlist, PyBobIoHDF5File_Converter, &hdf5)){
     load.print_usage();
@@ -976,7 +976,7 @@ static PyObject* PyBobIpBaseLBP_load(PyBobIpBaseLBPObject* self, PyObject* args,
   self->cxx->load(*hdf5->f);
   Py_RETURN_NONE;
 
-  CATCH("cannot load parametrization", 0)
+  BOB_CATCH_MEMBER("cannot load parametrization", 0)
 }
 
 static auto save = bob::extension::FunctionDoc(
@@ -992,7 +992,7 @@ static auto save = bob::extension::FunctionDoc(
 
 static PyObject* PyBobIpBaseLBP_save(PyBobIpBaseLBPObject* self, PyObject* args, PyObject* kwargs) {
   // get list of arguments
-  char* kwlist[] = {c("hdf5"), NULL};
+  char** kwlist = save.kwlist();
   PyBobIoHDF5FileObject* hdf5 = 0;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&", kwlist, PyBobIoHDF5File_Converter, &hdf5)){
     save.print_usage();

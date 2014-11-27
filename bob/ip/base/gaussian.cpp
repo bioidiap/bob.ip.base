@@ -35,10 +35,10 @@ static auto Gaussian_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseGaussian_init(PyBobIpBaseGaussianObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("sigma"), c("radius"), c("border"), NULL};
-  char* kwlist2[] = {c("gaussian"), NULL};
+  char** kwlist1 = Gaussian_doc.kwlist(0);
+  char** kwlist2 = Gaussian_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -68,7 +68,7 @@ static int PyBobIpBaseGaussian_init(PyBobIpBaseGaussianObject* self, PyObject* a
   self->cxx.reset(new bob::ip::base::Gaussian(radius[0], radius[1], sigma[0], sigma[1], border));
   return 0;
 
-  CATCH("cannot create Gaussian", -1)
+  BOB_CATCH_MEMBER("cannot create Gaussian", -1)
 }
 
 static void PyBobIpBaseGaussian_delete(PyBobIpBaseGaussianObject* self) {
@@ -81,7 +81,7 @@ int PyBobIpBaseGaussian_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseGaussian_RichCompare(PyBobIpBaseGaussianObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseGaussian_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -97,7 +97,7 @@ static PyObject* PyBobIpBaseGaussian_RichCompare(PyBobIpBaseGaussianObject* self
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare Gaussian objects", 0)
+  BOB_CATCH_MEMBER("cannot compare Gaussian objects", 0)
 }
 
 
@@ -112,12 +112,12 @@ static auto sigma = bob::extension::VariableDoc(
   ".. note::\n\n  The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
 );
 PyObject* PyBobIpBaseGaussian_getSigma(PyBobIpBaseGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(dd)", self->cxx->getSigmaY(), self->cxx->getSigmaX());
-  CATCH("sigma could not be read", 0)
+  BOB_CATCH_MEMBER("sigma could not be read", 0)
 }
 int PyBobIpBaseGaussian_setSigma(PyBobIpBaseGaussianObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, sigma.name());
@@ -125,7 +125,7 @@ int PyBobIpBaseGaussian_setSigma(PyBobIpBaseGaussianObject* self, PyObject* valu
   }
   self->cxx->setSigma(r);
   return 0;
-  CATCH("sigma could not be set", -1)
+  BOB_CATCH_MEMBER("sigma could not be set", -1)
 }
 
 static auto radius = bob::extension::VariableDoc(
@@ -135,12 +135,12 @@ static auto radius = bob::extension::VariableDoc(
   "When setting the radius to a negative value, it will be automatically computed as ``3*``:py:attr:`sigma`."
 );
 PyObject* PyBobIpBaseGaussian_getRadius(PyBobIpBaseGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getRadiusY(), self->cxx->getRadiusX());
-  CATCH("radius could not be read", 0)
+  BOB_CATCH_MEMBER("radius could not be read", 0)
 }
 int PyBobIpBaseGaussian_setRadius(PyBobIpBaseGaussianObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two integers", Py_TYPE(self)->tp_name, radius.name());
@@ -150,7 +150,7 @@ int PyBobIpBaseGaussian_setRadius(PyBobIpBaseGaussianObject* self, PyObject* val
   if (r[1] < 0) r[1] = std::max(int(self->cxx->getSigmaX() * 3 + 0.5), 1);
   self->cxx->setRadius(r);
   return 0;
-  CATCH("radius could not be set", -1)
+  BOB_CATCH_MEMBER("radius could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -159,17 +159,17 @@ static auto border = bob::extension::VariableDoc(
   "The extrapolation method used by the convolution at the border, with read and write access"
 );
 PyObject* PyBobIpBaseGaussian_getBorder(PyBobIpBaseGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
-  CATCH("border could not be read", 0)
+  BOB_CATCH_MEMBER("border could not be read", 0)
 }
 int PyBobIpBaseGaussian_setBorder(PyBobIpBaseGaussianObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
   self->cxx->setConvBorder(b);
   return 0;
-  CATCH("border could not be set", -1)
+  BOB_CATCH_MEMBER("border could not be set", -1)
 }
 
 static auto kernelY = bob::extension::VariableDoc(
@@ -178,9 +178,9 @@ static auto kernelY = bob::extension::VariableDoc(
   "The values of the kernel in vertical direction; read only access"
 );
 PyObject* PyBobIpBaseGaussian_getKernelY(PyBobIpBaseGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return PyBlitzArrayCxx_AsConstNumpy(self->cxx->getKernelY());
-  CATCH("kernel_y could not be read", 0)
+  BOB_CATCH_MEMBER("kernel_y could not be read", 0)
 }
 
 static auto kernelX = bob::extension::VariableDoc(
@@ -189,9 +189,9 @@ static auto kernelX = bob::extension::VariableDoc(
   "The values of the kernel in horizontal direction; read only access"
 );
 PyObject* PyBobIpBaseGaussian_getKernelX(PyBobIpBaseGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return PyBlitzArrayCxx_AsConstNumpy(self->cxx->getKernelX());
-  CATCH("kernel_x could not be read", 0)
+  BOB_CATCH_MEMBER("kernel_x could not be read", 0)
 }
 
 static PyGetSetDef PyBobIpBaseGaussian_getseters[] = {
@@ -259,8 +259,8 @@ static PyObject* filter_inner(PyBobIpBaseGaussianObject* self, PyBlitzArrayObjec
 }
 
 static PyObject* PyBobIpBaseGaussian_filter(PyBobIpBaseGaussianObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("dst"), 0};
+  BOB_TRY
+  char** kwlist = filter.kwlist();
 
   PyBlitzArrayObject* src,* dst = 0;
 
@@ -303,7 +303,7 @@ static PyObject* PyBobIpBaseGaussian_filter(PyBobIpBaseGaussianObject* self, PyO
       return 0;
   }
 
-  CATCH("cannot perform Gaussian filtering in image", 0)
+  BOB_CATCH_MEMBER("cannot perform Gaussian filtering in image", 0)
 }
 
 

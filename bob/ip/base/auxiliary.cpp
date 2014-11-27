@@ -51,11 +51,11 @@ template <typename T, char C> void inner_histogram(PyBlitzArrayObject* src, PyBl
 }
 
 PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist1[] = {c("src"), c("bin_count"), NULL};
-  static char* kwlist2[] = {c("src"), c("hist"), NULL};
-  static char* kwlist3[] = {c("src"), c("min_max"), c("bin_count"), NULL};
-  static char* kwlist4[] = {c("src"), c("min_max"), c("hist"), NULL};
+  BOB_TRY
+  char** kwlist1 = s_histogram.kwlist(0);
+  char** kwlist2 = s_histogram.kwlist(1);
+  char** kwlist3 = s_histogram.kwlist(2);
+  char** kwlist4 = s_histogram.kwlist(3);
 
   PyBlitzArrayObject* src = 0,* hist = 0;
   PyObject* min_max = 0;
@@ -100,6 +100,12 @@ PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
     default:
       PyErr_Format(PyExc_ValueError, "'histogram' called with an unsupported number of arguments");
       return 0;
+  }
+
+  // check input size
+  if (src->ndim != 2){
+    PyErr_Format(PyExc_TypeError, "'histogram' : The input image must be 2D.");
+    return 0;
   }
 
   // allocate the output, if needed
@@ -164,7 +170,7 @@ PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
     Py_RETURN_NONE;
   }
 
-  CATCH_("in histogram", 0)
+  BOB_CATCH_FUNCTION("in histogram", 0)
 }
 
 
@@ -185,9 +191,9 @@ template <typename T1, typename T2> PyObject* inner_histogramEq(PyBlitzArrayObje
 }
 
 PyObject* PyBobIpBase_histogramEqualization(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist1[] = {c("src"), NULL};
-  static char* kwlist2[] = {c("src"), c("dst"), NULL};
+  BOB_TRY
+  char** kwlist1 = s_histogramEqualization.kwlist(0);
+  char** kwlist2 = s_histogramEqualization.kwlist(1);
 
   PyBlitzArrayObject* src = 0,* dst = 0;
 
@@ -249,7 +255,7 @@ PyObject* PyBobIpBase_histogramEqualization(PyObject*, PyObject* args, PyObject*
   }
 
   return 0;
-  CATCH_("in histogram_equalization", 0)
+  BOB_CATCH_FUNCTION("in histogram_equalization", 0)
 }
 
 
@@ -272,8 +278,8 @@ template <typename T> PyObject* inner_gammaCorrection(PyBlitzArrayObject* src, P
 }
 
 PyObject* PyBobIpBase_gammaCorrection(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("gamma"), c("dst"), NULL};
+  BOB_TRY
+  char** kwlist = s_gammaCorrection.kwlist();
 
   PyBlitzArrayObject* src = 0,* dst = 0;
   double gamma;
@@ -305,7 +311,7 @@ PyObject* PyBobIpBase_gammaCorrection(PyObject*, PyObject* args, PyObject* kwarg
       PyErr_Format(PyExc_ValueError, "'gamma_correction' of %s arrays is currently not supported, only uint8, uint16 or float64 arrays are", PyBlitzArray_TypenumAsString(dst->type_num));
       return 0;
   }
-  CATCH_("in gamma_correction", 0)
+  BOB_CATCH_FUNCTION("in gamma_correction", 0)
 }
 
 
@@ -355,15 +361,9 @@ template <typename T> PyObject* inner_zigzag(PyBlitzArrayObject* src, PyBlitzArr
 }
 
 PyObject* PyBobIpBase_zigzag(PyObject*, PyObject* args, PyObject* kwds) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static const char* const_kwlist[] = {
-    "src",
-    "dst",
-    "right_first",
-    0 /* Sentinel */
-  };
-  static char** kwlist = const_cast<char**>(const_kwlist);
+  char** kwlist = s_zigzag.kwlist();
 
   PyBlitzArrayObject* src = 0;
   PyBlitzArrayObject* dst = 0;
@@ -405,7 +405,7 @@ PyObject* PyBobIpBase_zigzag(PyObject*, PyObject* args, PyObject* kwds) {
   }
   return 0;
 
-  CATCH_("in zigzag", 0)
+  BOB_CATCH_FUNCTION("in zigzag", 0)
 }
 
 
@@ -456,9 +456,9 @@ static inline PyObject* integral_middle(PyBlitzArrayObject* src, PyBlitzArrayObj
 }
 
 PyObject* PyBobIpBase_integral(PyObject*, PyObject* args, PyObject* kwds) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("src"), c("dst"), c("sqr"), c("add_zero_border"), NULL};
+  char** kwlist = s_integral.kwlist();
 
   PyBlitzArrayObject* src = 0,* dst = 0,* sqr = 0;
   PyObject* azb = 0;
@@ -493,7 +493,7 @@ PyObject* PyBobIpBase_integral(PyObject*, PyObject* args, PyObject* kwds) {
   }
   return 0;
 
-  CATCH_("in integral", 0)
+  BOB_CATCH_FUNCTION("in integral", 0)
 }
 
 bob::extension::FunctionDoc s_block = bob::extension::FunctionDoc(
@@ -527,9 +527,9 @@ static inline void block_inner(PyBlitzArrayObject* input, blitz::TinyVector<int,
 }
 
 PyObject* PyBobIpBase_block(PyObject*, PyObject* args, PyObject* kwds) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("input"), c("block_size"), c("block_overlap"), c("output"), c("flat"), NULL};
+  char** kwlist = s_block.kwlist();
 
   PyBlitzArrayObject* input = 0,* output = 0;
   blitz::TinyVector<int,2> size, overlap(0,0);
@@ -584,7 +584,7 @@ PyObject* PyBobIpBase_block(PyObject*, PyObject* args, PyObject* kwds) {
   } else
     Py_RETURN_NONE;
 
-  CATCH_("in block", 0)
+  BOB_CATCH_FUNCTION("in block", 0)
 }
 
 
@@ -602,9 +602,9 @@ bob::extension::FunctionDoc s_blockOutputShape = bob::extension::FunctionDoc(
 ;
 
 PyObject* PyBobIpBase_blockOutputShape(PyObject*, PyObject* args, PyObject* kwds) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("input"),  c("block_size"), c("block_overlap"), c("flat"), NULL};
+  char** kwlist = s_blockOutputShape.kwlist();
 
   PyBlitzArrayObject* input = 0;
   blitz::TinyVector<int,2> size, overlap(0,0);
@@ -627,7 +627,7 @@ PyObject* PyBobIpBase_blockOutputShape(PyObject*, PyObject* args, PyObject* kwds
     return Py_BuildValue("(iiii)", shape[0], shape[1], shape[2], shape[3]);
   }
 
-  CATCH_("in block_output_shape", 0)
+  BOB_CATCH_FUNCTION("in block_output_shape", 0)
 }
 
 
@@ -666,9 +666,9 @@ static inline PyObject* lbphs_inner(PyBlitzArrayObject* input, PyBobIpBaseLBPObj
 }
 
 PyObject* PyBobIpBase_lbphs(PyObject*, PyObject* args, PyObject* kwds) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("input"), c("lbp"), c("block_size"), c("block_overlap"), c("output"), NULL};
+  char** kwlist = s_lbphs.kwlist();
 
   PyBlitzArrayObject* input = 0,* output = 0;
   PyBobIpBaseLBPObject* lbp;
@@ -702,7 +702,7 @@ PyObject* PyBobIpBase_lbphs(PyObject*, PyObject* args, PyObject* kwds) {
   }
   return 0;
 
-  CATCH_("in lbphs", 0)
+  BOB_CATCH_FUNCTION("in lbphs", 0)
 }
 
 
@@ -720,9 +720,9 @@ bob::extension::FunctionDoc s_lbphsOutputShape = bob::extension::FunctionDoc(
 ;
 
 PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject* args, PyObject* kwds) {
-  TRY
+  BOB_TRY
   /* Parses input arguments in a single shot */
-  static char* kwlist[] = {c("input"), c("lbp"), c("block_size"), c("block_overlap"), NULL};
+  char** kwlist = s_lbphsOutputShape.kwlist();
 
   PyBlitzArrayObject* input = 0;
   PyBobIpBaseLBPObject* lbp;
@@ -741,7 +741,7 @@ PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject* args, PyObject* kwds
 
   return Py_BuildValue("(ii)", shape[0], shape[1]);
 
-  CATCH_("in lbphs_output_shape", 0)
+  BOB_CATCH_FUNCTION("in lbphs_output_shape", 0)
 }
 
 

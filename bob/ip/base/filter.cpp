@@ -35,9 +35,9 @@ template <typename T, int D> PyObject* inner_median(PyBlitzArrayObject* src, PyB
 }
 
 PyObject* PyBobIpBase_median(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {c("src"), c("radius"), c("dst"), NULL};
+  char** kwlist = s_median.kwlist();
 
   PyBlitzArrayObject* src,* dst = 0;
   blitz::TinyVector<int,2> radius;
@@ -76,7 +76,7 @@ PyObject* PyBobIpBase_median(PyObject*, PyObject* args, PyObject* kwargs) {
       return 0;
   }
 
-  CATCH_("in median", 0)
+  BOB_CATCH_FUNCTION("in median", 0)
 }
 
 bob::extension::FunctionDoc s_sobel = bob::extension::FunctionDoc(
@@ -97,9 +97,9 @@ bob::extension::FunctionDoc s_sobel = bob::extension::FunctionDoc(
 ;
 
 PyObject* PyBobIpBase_sobel(PyObject*, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {c("src"), c("border"), c("dst"), NULL};
+  char** kwlist = s_sobel.kwlist();
 
   PyBlitzArrayObject* src,* dst = 0;
   bob::sp::Extrapolation::BorderType border = bob::sp::Extrapolation::Mirror;
@@ -129,7 +129,7 @@ PyObject* PyBobIpBase_sobel(PyObject*, PyObject* args, PyObject* kwargs) {
   Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst, 0);
 
-  CATCH_("in sobel", 0)
+  BOB_CATCH_FUNCTION("in sobel", 0)
 }
 
 

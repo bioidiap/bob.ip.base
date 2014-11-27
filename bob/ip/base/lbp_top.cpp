@@ -39,9 +39,9 @@ static auto LBPTop_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseLBPTop_init(PyBobIpBaseLBPTopObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist[] = {c("xy"), c("xt"), c("yt"), NULL};
+  char** kwlist = LBPTop_doc.kwlist();
 
   PyBobIpBaseLBPObject* xy,* xt,* yt;
   if (!(PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!O!", kwlist, &PyBobIpBaseLBP_Type, &xy, &PyBobIpBaseLBP_Type, &xt, &PyBobIpBaseLBP_Type, &yt))){
@@ -51,7 +51,7 @@ static int PyBobIpBaseLBPTop_init(PyBobIpBaseLBPTopObject* self, PyObject* args,
   self->cxx.reset(new bob::ip::base::LBPTop(xy->cxx, xt->cxx, yt->cxx));
   return 0;
 
-  CATCH("cannot create LBPTop operator", -1)
+  BOB_CATCH_MEMBER("cannot create LBPTop operator", -1)
 }
 
 static void PyBobIpBaseLBPTop_delete(PyBobIpBaseLBPTopObject* self) {
@@ -65,7 +65,7 @@ int PyBobIpBaseLBPTop_Check(PyObject* o) {
 
 /** TODO
 static PyObject* PyBobIpBaseLBPTop_RichCompare(PyBobIpBaseLBPTopObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseLBPTop_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -81,7 +81,7 @@ static PyObject* PyBobIpBaseLBPTop_RichCompare(PyBobIpBaseLBPTopObject* self, Py
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare LBPTop objects", 0)
+  BOB_CATCH_MEMBER("cannot compare LBPTop objects", 0)
 }
 */
 
@@ -95,11 +95,11 @@ static auto xy = bob::extension::VariableDoc(
   "The 2D LBP-XY plane configuration"
 );
 PyObject* PyBobIpBaseLBPTop_getXY(PyBobIpBaseLBPTopObject* self, void*){
-  TRY
+  BOB_TRY
   PyBobIpBaseLBPObject* lbp = (PyBobIpBaseLBPObject*)PyBobIpBaseLBP_Type.tp_alloc(&PyBobIpBaseLBP_Type, 0);
   lbp->cxx = self->cxx->getXY();
   return Py_BuildValue("O", lbp);
-  CATCH("xy could not be read", 0)
+  BOB_CATCH_MEMBER("xy could not be read", 0)
 }
 
 static auto xt = bob::extension::VariableDoc(
@@ -108,11 +108,11 @@ static auto xt = bob::extension::VariableDoc(
   "The 2D LBP-XT plane configuration"
 );
 PyObject* PyBobIpBaseLBPTop_getXT(PyBobIpBaseLBPTopObject* self, void*){
-  TRY
+  BOB_TRY
   PyBobIpBaseLBPObject* lbp = (PyBobIpBaseLBPObject*)PyBobIpBaseLBP_Type.tp_alloc(&PyBobIpBaseLBP_Type, 0);
   lbp->cxx = self->cxx->getXT();
   return Py_BuildValue("O", lbp);
-  CATCH("xt could not be read", 0)
+  BOB_CATCH_MEMBER("xt could not be read", 0)
 }
 
 static auto yt = bob::extension::VariableDoc(
@@ -121,11 +121,11 @@ static auto yt = bob::extension::VariableDoc(
   "The 2D LBP-XT plane configuration"
 );
 PyObject* PyBobIpBaseLBPTop_getYT(PyBobIpBaseLBPTopObject* self, void*){
-  TRY
+  BOB_TRY
   PyBobIpBaseLBPObject* lbp = (PyBobIpBaseLBPObject*)PyBobIpBaseLBP_Type.tp_alloc(&PyBobIpBaseLBP_Type, 0);
   lbp->cxx = self->cxx->getYT();
   return Py_BuildValue("O", lbp);
-  CATCH("yt could not be read", 0)
+  BOB_CATCH_MEMBER("yt could not be read", 0)
 }
 
 
@@ -183,8 +183,8 @@ static PyObject* process_inner(PyBobIpBaseLBPTopObject* self, PyBlitzArrayObject
 }
 
 static PyObject* PyBobIpBaseLBPTop_process(PyBobIpBaseLBPTopObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("input"), c("xy"), c("xt"), c("yt"), 0};
+  BOB_TRY
+  char** kwlist = process.kwlist();
 
   PyBlitzArrayObject* input,* xy,* xt,* yt;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&O&O&", kwlist, &PyBlitzArray_Converter, &input, &PyBlitzArray_OutputConverter, &xy, &PyBlitzArray_OutputConverter, &xt, &PyBlitzArray_OutputConverter, &yt)){
@@ -213,7 +213,7 @@ static PyObject* PyBobIpBaseLBPTop_process(PyBobIpBaseLBPTopObject* self, PyObje
       return 0;
   }
 
-  CATCH("cannot process LBPTop", 0)
+  BOB_CATCH_MEMBER("cannot process LBPTop", 0)
 }
 
 static PyMethodDef PyBobIpBaseLBPTop_methods[] = {

@@ -36,10 +36,10 @@ static auto VLSIFT_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseVLSIFT_init(PyBobIpBaseVLSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("size"), c("scales"), c("octaves"), c("octave_min"), c("peak_thres"), c("edge_thres"), c("magnif"), NULL};
-  char* kwlist2[] = {c("sift"), NULL};
+  char** kwlist1 = VLSIFT_doc.kwlist(0);
+  char** kwlist2 = VLSIFT_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -66,7 +66,7 @@ static int PyBobIpBaseVLSIFT_init(PyBobIpBaseVLSIFTObject* self, PyObject* args,
   self->cxx.reset(new bob::ip::base::VLSIFT(size[0], size[1], scales, octaves, octave_min, peak, edge, magnif));
   return 0;
 
-  CATCH("cannot create VLSIFT", -1)
+  BOB_CATCH_MEMBER("cannot create VLSIFT", -1)
 }
 
 static void PyBobIpBaseVLSIFT_delete(PyBobIpBaseVLSIFTObject* self) {
@@ -79,7 +79,7 @@ int PyBobIpBaseVLSIFT_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseVLSIFT_RichCompare(PyBobIpBaseVLSIFTObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseVLSIFT_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -95,7 +95,7 @@ static PyObject* PyBobIpBaseVLSIFT_RichCompare(PyBobIpBaseVLSIFTObject* self, Py
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare VLSIFT objects", 0)
+  BOB_CATCH_MEMBER("cannot compare VLSIFT objects", 0)
 }
 
 /******************************************************************/
@@ -108,12 +108,12 @@ static auto size = bob::extension::VariableDoc(
   "The shape of the images to process, with read and write access"
 );
 PyObject* PyBobIpBaseVLSIFT_getSize(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getHeight(), self->cxx->getWidth());
-  CATCH("size could not be read", 0)
+  BOB_CATCH_MEMBER("size could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setSize(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int h, w;
   if (!PyArg_ParseTuple(value, "ii", &h, &w)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, size.name());
@@ -122,7 +122,7 @@ int PyBobIpBaseVLSIFT_setSize(PyBobIpBaseVLSIFTObject* self, PyObject* value, vo
   self->cxx->setHeight(h);;
   self->cxx->setWidth(w);;
   return 0;
-  CATCH("size could not be set", -1)
+  BOB_CATCH_MEMBER("size could not be set", -1)
 }
 
 static auto scales = bob::extension::VariableDoc(
@@ -132,19 +132,19 @@ static auto scales = bob::extension::VariableDoc(
   "Three additional scales will be computed in practice, as this is required for extracting VLSIFT features"
 );
 PyObject* PyBobIpBaseVLSIFT_getScales(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNIntervals());
-  CATCH("scales could not be read", 0)
+  BOB_CATCH_MEMBER("scales could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setScales(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, scales.name());
     return -1;
   }
   self->cxx->setNIntervals(PyInt_AS_LONG(value));
   return 0;
-  CATCH("scales could not be set", -1)
+  BOB_CATCH_MEMBER("scales could not be set", -1)
 }
 
 static auto octaves = bob::extension::VariableDoc(
@@ -153,19 +153,19 @@ static auto octaves = bob::extension::VariableDoc(
   "The number of octaves of the pyramid, with read and write access"
 );
 PyObject* PyBobIpBaseVLSIFT_getOctaves(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNOctaves());
-  CATCH("octaves could not be read", 0)
+  BOB_CATCH_MEMBER("octaves could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setOctaves(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, octaves.name());
     return -1;
   }
   self->cxx->setNOctaves(PyInt_AS_LONG(value));
   return 0;
-  CATCH("octaves could not be set", -1)
+  BOB_CATCH_MEMBER("octaves could not be set", -1)
 }
 
 static auto octaveMin = bob::extension::VariableDoc(
@@ -174,19 +174,19 @@ static auto octaveMin = bob::extension::VariableDoc(
   "The index of the minimum octave, with read and write access"
 );
 PyObject* PyBobIpBaseVLSIFT_getOctaveMin(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getOctaveMin());
-  CATCH("octave_min could not be read", 0)
+  BOB_CATCH_MEMBER("octave_min could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setOctaveMin(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, octaveMin.name());
     return -1;
   }
   self->cxx->setOctaveMin(PyInt_AS_LONG(value));
   return 0;
-  CATCH("octave_min could not be set", -1)
+  BOB_CATCH_MEMBER("octave_min could not be set", -1)
 }
 
 static auto octaveMax = bob::extension::VariableDoc(
@@ -196,9 +196,9 @@ static auto octaveMax = bob::extension::VariableDoc(
   "This is equal to ``octave_min+octaves-1``."
 );
 PyObject* PyBobIpBaseVLSIFT_getOctaveMax(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getOctaveMax());
-  CATCH("octave_max could not be read", 0)
+  BOB_CATCH_MEMBER("octave_max could not be read", 0)
 }
 
 static auto peakThreshold = bob::extension::VariableDoc(
@@ -207,17 +207,17 @@ static auto peakThreshold = bob::extension::VariableDoc(
   "The peak threshold (minimum amount of contrast to accept a keypoint), with read and write access"
 );
 PyObject* PyBobIpBaseVLSIFT_getPeakThreshold(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getPeakThres());
-  CATCH("peak_threshold could not be read", 0)
+  BOB_CATCH_MEMBER("peak_threshold could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setPeakThreshold(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setPeakThres(d);
   return 0;
-  CATCH("peak_threshold could not be set", -1)
+  BOB_CATCH_MEMBER("peak_threshold could not be set", -1)
 }
 
 static auto edgeThreshold = bob::extension::VariableDoc(
@@ -226,17 +226,17 @@ static auto edgeThreshold = bob::extension::VariableDoc(
   "The edge rejection threshold used during keypoint detection, with read and write access"
 );
 PyObject* PyBobIpBaseVLSIFT_getEdgeThreshold(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getEdgeThres());
-  CATCH("edge_threshold could not be read", 0)
+  BOB_CATCH_MEMBER("edge_threshold could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setEdgeThreshold(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setEdgeThres(d);
   return 0;
-  CATCH("edge_threshold could not be set", -1)
+  BOB_CATCH_MEMBER("edge_threshold could not be set", -1)
 }
 
 static auto magnif = bob::extension::VariableDoc(
@@ -245,17 +245,17 @@ static auto magnif = bob::extension::VariableDoc(
   "The magnification factor for the descriptor"
 );
 PyObject* PyBobIpBaseVLSIFT_getMagnif(PyBobIpBaseVLSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getMagnif());
-  CATCH("magnif could not be read", 0)
+  BOB_CATCH_MEMBER("magnif could not be read", 0)
 }
 int PyBobIpBaseVLSIFT_setMagnif(PyBobIpBaseVLSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setMagnif(d);
   return 0;
-  CATCH("magnif could not be set", -1)
+  BOB_CATCH_MEMBER("magnif could not be set", -1)
 }
 
 
@@ -342,8 +342,8 @@ static auto extract = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseVLSIFT_extract(PyBobIpBaseVLSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("keypoints"), 0};
+  BOB_TRY
+  char** kwlist = extract.kwlist();
 
   PyBlitzArrayObject* src,* keypoints = 0;
 
@@ -379,7 +379,7 @@ static PyObject* PyBobIpBaseVLSIFT_extract(PyBobIpBaseVLSIFTObject* self, PyObje
   Py_INCREF(dst);
   return dst;
 
-  CATCH("cannot extract SIFT features for image", 0)
+  BOB_CATCH_MEMBER("cannot extract SIFT features for image", 0)
 }
 
 
@@ -417,10 +417,10 @@ static auto VLDSIFT_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseVLDSIFT_init(PyBobIpBaseVLDSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("size"), c("step"), c("block_size"), NULL};
-  char* kwlist2[] = {c("sift"), NULL};
+  char** kwlist1 = VLDSIFT_doc.kwlist(0);
+  char** kwlist2 = VLDSIFT_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -445,7 +445,7 @@ static int PyBobIpBaseVLDSIFT_init(PyBobIpBaseVLDSIFTObject* self, PyObject* arg
   self->cxx.reset(new bob::ip::base::VLDSIFT(size, step, block_size));
   return 0;
 
-  CATCH("cannot create VLDSIFT", -1)
+  BOB_CATCH_MEMBER("cannot create VLDSIFT", -1)
 }
 
 static void PyBobIpBaseVLDSIFT_delete(PyBobIpBaseVLDSIFTObject* self) {
@@ -458,7 +458,7 @@ int PyBobIpBaseVLDSIFT_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseVLDSIFT_RichCompare(PyBobIpBaseVLDSIFTObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseVLDSIFT_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -474,7 +474,7 @@ static PyObject* PyBobIpBaseVLDSIFT_RichCompare(PyBobIpBaseVLDSIFTObject* self, 
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare VLDSIFT objects", 0)
+  BOB_CATCH_MEMBER("cannot compare VLDSIFT objects", 0)
 }
 
 
@@ -488,13 +488,13 @@ static auto size_ = bob::extension::VariableDoc(
   "The shape of the images to process, with read and write access"
 );
 PyObject* PyBobIpBaseVLDSIFT_getSize(PyBobIpBaseVLDSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getSize();
   return Py_BuildValue("(ii)", r[0], r[1]);
-  CATCH("size could not be read", 0)
+  BOB_CATCH_MEMBER("size could not be read", 0)
 }
 int PyBobIpBaseVLDSIFT_setSize(PyBobIpBaseVLDSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, size.name());
@@ -502,7 +502,7 @@ int PyBobIpBaseVLDSIFT_setSize(PyBobIpBaseVLDSIFTObject* self, PyObject* value, 
   }
   self->cxx->setSize(r);
   return 0;
-  CATCH("size could not be set", -1)
+  BOB_CATCH_MEMBER("size could not be set", -1)
 }
 
 static auto step = bob::extension::VariableDoc(
@@ -511,13 +511,13 @@ static auto step = bob::extension::VariableDoc(
   "The step along both directions, with read and write access"
 );
 PyObject* PyBobIpBaseVLDSIFT_getStep(PyBobIpBaseVLDSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getStep();
   return Py_BuildValue("(ii)", r[0], r[1]);
-  CATCH("step could not be read", 0)
+  BOB_CATCH_MEMBER("step could not be read", 0)
 }
 int PyBobIpBaseVLDSIFT_setStep(PyBobIpBaseVLDSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, size.name());
@@ -525,7 +525,7 @@ int PyBobIpBaseVLDSIFT_setStep(PyBobIpBaseVLDSIFTObject* self, PyObject* value, 
   }
   self->cxx->setStep(r);
   return 0;
-  CATCH("step could not be set", -1)
+  BOB_CATCH_MEMBER("step could not be set", -1)
 }
 
 static auto blockSize = bob::extension::VariableDoc(
@@ -534,13 +534,13 @@ static auto blockSize = bob::extension::VariableDoc(
   "The block size in both directions, with read and write access"
 );
 PyObject* PyBobIpBaseVLDSIFT_getBlockSize(PyBobIpBaseVLDSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getBlockSize();
   return Py_BuildValue("(ii)", r[0], r[1]);
-  CATCH("block_size could not be read", 0)
+  BOB_CATCH_MEMBER("block_size could not be read", 0)
 }
 int PyBobIpBaseVLDSIFT_setBlockSize(PyBobIpBaseVLDSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, size.name());
@@ -548,7 +548,7 @@ int PyBobIpBaseVLDSIFT_setBlockSize(PyBobIpBaseVLDSIFTObject* self, PyObject* va
   }
   self->cxx->setBlockSize(r);
   return 0;
-  CATCH("block_size could not be set", -1)
+  BOB_CATCH_MEMBER("block_size could not be set", -1)
 }
 
 static auto useFlatWindow = bob::extension::VariableDoc(
@@ -557,12 +557,12 @@ static auto useFlatWindow = bob::extension::VariableDoc(
   "Whether to use a flat window or not (to boost the processing time), with read and write access"
 );
 PyObject* PyBobIpBaseVLDSIFT_getUseFlatWindow(PyBobIpBaseVLDSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getUseFlatWindow()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("use_flat_window could not be read", 0)
+  BOB_CATCH_MEMBER("use_flat_window could not be read", 0)
 }
 int PyBobIpBaseVLDSIFT_setUseFlatWindow(PyBobIpBaseVLDSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, useFlatWindow.name());
@@ -570,7 +570,7 @@ int PyBobIpBaseVLDSIFT_setUseFlatWindow(PyBobIpBaseVLDSIFTObject* self, PyObject
   }
   self->cxx->setUseFlatWindow(r>0);
   return 0;
-  CATCH("use_flat_window could not be set", -1)
+  BOB_CATCH_MEMBER("use_flat_window could not be set", -1)
 }
 
 static auto windowSize = bob::extension::VariableDoc(
@@ -579,17 +579,17 @@ static auto windowSize = bob::extension::VariableDoc(
   "The window size, with read and write access"
 );
 PyObject* PyBobIpBaseVLDSIFT_getWindowSize(PyBobIpBaseVLDSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getWindowSize());
-  CATCH("window_size could not be read", 0)
+  BOB_CATCH_MEMBER("window_size could not be read", 0)
 }
 int PyBobIpBaseVLDSIFT_setWindowSize(PyBobIpBaseVLDSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setWindowSize(d);
   return 0;
-  CATCH("window_size could not be set", -1)
+  BOB_CATCH_MEMBER("window_size could not be set", -1)
 }
 
 
@@ -650,15 +650,15 @@ static auto outputShape = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseVLDSIFT_outputShape(PyBobIpBaseVLDSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   return Py_BuildValue("(ii)", self->cxx->getNKeypoints(), self->cxx->getDescriptorSize());
 
-  CATCH("cannot compute output shape", 0)
+  BOB_CATCH_MEMBER("cannot compute output shape", 0)
 }
 
 static auto extract_ = bob::extension::FunctionDoc(
@@ -676,8 +676,8 @@ static auto extract_ = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseVLDSIFT_extract(PyBobIpBaseVLDSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("keypoints"), c("dst"), 0};
+  BOB_TRY
+  char** kwlist = extract_.kwlist();
 
   PyBlitzArrayObject* src, *dst = 0;
 
@@ -709,7 +709,7 @@ static PyObject* PyBobIpBaseVLDSIFT_extract(PyBobIpBaseVLDSIFTObject* self, PyOb
   Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst,0);
 
-  CATCH("cannot extract dense SIFT features for image", 0)
+  BOB_CATCH_MEMBER("cannot extract dense SIFT features for image", 0)
 }
 
 

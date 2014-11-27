@@ -38,10 +38,10 @@ static auto TanTriggs_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseTanTriggs_init(PyBobIpBaseTanTriggsObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("gamma"), c("sigma0"), c("sigma1"), c("radius"), c("threshold"), c("alpha"), c("border"), NULL};
-  char* kwlist2[] = {c("tan_triggs"), NULL};
+  char** kwlist1 = TanTriggs_doc.kwlist(0);
+  char** kwlist2 = TanTriggs_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -68,7 +68,7 @@ static int PyBobIpBaseTanTriggs_init(PyBobIpBaseTanTriggsObject* self, PyObject*
   self->cxx.reset(new bob::ip::base::TanTriggs(gamma, sigma0, sigma1, radius, threshold, alpha, border));
   return 0;
 
-  CATCH("cannot create TanTriggs", -1)
+  BOB_CATCH_MEMBER("cannot create TanTriggs", -1)
 }
 
 static void PyBobIpBaseTanTriggs_delete(PyBobIpBaseTanTriggsObject* self) {
@@ -81,7 +81,7 @@ int PyBobIpBaseTanTriggs_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseTanTriggs_RichCompare(PyBobIpBaseTanTriggsObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseTanTriggs_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -97,7 +97,7 @@ static PyObject* PyBobIpBaseTanTriggs_RichCompare(PyBobIpBaseTanTriggsObject* se
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare TanTriggs objects", 0)
+  BOB_CATCH_MEMBER("cannot compare TanTriggs objects", 0)
 }
 
 
@@ -111,17 +111,17 @@ static auto gamma_ = bob::extension::VariableDoc(
   "The value of gamma for the gamma correction, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getGamma(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getGamma());
-  CATCH("gamma could not be read", 0)
+  BOB_CATCH_MEMBER("gamma could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setGamma(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setGamma(d);
   return 0;
-  CATCH("gamma could not be set", -1)
+  BOB_CATCH_MEMBER("gamma could not be set", -1)
 }
 
 static auto sigma0 = bob::extension::VariableDoc(
@@ -130,17 +130,17 @@ static auto sigma0 = bob::extension::VariableDoc(
   "The standard deviation of the inner Gaussian, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getSigma0(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigma0());
-  CATCH("sigma0 could not be read", 0)
+  BOB_CATCH_MEMBER("sigma0 could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setSigma0(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigma0(d);
   return 0;
-  CATCH("sigma0 could not be set", -1)
+  BOB_CATCH_MEMBER("sigma0 could not be set", -1)
 }
 
 static auto sigma1 = bob::extension::VariableDoc(
@@ -149,17 +149,17 @@ static auto sigma1 = bob::extension::VariableDoc(
   "The standard deviation of the inner Gaussian, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getSigma1(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigma1());
-  CATCH("sigma0 could not be read", 0)
+  BOB_CATCH_MEMBER("sigma0 could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setSigma1(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigma1(d);
   return 0;
-  CATCH("sigma1 could not be set", -1)
+  BOB_CATCH_MEMBER("sigma1 could not be set", -1)
 }
 
 static auto radius = bob::extension::VariableDoc(
@@ -168,19 +168,19 @@ static auto radius = bob::extension::VariableDoc(
   "The radius of the Difference of Gaussians filter along both axes (size of the kernel=2*radius+1)"
 );
 PyObject* PyBobIpBaseTanTriggs_getRadius(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getRadius());
-  CATCH("radius could not be read", 0)
+  BOB_CATCH_MEMBER("radius could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setRadius(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, radius.name());
     return -1;
   }
   self->cxx->setRadius(PyInt_AS_LONG(value));
   return 0;
-  CATCH("radius could not be set", -1)
+  BOB_CATCH_MEMBER("radius could not be set", -1)
 }
 
 static auto threshold = bob::extension::VariableDoc(
@@ -189,17 +189,17 @@ static auto threshold = bob::extension::VariableDoc(
   "The threshold used for the contrast equalization, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getThreshold(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getThreshold());
-  CATCH("threshold could not be read", 0)
+  BOB_CATCH_MEMBER("threshold could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setThreshold(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setThreshold(d);
   return 0;
-  CATCH("threshold could not be set", -1)
+  BOB_CATCH_MEMBER("threshold could not be set", -1)
 }
 
 static auto alpha = bob::extension::VariableDoc(
@@ -208,17 +208,17 @@ static auto alpha = bob::extension::VariableDoc(
   "The alpha value used for the contrast equalization, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getAlpha(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getAlpha());
-  CATCH("alpha could not be read", 0)
+  BOB_CATCH_MEMBER("alpha could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setAlpha(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setAlpha(d);
   return 0;
-  CATCH("alpha could not be set", -1)
+  BOB_CATCH_MEMBER("alpha could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -227,17 +227,17 @@ static auto border = bob::extension::VariableDoc(
   "The extrapolation method used by the convolution at the border, with read and write access"
 );
 PyObject* PyBobIpBaseTanTriggs_getBorder(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
-  CATCH("border could not be read", 0)
+  BOB_CATCH_MEMBER("border could not be read", 0)
 }
 int PyBobIpBaseTanTriggs_setBorder(PyBobIpBaseTanTriggsObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
   self->cxx->setConvBorder(b);
   return 0;
-  CATCH("border could not be set", -1)
+  BOB_CATCH_MEMBER("border could not be set", -1)
 }
 
 static auto kernel = bob::extension::VariableDoc(
@@ -246,9 +246,9 @@ static auto kernel = bob::extension::VariableDoc(
   "The values of the DoG filter; read only access"
 );
 PyObject* PyBobIpBaseTanTriggs_getKernel(PyBobIpBaseTanTriggsObject* self, void*){
-  TRY
+  BOB_TRY
   return PyBlitzArrayCxx_AsConstNumpy(self->cxx->getKernel());
-  CATCH("kernel could not be read", 0)
+  BOB_CATCH_MEMBER("kernel could not be read", 0)
 }
 
 static PyGetSetDef PyBobIpBaseTanTriggs_getseters[] = {
@@ -339,8 +339,8 @@ static PyObject* process_inner(PyBobIpBaseTanTriggsObject* self, PyBlitzArrayObj
 }
 
 static PyObject* PyBobIpBaseTanTriggs_process(PyBobIpBaseTanTriggsObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("input"), c("output"), 0};
+  BOB_TRY
+  char** kwlist = process.kwlist();
 
   PyBlitzArrayObject* input,* output = 0;
 
@@ -381,7 +381,7 @@ static PyObject* PyBobIpBaseTanTriggs_process(PyBobIpBaseTanTriggsObject* self, 
       return 0;
   }
 
-  CATCH("cannot perform TanTriggs preprocessing in image", 0)
+  BOB_CATCH_MEMBER("cannot perform TanTriggs preprocessing in image", 0)
 }
 
 

@@ -41,10 +41,10 @@ static auto DCTFeatures_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseDCTFeatures_init(PyBobIpBaseDCTFeaturesObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("coefficients"), c("block_size"), c("block_overlap"), c("normalize_block"), c("normalize_dct"), c("square_pattern"), NULL};
-  char* kwlist2[] = {c("dct_features"), NULL};
+  char** kwlist1 = DCTFeatures_doc.kwlist(0);
+  char** kwlist2 = DCTFeatures_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -74,7 +74,7 @@ static int PyBobIpBaseDCTFeatures_init(PyBobIpBaseDCTFeaturesObject* self, PyObj
   self->cxx.reset(new bob::ip::base::DCTFeatures(coefs, block_size[0], block_size[1], block_overlap[0], block_overlap[1], f(norm_block), f(norm_dct), f(square)));
   return 0;
 
-  CATCH("cannot create DCTFeatures", -1)
+  BOB_CATCH_MEMBER("cannot create DCTFeatures", -1)
 }
 
 static void PyBobIpBaseDCTFeatures_delete(PyBobIpBaseDCTFeaturesObject* self) {
@@ -87,7 +87,7 @@ int PyBobIpBaseDCTFeatures_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseDCTFeatures_RichCompare(PyBobIpBaseDCTFeaturesObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseDCTFeatures_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -103,7 +103,7 @@ static PyObject* PyBobIpBaseDCTFeatures_RichCompare(PyBobIpBaseDCTFeaturesObject
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare DCTFeatures objects", 0)
+  BOB_CATCH_MEMBER("cannot compare DCTFeatures objects", 0)
 }
 
 
@@ -118,19 +118,19 @@ static auto coefficients = bob::extension::VariableDoc(
   ".. note::\n\n  The real number of DCT coefficient returned by the extractor is ``coefficients-1`` when the block normalization is enabled (as the first coefficient is always 0 in this case)"
 );
 PyObject* PyBobIpBaseDCTFeatures_getCoefficients(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNDctCoefs());
-  CATCH("coefficients could not be read", 0)
+  BOB_CATCH_MEMBER("coefficients could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setCoefficients(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, coefficients.name());
     return -1;
   }
   self->cxx->setNDctCoefs(PyInt_AS_LONG(value));
   return 0;
-  CATCH("coefficients could not be set", -1)
+  BOB_CATCH_MEMBER("coefficients could not be set", -1)
 }
 
 static auto blockSize = bob::extension::VariableDoc(
@@ -139,13 +139,13 @@ static auto blockSize = bob::extension::VariableDoc(
   "The size of each block for the block decomposition, with read and write access"
 );
 PyObject* PyBobIpBaseDCTFeatures_getBlockSize(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   auto s = self->cxx->getBlockSize();
   return Py_BuildValue("(ii)", s[0], s[1]);
-  CATCH("block_size could not be read", 0)
+  BOB_CATCH_MEMBER("block_size could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setBlockSize(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> s;
   if (!PyArg_ParseTuple(value, "ii", &s[0], &s[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, blockSize.name());
@@ -153,7 +153,7 @@ int PyBobIpBaseDCTFeatures_setBlockSize(PyBobIpBaseDCTFeaturesObject* self, PyOb
   }
   self->cxx->setBlockSize(s);
   return 0;
-  CATCH("block_size could not be set", -1)
+  BOB_CATCH_MEMBER("block_size could not be set", -1)
 }
 
 static auto blockOverlap = bob::extension::VariableDoc(
@@ -163,13 +163,13 @@ static auto blockOverlap = bob::extension::VariableDoc(
   ".. note::\n\n  The ``block_overlap`` must be smaller than the :py:attr:`block_size`."
 );
 PyObject* PyBobIpBaseDCTFeatures_getBlockOverlap(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   auto s = self->cxx->getBlockOverlap();
   return Py_BuildValue("(ii)", s[0], s[1]);
-  CATCH("block_overlap could not be read", 0)
+  BOB_CATCH_MEMBER("block_overlap could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setBlockOverlap(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> s;
   if (!PyArg_ParseTuple(value, "ii", &s[0], &s[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, blockOverlap.name());
@@ -177,7 +177,7 @@ int PyBobIpBaseDCTFeatures_setBlockOverlap(PyBobIpBaseDCTFeaturesObject* self, P
   }
   self->cxx->setBlockOverlap(s);
   return 0;
-  CATCH("block_overlap could not be set", -1)
+  BOB_CATCH_MEMBER("block_overlap could not be set", -1)
 }
 
 static auto normalizeBlock = bob::extension::VariableDoc(
@@ -187,12 +187,12 @@ static auto normalizeBlock = bob::extension::VariableDoc(
   ".. note::\n\n  In case ``normalize_block`` is set to ``True`` the first coefficient will always be zero and, hence, will not be returned."
 );
 PyObject* PyBobIpBaseDCTFeatures_getNormalizeBlock(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getNormalizeBlock()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("normalize_block could not be read", 0)
+  BOB_CATCH_MEMBER("normalize_block could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setNormalizeBlock(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, normalizeBlock.name());
@@ -200,7 +200,7 @@ int PyBobIpBaseDCTFeatures_setNormalizeBlock(PyBobIpBaseDCTFeaturesObject* self,
   }
   self->cxx->setNormalizeBlock(r>0);
   return 0;
-  CATCH("normalize_block could not be set", -1)
+  BOB_CATCH_MEMBER("normalize_block could not be set", -1)
 }
 
 static auto normalizeDCT = bob::extension::VariableDoc(
@@ -209,12 +209,12 @@ static auto normalizeDCT = bob::extension::VariableDoc(
   "Normalize DCT coefficients to zero mean and unit variance after the DCT extraction (read and write access)"
 );
 PyObject* PyBobIpBaseDCTFeatures_getNormalizeDCT(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getNormalizeDct()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("normalize_dct could not be read", 0)
+  BOB_CATCH_MEMBER("normalize_dct could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setNormalizeDCT(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, normalizeDCT.name());
@@ -222,7 +222,7 @@ int PyBobIpBaseDCTFeatures_setNormalizeDCT(PyBobIpBaseDCTFeaturesObject* self, P
   }
   self->cxx->setNormalizeDct(r>0);
   return 0;
-  CATCH("normalize_dct could not be set", -1)
+  BOB_CATCH_MEMBER("normalize_dct could not be set", -1)
 }
 
 static auto squarePattern = bob::extension::VariableDoc(
@@ -232,12 +232,12 @@ static auto squarePattern = bob::extension::VariableDoc(
   ".. note::\n\n  For a square pattern, the number of DCT coefficients must be a square integer."
 );
 PyObject* PyBobIpBaseDCTFeatures_getSquarePattern(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getSquarePattern()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("square_pattern could not be read", 0)
+  BOB_CATCH_MEMBER("square_pattern could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setSquarePattern(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, squarePattern.name());
@@ -245,7 +245,7 @@ int PyBobIpBaseDCTFeatures_setSquarePattern(PyBobIpBaseDCTFeaturesObject* self, 
   }
   self->cxx->setSquarePattern(r>0);
   return 0;
-  CATCH("square_pattern could not be set", -1)
+  BOB_CATCH_MEMBER("square_pattern could not be set", -1)
 }
 
 static auto normEpsilon = bob::extension::VariableDoc(
@@ -255,19 +255,19 @@ static auto normEpsilon = bob::extension::VariableDoc(
   "The default value for this epsilon is ``10 * sys.float_info.min``, and usually there is little necessity to change that."
 );
 PyObject* PyBobIpBaseDCTFeatures_getNormEpsilon(PyBobIpBaseDCTFeaturesObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getNormEpsilon());
-  CATCH("normalization_epsilon could not be read", 0)
+  BOB_CATCH_MEMBER("normalization_epsilon could not be read", 0)
 }
 int PyBobIpBaseDCTFeatures_setNormEpsilon(PyBobIpBaseDCTFeaturesObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyFloat_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a float", Py_TYPE(self)->tp_name, normEpsilon.name());
     return -1;
   }
   self->cxx->setNormEpsilon(PyFloat_AS_DOUBLE(value));
   return 0;
-  CATCH("normalization_epsilon could not be set", -1)
+  BOB_CATCH_MEMBER("normalization_epsilon could not be set", -1)
 }
 
 
@@ -344,10 +344,10 @@ static auto outputShape = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseDCTFeatures_outputShape(PyBobIpBaseDCTFeaturesObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist1[] = {c("input"), c("flat"), 0};
-  static char* kwlist2[] = {c("shape"), c("flat"), 0};
+  char** kwlist1 = outputShape.kwlist(0);
+  char** kwlist2 = outputShape.kwlist(1);
 
   blitz::TinyVector<int,2> shape;
   PyObject* flat = 0; // is_integral_image
@@ -385,7 +385,7 @@ static PyObject* PyBobIpBaseDCTFeatures_outputShape(PyBobIpBaseDCTFeaturesObject
     return Py_BuildValue("(iii)", dct_shape[0], dct_shape[1], dct_shape[2]);
   }
 
-  CATCH("cannot get DCT features output shape", 0)
+  BOB_CATCH_MEMBER("cannot get DCT features output shape", 0)
 }
 
 static auto extract = bob::extension::FunctionDoc(
@@ -415,9 +415,9 @@ static void extract_inner(PyBobIpBaseDCTFeaturesObject* self, PyBlitzArrayObject
 }
 
 static PyObject* PyBobIpBaseDCTFeatures_extract(PyBobIpBaseDCTFeaturesObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist1[] = {c("input"), c("flat"), 0};
-  static char* kwlist2[] = {c("input"), c("output"), 0};
+  BOB_TRY
+  char** kwlist1 = extract.kwlist(0);
+  char** kwlist2 = extract.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -498,7 +498,7 @@ static PyObject* PyBobIpBaseDCTFeatures_extract(PyBobIpBaseDCTFeaturesObject* se
     Py_RETURN_NONE;
   }
 
-  CATCH("cannot extract DCTFeatures from image", 0)
+  BOB_CATCH_MEMBER("cannot extract DCTFeatures from image", 0)
 }
 
 #if 0
@@ -514,7 +514,7 @@ static auto load = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseDCTFeatures_load(PyBobIpBaseDCTFeaturesObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
   // get list of arguments
   char* kwlist[] = {c("hdf5"), NULL};
   PyBobIoHDF5FileObject* hdf5 = 0;
@@ -526,7 +526,7 @@ static PyObject* PyBobIpBaseDCTFeatures_load(PyBobIpBaseDCTFeaturesObject* self,
   self->cxx->load(*hdf5->f);
   Py_RETURN_NONE;
 
-  CATCH("cannot load parametrization", 0)
+  BOB_CATCH_MEMBER("cannot load parametrization", 0)
 }
 
 static auto save = bob::extension::FunctionDoc(

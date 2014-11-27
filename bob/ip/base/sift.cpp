@@ -39,10 +39,10 @@ static auto SIFT_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseSIFT_init(PyBobIpBaseSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("size"), c("scales"), c("octaves"), c("octave_min"), c("sigma_n"), c("sigma0"), c("contrast_thres"), c("edge_thres"), c("norm_thres"), c("kernel_radius_factor"), c("border"), NULL};
-  char* kwlist2[] = {c("sift"), NULL};
+  char** kwlist1 = SIFT_doc.kwlist(0);
+  char** kwlist2 = SIFT_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -70,7 +70,7 @@ static int PyBobIpBaseSIFT_init(PyBobIpBaseSIFTObject* self, PyObject* args, PyO
   self->cxx.reset(new bob::ip::base::SIFT(size[0], size[1], scales, octaves, octave_min, sigma_n, sigma0, contrast, edge, norm, factor, border));
   return 0;
 
-  CATCH("cannot create SIFT", -1)
+  BOB_CATCH_MEMBER("cannot create SIFT", -1)
 }
 
 static void PyBobIpBaseSIFT_delete(PyBobIpBaseSIFTObject* self) {
@@ -83,7 +83,7 @@ int PyBobIpBaseSIFT_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseSIFT_RichCompare(PyBobIpBaseSIFTObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseSIFT_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -99,7 +99,7 @@ static PyObject* PyBobIpBaseSIFT_RichCompare(PyBobIpBaseSIFTObject* self, PyObje
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare SIFT objects", 0)
+  BOB_CATCH_MEMBER("cannot compare SIFT objects", 0)
 }
 
 /******************************************************************/
@@ -112,12 +112,12 @@ static auto size = bob::extension::VariableDoc(
   "The shape of the images to process, with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getSize(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getHeight(), self->cxx->getWidth());
-  CATCH("size could not be read", 0)
+  BOB_CATCH_MEMBER("size could not be read", 0)
 }
 int PyBobIpBaseSIFT_setSize(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int h, w;
   if (!PyArg_ParseTuple(value, "ii", &h, &w)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, size.name());
@@ -126,7 +126,7 @@ int PyBobIpBaseSIFT_setSize(PyBobIpBaseSIFTObject* self, PyObject* value, void*)
   self->cxx->setHeight(h);;
   self->cxx->setWidth(w);;
   return 0;
-  CATCH("size could not be set", -1)
+  BOB_CATCH_MEMBER("size could not be set", -1)
 }
 
 static auto octaves = bob::extension::VariableDoc(
@@ -135,19 +135,19 @@ static auto octaves = bob::extension::VariableDoc(
   "The number of octaves of the pyramid, with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getOctaves(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNOctaves());
-  CATCH("octaves could not be read", 0)
+  BOB_CATCH_MEMBER("octaves could not be read", 0)
 }
 int PyBobIpBaseSIFT_setOctaves(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, octaves.name());
     return -1;
   }
   self->cxx->setNOctaves(PyInt_AS_LONG(value));
   return 0;
-  CATCH("octaves could not be set", -1)
+  BOB_CATCH_MEMBER("octaves could not be set", -1)
 }
 
 static auto scales = bob::extension::VariableDoc(
@@ -157,19 +157,19 @@ static auto scales = bob::extension::VariableDoc(
   "Three additional scales will be computed in practice, as this is required for extracting SIFT features"
 );
 PyObject* PyBobIpBaseSIFT_getScales(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNIntervals());
-  CATCH("scales could not be read", 0)
+  BOB_CATCH_MEMBER("scales could not be read", 0)
 }
 int PyBobIpBaseSIFT_setScales(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, scales.name());
     return -1;
   }
   self->cxx->setNIntervals(PyInt_AS_LONG(value));
   return 0;
-  CATCH("scales could not be set", -1)
+  BOB_CATCH_MEMBER("scales could not be set", -1)
 }
 
 static auto octaveMin = bob::extension::VariableDoc(
@@ -178,19 +178,19 @@ static auto octaveMin = bob::extension::VariableDoc(
   "The index of the minimum octave, with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getOctaveMin(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getOctaveMin());
-  CATCH("octave_min could not be read", 0)
+  BOB_CATCH_MEMBER("octave_min could not be read", 0)
 }
 int PyBobIpBaseSIFT_setOctaveMin(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, octaveMin.name());
     return -1;
   }
   self->cxx->setOctaveMin(PyInt_AS_LONG(value));
   return 0;
-  CATCH("octave_min could not be set", -1)
+  BOB_CATCH_MEMBER("octave_min could not be set", -1)
 }
 
 static auto octaveMax = bob::extension::VariableDoc(
@@ -200,9 +200,9 @@ static auto octaveMax = bob::extension::VariableDoc(
   "This is equal to ``octave_min+octaves-1``."
 );
 PyObject* PyBobIpBaseSIFT_getOctaveMax(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getOctaveMax());
-  CATCH("octave_max could not be read", 0)
+  BOB_CATCH_MEMBER("octave_max could not be read", 0)
 }
 
 static auto sigmaN = bob::extension::VariableDoc(
@@ -211,17 +211,17 @@ static auto sigmaN = bob::extension::VariableDoc(
   "The value sigma_n of the standard deviation for the nominal/initial octave/scale; with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getSigmaN(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigmaN());
-  CATCH("sigma_n could not be read", 0)
+  BOB_CATCH_MEMBER("sigma_n could not be read", 0)
 }
 int PyBobIpBaseSIFT_setSigmaN(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigmaN(d);
   return 0;
-  CATCH("sigma_n could not be set", -1)
+  BOB_CATCH_MEMBER("sigma_n could not be set", -1)
 }
 
 static auto sigma0 = bob::extension::VariableDoc(
@@ -230,17 +230,17 @@ static auto sigma0 = bob::extension::VariableDoc(
   "The value sigma0 of the standard deviation for the image of the first octave and first scale"
 );
 PyObject* PyBobIpBaseSIFT_getSigma0(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigma0());
-  CATCH("sigma_0 could not be read", 0)
+  BOB_CATCH_MEMBER("sigma_0 could not be read", 0)
 }
 int PyBobIpBaseSIFT_setSigma0(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigma0(d);
   return 0;
-  CATCH("sigma_0 could not be set", -1)
+  BOB_CATCH_MEMBER("sigma_0 could not be set", -1)
 }
 
 static auto contrastThreshold = bob::extension::VariableDoc(
@@ -249,17 +249,17 @@ static auto contrastThreshold = bob::extension::VariableDoc(
   "The contrast threshold used during keypoint detection"
 );
 PyObject* PyBobIpBaseSIFT_getContrastThreshold(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getContrastThreshold());
-  CATCH("contrast_threshold could not be read", 0)
+  BOB_CATCH_MEMBER("contrast_threshold could not be read", 0)
 }
 int PyBobIpBaseSIFT_setContrastThreshold(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setContrastThreshold(d);
   return 0;
-  CATCH("contrast_threshold could not be set", -1)
+  BOB_CATCH_MEMBER("contrast_threshold could not be set", -1)
 }
 
 static auto edgeThreshold = bob::extension::VariableDoc(
@@ -268,17 +268,17 @@ static auto edgeThreshold = bob::extension::VariableDoc(
   "The edge threshold used during keypoint detection"
 );
 PyObject* PyBobIpBaseSIFT_getEdgeThreshold(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getEdgeThreshold());
-  CATCH("edge_threshold could not be read", 0)
+  BOB_CATCH_MEMBER("edge_threshold could not be read", 0)
 }
 int PyBobIpBaseSIFT_setEdgeThreshold(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setEdgeThreshold(d);
   return 0;
-  CATCH("edge_threshold could not be set", -1)
+  BOB_CATCH_MEMBER("edge_threshold could not be set", -1)
 }
 
 static auto normThreshold = bob::extension::VariableDoc(
@@ -287,17 +287,17 @@ static auto normThreshold = bob::extension::VariableDoc(
   "The norm threshold used during keypoint detection"
 );
 PyObject* PyBobIpBaseSIFT_getNormThreshold(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getNormThreshold());
-  CATCH("norm_threshold could not be read", 0)
+  BOB_CATCH_MEMBER("norm_threshold could not be read", 0)
 }
 int PyBobIpBaseSIFT_setNormThreshold(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setNormThreshold(d);
   return 0;
-  CATCH("norm_threshold could not be set", -1)
+  BOB_CATCH_MEMBER("norm_threshold could not be set", -1)
 }
 
 static auto kernelRadiusFactor = bob::extension::VariableDoc(
@@ -307,17 +307,17 @@ static auto kernelRadiusFactor = bob::extension::VariableDoc(
   "For each Gaussian kernel, the radius is equal to ``ceil(kernel_radius_factor*sigma_{octave,scale})``"
 );
 PyObject* PyBobIpBaseSIFT_getKernelRadiusFactor(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getKernelRadiusFactor());
-  CATCH("kernel_radius_factor could not be read", 0)
+  BOB_CATCH_MEMBER("kernel_radius_factor could not be read", 0)
 }
 int PyBobIpBaseSIFT_setKernelRadiusFactor(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setKernelRadiusFactor(d);
   return 0;
-  CATCH("kernel_radius_factor could not be set", -1)
+  BOB_CATCH_MEMBER("kernel_radius_factor could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -326,17 +326,17 @@ static auto border = bob::extension::VariableDoc(
   "The extrapolation method used by the convolution at the border; with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getBorder(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
-  CATCH("border could not be read", 0)
+  BOB_CATCH_MEMBER("border could not be read", 0)
 }
 int PyBobIpBaseSIFT_setBorder(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
   self->cxx->setConvBorder(b);
   return 0;
-  CATCH("border could not be set", -1)
+  BOB_CATCH_MEMBER("border could not be set", -1)
 }
 
 static auto blocks = bob::extension::VariableDoc(
@@ -345,19 +345,19 @@ static auto blocks = bob::extension::VariableDoc(
   "The number of blocks for the descriptor, with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getBlocks(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNBlocks());
-  CATCH("blocks could not be read", 0)
+  BOB_CATCH_MEMBER("blocks could not be read", 0)
 }
 int PyBobIpBaseSIFT_setBlocks(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, blocks.name());
     return -1;
   }
   self->cxx->setNBlocks(PyInt_AS_LONG(value));
   return 0;
-  CATCH("blocks could not be set", -1)
+  BOB_CATCH_MEMBER("blocks could not be set", -1)
 }
 
 static auto bins = bob::extension::VariableDoc(
@@ -366,19 +366,19 @@ static auto bins = bob::extension::VariableDoc(
   "The number of bins for the descriptor, with read and write access"
 );
 PyObject* PyBobIpBaseSIFT_getBins(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNBins());
-  CATCH("bins could not be read", 0)
+  BOB_CATCH_MEMBER("bins could not be read", 0)
 }
 int PyBobIpBaseSIFT_setBins(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, bins.name());
     return -1;
   }
   self->cxx->setNBins(PyInt_AS_LONG(value));
   return 0;
-  CATCH("bins could not be set", -1)
+  BOB_CATCH_MEMBER("bins could not be set", -1)
 }
 
 static auto gaussianWindowSize = bob::extension::VariableDoc(
@@ -387,17 +387,17 @@ static auto gaussianWindowSize = bob::extension::VariableDoc(
   "The Gaussian window size for the descriptor"
 );
 PyObject* PyBobIpBaseSIFT_getGaussianWindowSize(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getGaussianWindowSize());
-  CATCH("gaussian_window_size could not be read", 0)
+  BOB_CATCH_MEMBER("gaussian_window_size could not be read", 0)
 }
 int PyBobIpBaseSIFT_setGaussianWindowSize(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setGaussianWindowSize(d);
   return 0;
-  CATCH("gaussian_window_size could not be set", -1)
+  BOB_CATCH_MEMBER("gaussian_window_size could not be set", -1)
 }
 
 static auto magnif = bob::extension::VariableDoc(
@@ -406,17 +406,17 @@ static auto magnif = bob::extension::VariableDoc(
   "The magnification factor for the descriptor"
 );
 PyObject* PyBobIpBaseSIFT_getMagnif(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getMagnif());
-  CATCH("magnif could not be read", 0)
+  BOB_CATCH_MEMBER("magnif could not be read", 0)
 }
 int PyBobIpBaseSIFT_setMagnif(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setMagnif(d);
   return 0;
-  CATCH("magnif could not be set", -1)
+  BOB_CATCH_MEMBER("magnif could not be set", -1)
 }
 
 static auto normEpsilon = bob::extension::VariableDoc(
@@ -425,17 +425,17 @@ static auto normEpsilon = bob::extension::VariableDoc(
   "The magnification factor for the descriptor"
 );
 PyObject* PyBobIpBaseSIFT_getNormEpsilon(PyBobIpBaseSIFTObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getNormEpsilon());
-  CATCH("norm_epsilon could not be read", 0)
+  BOB_CATCH_MEMBER("norm_epsilon could not be read", 0)
 }
 int PyBobIpBaseSIFT_setNormEpsilon(PyBobIpBaseSIFTObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setNormEpsilon(d);
   return 0;
-  CATCH("norm_epsilon could not be set", -1)
+  BOB_CATCH_MEMBER("norm_epsilon could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseSIFT_getseters[] = {
@@ -576,16 +576,16 @@ static auto setNoSmooth = bob::extension::FunctionDoc(
 .add_prototype("");
 
 static PyObject* PyBobIpBaseSIFT_setNoSmooth(PyBobIpBaseSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   self->cxx->setSigma0NoInitSmoothing();
   Py_RETURN_NONE;
 
-  CATCH("cannot call set_sigma0_no_init_smoothing", 0)
+  BOB_CATCH_MEMBER("cannot call set_sigma0_no_init_smoothing", 0)
 }
 
 static auto outputShape = bob::extension::FunctionDoc(
@@ -600,9 +600,9 @@ static auto outputShape = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseSIFT_outputShape(PyBobIpBaseSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {c("keypoints"), 0};
+  char** kwlist = outputShape.kwlist();
 
   int keypoints;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i", kwlist, &keypoints)) return 0;
@@ -610,7 +610,7 @@ static PyObject* PyBobIpBaseSIFT_outputShape(PyBobIpBaseSIFTObject* self, PyObje
   auto shape = self->cxx->getDescriptorShape();
   return Py_BuildValue("(iiii)", keypoints, shape[0], shape[1], shape[2]);
 
-  CATCH("cannot compute output shape", 0)
+  BOB_CATCH_MEMBER("cannot compute output shape", 0)
 }
 
 static auto computeDescriptor = bob::extension::FunctionDoc(
@@ -635,8 +635,8 @@ static PyObject* compute_inner(PyBobIpBaseSIFTObject* self, PyBlitzArrayObject* 
 }
 
 static PyObject* PyBobIpBaseSIFT_computeDescriptor(PyBobIpBaseSIFTObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("keypoints"), c("dst"), 0};
+  BOB_TRY
+  char** kwlist = computeDescriptor.kwlist();
 
   PyBlitzArrayObject* src, *dst = 0;
   PyObject* kp;
@@ -690,7 +690,7 @@ static PyObject* PyBobIpBaseSIFT_computeDescriptor(PyBobIpBaseSIFTObject* self, 
       return 0;
   }
 
-  CATCH("cannot compute descriptors for image", 0)
+  BOB_CATCH_MEMBER("cannot compute descriptors for image", 0)
 }
 
 

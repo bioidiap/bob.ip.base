@@ -42,11 +42,11 @@ static auto FaceEyesNorm_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseFaceEyesNorm_init(PyBobIpBaseFaceEyesNormObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("crop_size"), c("eyes_distance"), c("eyes_center"), NULL};
-  char* kwlist2[] = {c("crop_size"), c("right_eye"), c("left_eye"), NULL};
-  char* kwlist3[] = {c("other"), NULL};
+  char** kwlist1 = FaceEyesNorm_doc.kwlist(0);
+  char** kwlist2 = FaceEyesNorm_doc.kwlist(1);
+  char** kwlist3 = FaceEyesNorm_doc.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -97,7 +97,7 @@ static int PyBobIpBaseFaceEyesNorm_init(PyBobIpBaseFaceEyesNormObject* self, PyO
       return -1;
   }
 
-  CATCH("cannot create FaceEyesNorm object", -1)
+  BOB_CATCH_MEMBER("cannot create FaceEyesNorm object", -1)
 }
 
 static void PyBobIpBaseFaceEyesNorm_delete(PyBobIpBaseFaceEyesNormObject* self) {
@@ -110,7 +110,7 @@ int PyBobIpBaseFaceEyesNorm_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseFaceEyesNorm_RichCompare(PyBobIpBaseFaceEyesNormObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseFaceEyesNorm_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -126,7 +126,7 @@ static PyObject* PyBobIpBaseFaceEyesNorm_RichCompare(PyBobIpBaseFaceEyesNormObje
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare FaceEyesNorm objects", 0)
+  BOB_CATCH_MEMBER("cannot compare FaceEyesNorm objects", 0)
 }
 
 
@@ -139,17 +139,17 @@ static auto eyesDistance = bob::extension::VariableDoc(
   "The distance between the eyes in the normalized image, with read and write access"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getEyesDistance(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getEyesDistance());
-  CATCH("eyes_distance could not be read", 0)
+  BOB_CATCH_MEMBER("eyes_distance could not be read", 0)
 }
 int PyBobIpBaseFaceEyesNorm_setEyesDistance(PyBobIpBaseFaceEyesNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setEyesDistance(d);
   return 0;
-  CATCH("eyes_distance could not be set", -1)
+  BOB_CATCH_MEMBER("eyes_distance could not be set", -1)
 }
 
 static auto eyesAngle = bob::extension::VariableDoc(
@@ -158,17 +158,17 @@ static auto eyesAngle = bob::extension::VariableDoc(
   "The angle between the eyes in the normalized image (relative to the horizontal line), with read and write access"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getEyesAngle(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getEyesAngle());
-  CATCH("eyes_angle could not be read", 0)
+  BOB_CATCH_MEMBER("eyes_angle could not be read", 0)
 }
 int PyBobIpBaseFaceEyesNorm_setEyesAngle(PyBobIpBaseFaceEyesNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setEyesAngle(d);
   return 0;
-  CATCH("eyes_angle could not be set", -1)
+  BOB_CATCH_MEMBER("eyes_angle could not be set", -1)
 }
 
 static auto cropSize = bob::extension::VariableDoc(
@@ -177,13 +177,13 @@ static auto cropSize = bob::extension::VariableDoc(
   "The size of the normalized image, with read and write access"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getCropSize(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getCropSize();
   return Py_BuildValue("(ii)", r[0], r[1]);
-  CATCH("crop_size could not be read", 0)
+  BOB_CATCH_MEMBER("crop_size could not be read", 0)
 }
 int PyBobIpBaseFaceEyesNorm_setCropSize(PyBobIpBaseFaceEyesNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, cropSize.name());
@@ -191,7 +191,7 @@ int PyBobIpBaseFaceEyesNorm_setCropSize(PyBobIpBaseFaceEyesNormObject* self, PyO
   }
   self->cxx->setCropSize(r);
   return 0;
-  CATCH("crop_size could not be set", -1)
+  BOB_CATCH_MEMBER("crop_size could not be set", -1)
 }
 
 static auto cropOffset = bob::extension::VariableDoc(
@@ -200,13 +200,13 @@ static auto cropOffset = bob::extension::VariableDoc(
   "The transformation center in the processed image, which is usually the center between the eyes; with read and write access"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getCropOffset(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getCropOffset();
   return Py_BuildValue("(dd)", r[0], r[1]);
-  CATCH("crop_offset could not be read", 0)
+  BOB_CATCH_MEMBER("crop_offset could not be read", 0)
 }
 int PyBobIpBaseFaceEyesNorm_setCropOffset(PyBobIpBaseFaceEyesNormObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, cropOffset.name());
@@ -214,7 +214,7 @@ int PyBobIpBaseFaceEyesNorm_setCropOffset(PyBobIpBaseFaceEyesNormObject* self, P
   }
   self->cxx->setCropOffset(r);
   return 0;
-  CATCH("crop_offset could not be set", -1)
+  BOB_CATCH_MEMBER("crop_offset could not be set", -1)
 }
 
 static auto lastAngle = bob::extension::VariableDoc(
@@ -223,9 +223,9 @@ static auto lastAngle = bob::extension::VariableDoc(
   "The rotation angle that was applied on the latest normalized image, read access only"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getLastAngle(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getLastAngle());
-  CATCH("last_angle could not be read", 0)
+  BOB_CATCH_MEMBER("last_angle could not be read", 0)
 }
 
 static auto lastScale = bob::extension::VariableDoc(
@@ -234,9 +234,9 @@ static auto lastScale = bob::extension::VariableDoc(
   "The scale that was applied on the latest normalized image, read access only"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getLastScale(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getLastScale());
-  CATCH("last_scale could not be read", 0)
+  BOB_CATCH_MEMBER("last_scale could not be read", 0)
 }
 
 static auto lastOffset = bob::extension::VariableDoc(
@@ -245,10 +245,10 @@ static auto lastOffset = bob::extension::VariableDoc(
   "The original transformation offset (eye center) in the normalization process, read access only"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getLastOffset(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   auto r = self->cxx->getLastOffset();
   return Py_BuildValue("(dd)", r[0], r[1]);
-  CATCH("last_offset could not be read", 0)
+  BOB_CATCH_MEMBER("last_offset could not be read", 0)
 }
 
 static auto geomNorm = bob::extension::VariableDoc(
@@ -257,11 +257,11 @@ static auto geomNorm = bob::extension::VariableDoc(
   "The geometric normalization class that was used to compute the last normalization, read access only"
 );
 PyObject* PyBobIpBaseFaceEyesNorm_getGeomNorm(PyBobIpBaseFaceEyesNormObject* self, void*){
-  TRY
+  BOB_TRY
   PyBobIpBaseGeomNormObject* geomNorm = (PyBobIpBaseGeomNormObject*)PyBobIpBaseGeomNorm_Type.tp_alloc(&PyBobIpBaseGeomNorm_Type, 0);
   geomNorm->cxx = self->cxx->getGeomNorm();
   return Py_BuildValue("O", geomNorm);
-  CATCH("geom_norm could not be read", 0)
+  BOB_CATCH_MEMBER("geom_norm could not be read", 0)
 }
 
 static PyGetSetDef PyBobIpBaseFaceEyesNorm_getseters[] = {
@@ -362,10 +362,10 @@ static void extract_inner(PyBobIpBaseFaceEyesNormObject* self, PyBlitzArrayObjec
 }
 
 static PyObject* PyBobIpBaseFaceEyesNorm_extract(PyBobIpBaseFaceEyesNormObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist1[] = {c("input"), c("right_eye"), c("left_eye"), 0};
-  static char* kwlist2[] = {c("input"), c("output"), c("right_eye"), c("left_eye"), 0};
-  static char* kwlist3[] = {c("input"), c("input_mask"), c("output"), c("output_mask"), c("right_eye"), c("left_eye"), 0};
+  BOB_TRY
+  char** kwlist1 = extract.kwlist(0);
+  char** kwlist2 = extract.kwlist(1);
+  char** kwlist3 = extract.kwlist(2);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -465,7 +465,7 @@ static PyObject* PyBobIpBaseFaceEyesNorm_extract(PyBobIpBaseFaceEyesNormObject* 
     Py_RETURN_NONE;
   }
 
-  CATCH("cannot extract face from image", 0)
+  BOB_CATCH_MEMBER("cannot extract face from image", 0)
 }
 
 static PyMethodDef PyBobIpBaseFaceEyesNorm_methods[] = {

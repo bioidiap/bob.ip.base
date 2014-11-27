@@ -36,9 +36,9 @@ static auto GSSKeypoint_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseGSSKeypoint_init(PyBobIpBaseGSSKeypointObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist[] = {c("sigma"), c("location"), c("orientation"), NULL};
+  char** kwlist = GSSKeypoint_doc.kwlist();
 
   double sigma, orientation = 0.;
   blitz::TinyVector<double,2> location;
@@ -53,7 +53,7 @@ static int PyBobIpBaseGSSKeypoint_init(PyBobIpBaseGSSKeypointObject* self, PyObj
   self->cxx->orientation = orientation * M_PI / 180.;
   return 0;
 
-  CATCH("cannot create GSSKeypoint", -1)
+  BOB_CATCH_MEMBER("cannot create GSSKeypoint", -1)
 }
 
 static void PyBobIpBaseGSSKeypoint_delete(PyBobIpBaseGSSKeypointObject* self) {
@@ -71,17 +71,17 @@ static auto kpSigma = bob::extension::VariableDoc(
   "The floating point value describing the scale of the keypoint, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypoint_getSigma(PyBobIpBaseGSSKeypointObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->sigma);
-  CATCH("sigma could not be read", 0)
+  BOB_CATCH_MEMBER("sigma could not be read", 0)
 }
 int PyBobIpBaseGSSKeypoint_setSigma(PyBobIpBaseGSSKeypointObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->sigma = d;
   return 0;
-  CATCH("sigma could not be set", -1)
+  BOB_CATCH_MEMBER("sigma could not be set", -1)
 }
 
 static auto kpLocation = bob::extension::VariableDoc(
@@ -90,12 +90,12 @@ static auto kpLocation = bob::extension::VariableDoc(
   "The location (y, x) of the keypoint, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypoint_getLocation(PyBobIpBaseGSSKeypointObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(dd)", self->cxx->y, self->cxx->x);
-  CATCH("location could not be read", 0)
+  BOB_CATCH_MEMBER("location could not be read", 0)
 }
 int PyBobIpBaseGSSKeypoint_setLocation(PyBobIpBaseGSSKeypointObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double y, x;
   if (!PyArg_ParseTuple(value, "dd", &y, &x)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, kpLocation.name());
@@ -104,7 +104,7 @@ int PyBobIpBaseGSSKeypoint_setLocation(PyBobIpBaseGSSKeypointObject* self, PyObj
   self->cxx->y = y;
   self->cxx->x = x;
   return 0;
-  CATCH("location could not be set", -1)
+  BOB_CATCH_MEMBER("location could not be set", -1)
 }
 
 static auto kpOrientation = bob::extension::VariableDoc(
@@ -113,18 +113,18 @@ static auto kpOrientation = bob::extension::VariableDoc(
   "The orientation of the keypoint (in degree),  with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypoint_getOrientation(PyBobIpBaseGSSKeypointObject* self, void*){
-  TRY
+  BOB_TRY
   double o = self->cxx->orientation * 180. / M_PI;
   return Py_BuildValue("d", o);
-  CATCH("orientation could not be read", 0)
+  BOB_CATCH_MEMBER("orientation could not be read", 0)
 }
 int PyBobIpBaseGSSKeypoint_setOrientation(PyBobIpBaseGSSKeypointObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double o = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->sigma = o * M_PI / 180.;
   return 0;
-  CATCH("orientation could not be set", -1)
+  BOB_CATCH_MEMBER("orientation could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseGSSKeypoint_getseters[] = {
@@ -182,9 +182,9 @@ static auto GSSKeypointInfo_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseGSSKeypointInfo_init(PyBobIpBaseGSSKeypointInfoObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist[] = {c("octave_index"), c("scale_index"), c("location"), c("peak_score"), c("edge_score"), NULL};
+  char** kwlist = GSSKeypointInfo_doc.kwlist();
 
   int octave = 0, scale = 0, y = 0, x = 0;
   double peak = 0., edge = 0.;
@@ -200,7 +200,7 @@ static int PyBobIpBaseGSSKeypointInfo_init(PyBobIpBaseGSSKeypointInfoObject* sel
   self->cxx->edge_score = edge;
   return 0;
 
-  CATCH("cannot create GSSKeypointInfo", -1)
+  BOB_CATCH_MEMBER("cannot create GSSKeypointInfo", -1)
 }
 
 static void PyBobIpBaseGSSKeypointInfo_delete(PyBobIpBaseGSSKeypointInfoObject* self) {
@@ -219,19 +219,19 @@ static auto kpiOctaveIndex = bob::extension::VariableDoc(
   "The octave index associated with the keypoint in the :py:class:`bob.ip.base.GaussianScaleSpace` object, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypointInfo_getOctaveIndex(PyBobIpBaseGSSKeypointInfoObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->o);
-  CATCH("octave_index could not be read", 0)
+  BOB_CATCH_MEMBER("octave_index could not be read", 0)
 }
 int PyBobIpBaseGSSKeypointInfo_setOctaveIndex(PyBobIpBaseGSSKeypointInfoObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, kpiOctaveIndex.name());
     return -1;
   }
   self->cxx->o = PyInt_AS_LONG(value);
   return 0;
-  CATCH("octave_index could not be set", -1)
+  BOB_CATCH_MEMBER("octave_index could not be set", -1)
 }
 
 static auto kpiScaleIndex = bob::extension::VariableDoc(
@@ -240,19 +240,19 @@ static auto kpiScaleIndex = bob::extension::VariableDoc(
   "The scale index associated with the keypoint in the :py:class:`bob.ip.base.GaussianScaleSpace` object, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypointInfo_getScaleIndex(PyBobIpBaseGSSKeypointInfoObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->s);
-  CATCH("scale_index could not be read", 0)
+  BOB_CATCH_MEMBER("scale_index could not be read", 0)
 }
 int PyBobIpBaseGSSKeypointInfo_setScaleIndex(PyBobIpBaseGSSKeypointInfoObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, kpiScaleIndex.name());
     return -1;
   }
   self->cxx->o = PyInt_AS_LONG(value);
   return 0;
-  CATCH("scale_index could not be set", -1)
+  BOB_CATCH_MEMBER("scale_index could not be set", -1)
 }
 
 static auto kpiLocation = bob::extension::VariableDoc(
@@ -261,12 +261,12 @@ static auto kpiLocation = bob::extension::VariableDoc(
   "The integer unnormalized location (y, x) of the keypoint, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypointInfo_getLocation(PyBobIpBaseGSSKeypointInfoObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->iy, self->cxx->ix);
-  CATCH("location could not be read", 0)
+  BOB_CATCH_MEMBER("location could not be read", 0)
 }
 int PyBobIpBaseGSSKeypointInfo_setLocation(PyBobIpBaseGSSKeypointInfoObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int y, x;
   if (!PyArg_ParseTuple(value, "ii", &y, &x)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, kpiLocation.name());
@@ -275,7 +275,7 @@ int PyBobIpBaseGSSKeypointInfo_setLocation(PyBobIpBaseGSSKeypointInfoObject* sel
   self->cxx->iy = y;
   self->cxx->ix = x;
   return 0;
-  CATCH("location could not be set", -1)
+  BOB_CATCH_MEMBER("location could not be set", -1)
 }
 
 static auto kpiPeakScore = bob::extension::VariableDoc(
@@ -284,17 +284,17 @@ static auto kpiPeakScore = bob::extension::VariableDoc(
   "The peak score of the keypoint during the SIFT-like detection step, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypointInfo_getPeakScore(PyBobIpBaseGSSKeypointInfoObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->peak_score);
-  CATCH("peak_score could not be read", 0)
+  BOB_CATCH_MEMBER("peak_score could not be read", 0)
 }
 int PyBobIpBaseGSSKeypointInfo_setPeakScore(PyBobIpBaseGSSKeypointInfoObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double o = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->peak_score = o;
   return 0;
-  CATCH("peak_score could not be set", -1)
+  BOB_CATCH_MEMBER("peak_score could not be set", -1)
 }
 
 static auto kpiEdgeScore = bob::extension::VariableDoc(
@@ -303,17 +303,17 @@ static auto kpiEdgeScore = bob::extension::VariableDoc(
   "The edge score of the keypoint during the SIFT-like detection step, with read and write access"
 );
 PyObject* PyBobIpBaseGSSKeypointInfo_getEdgeScore(PyBobIpBaseGSSKeypointInfoObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->edge_score);
-  CATCH("edge_score could not be read", 0)
+  BOB_CATCH_MEMBER("edge_score could not be read", 0)
 }
 int PyBobIpBaseGSSKeypointInfo_setEdgeScore(PyBobIpBaseGSSKeypointInfoObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double o = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->edge_score = o;
   return 0;
-  CATCH("edge_score could not be set", -1)
+  BOB_CATCH_MEMBER("edge_score could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseGSSKeypointInfo_getseters[] = {
@@ -387,10 +387,10 @@ static auto GaussianScaleSpace_doc = bob::extension::ClassDoc(
 
 
 static int PyBobIpBaseGaussianScaleSpace_init(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("size"), c("scales"), c("octaves"), c("octave_min"), c("sigma_n"), c("sigma0"), c("kernel_radius_factor"), c("border"), NULL};
-  char* kwlist2[] = {c("gss"), NULL};
+  char** kwlist1 = GaussianScaleSpace_doc.kwlist(0);
+  char** kwlist2 = GaussianScaleSpace_doc.kwlist(1);;
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -418,7 +418,7 @@ static int PyBobIpBaseGaussianScaleSpace_init(PyBobIpBaseGaussianScaleSpaceObjec
   self->cxx.reset(new bob::ip::base::GaussianScaleSpace(size[0], size[1], scales, octaves, octave_min, sigma_n, sigma0, factor, border));
   return 0;
 
-  CATCH("cannot create GaussianScaleSpace", -1)
+  BOB_CATCH_MEMBER("cannot create GaussianScaleSpace", -1)
 }
 
 static void PyBobIpBaseGaussianScaleSpace_delete(PyBobIpBaseGaussianScaleSpaceObject* self) {
@@ -431,7 +431,7 @@ int PyBobIpBaseGaussianScaleSpace_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_RichCompare(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseGaussianScaleSpace_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -447,7 +447,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_RichCompare(PyBobIpBaseGaussianSc
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare GaussianScaleSpace objects", 0)
+  BOB_CATCH_MEMBER("cannot compare GaussianScaleSpace objects", 0)
 }
 
 
@@ -461,12 +461,12 @@ static auto size = bob::extension::VariableDoc(
   "The shape of the images to process, with read and write access"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getSize(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getHeight(), self->cxx->getWidth());
-  CATCH("size could not be read", 0)
+  BOB_CATCH_MEMBER("size could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setSize(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int h, w;
   if (!PyArg_ParseTuple(value, "ii", &h, &w)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, size.name());
@@ -475,7 +475,7 @@ int PyBobIpBaseGaussianScaleSpace_setSize(PyBobIpBaseGaussianScaleSpaceObject* s
   self->cxx->setHeight(h);;
   self->cxx->setWidth(w);;
   return 0;
-  CATCH("size could not be set", -1)
+  BOB_CATCH_MEMBER("size could not be set", -1)
 }
 
 static auto octaves = bob::extension::VariableDoc(
@@ -484,19 +484,19 @@ static auto octaves = bob::extension::VariableDoc(
   "The number of octaves of the pyramid, with read and write access"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getOctaves(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNOctaves());
-  CATCH("octaves could not be read", 0)
+  BOB_CATCH_MEMBER("octaves could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setOctaves(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, octaves.name());
     return -1;
   }
   self->cxx->setNOctaves(PyInt_AS_LONG(value));
   return 0;
-  CATCH("octaves could not be set", -1)
+  BOB_CATCH_MEMBER("octaves could not be set", -1)
 }
 
 static auto scales = bob::extension::VariableDoc(
@@ -506,19 +506,19 @@ static auto scales = bob::extension::VariableDoc(
   "Three additional scales will be computed in practice, as this is required for extracting SIFT features"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getScales(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNIntervals());
-  CATCH("scales could not be read", 0)
+  BOB_CATCH_MEMBER("scales could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setScales(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, scales.name());
     return -1;
   }
   self->cxx->setNIntervals(PyInt_AS_LONG(value));
   return 0;
-  CATCH("scales could not be set", -1)
+  BOB_CATCH_MEMBER("scales could not be set", -1)
 }
 
 static auto octaveMin = bob::extension::VariableDoc(
@@ -527,19 +527,19 @@ static auto octaveMin = bob::extension::VariableDoc(
   "The index of the minimum octave, with read and write access"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getOctaveMin(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getOctaveMin());
-  CATCH("octave_min could not be read", 0)
+  BOB_CATCH_MEMBER("octave_min could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setOctaveMin(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, octaveMin.name());
     return -1;
   }
   self->cxx->setOctaveMin(PyInt_AS_LONG(value));
   return 0;
-  CATCH("octave_min could not be set", -1)
+  BOB_CATCH_MEMBER("octave_min could not be set", -1)
 }
 
 static auto octaveMax = bob::extension::VariableDoc(
@@ -549,9 +549,9 @@ static auto octaveMax = bob::extension::VariableDoc(
   "This is equal to octave_min+n_octaves-1."
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getOctaveMax(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getOctaveMax());
-  CATCH("octave_max could not be read", 0)
+  BOB_CATCH_MEMBER("octave_max could not be read", 0)
 }
 
 static auto sigmaN = bob::extension::VariableDoc(
@@ -560,17 +560,17 @@ static auto sigmaN = bob::extension::VariableDoc(
   "The value sigma_n of the standard deviation for the nominal/initial octave/scale; with read and write access"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getSigmaN(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigmaN());
-  CATCH("sigma_n could not be read", 0)
+  BOB_CATCH_MEMBER("sigma_n could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setSigmaN(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigmaN(d);
   return 0;
-  CATCH("sigma_n could not be set", -1)
+  BOB_CATCH_MEMBER("sigma_n could not be set", -1)
 }
 
 static auto sigma0 = bob::extension::VariableDoc(
@@ -579,17 +579,17 @@ static auto sigma0 = bob::extension::VariableDoc(
   "The value sigma0 of the standard deviation for the image of the first octave and first scale"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getSigma0(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigma0());
-  CATCH("sigma_0 could not be read", 0)
+  BOB_CATCH_MEMBER("sigma_0 could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setSigma0(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigma0(d);
   return 0;
-  CATCH("sigma_0 could not be set", -1)
+  BOB_CATCH_MEMBER("sigma_0 could not be set", -1)
 }
 
 static auto kernelRadiusFactor = bob::extension::VariableDoc(
@@ -599,17 +599,17 @@ static auto kernelRadiusFactor = bob::extension::VariableDoc(
   "For each Gaussian kernel, the radius is equal to ``ceil(kernel_radius_factor*sigma_{octave,scale})``"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getKernelRadiusFactor(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getKernelRadiusFactor());
-  CATCH("kernel_radius_factor could not be read", 0)
+  BOB_CATCH_MEMBER("kernel_radius_factor could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setKernelRadiusFactor(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setKernelRadiusFactor(d);
   return 0;
-  CATCH("kernel_radius_factor could not be set", -1)
+  BOB_CATCH_MEMBER("kernel_radius_factor could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -618,17 +618,17 @@ static auto border = bob::extension::VariableDoc(
   "The extrapolation method used by the convolution at the border; with read and write access"
 );
 PyObject* PyBobIpBaseGaussianScaleSpace_getBorder(PyBobIpBaseGaussianScaleSpaceObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
-  CATCH("border could not be read", 0)
+  BOB_CATCH_MEMBER("border could not be read", 0)
 }
 int PyBobIpBaseGaussianScaleSpace_setBorder(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
   self->cxx->setConvBorder(b);
   return 0;
-  CATCH("border could not be set", -1)
+  BOB_CATCH_MEMBER("border could not be set", -1)
 }
 
 
@@ -716,9 +716,9 @@ static auto getGaussian = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_getGaussian(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {c("index"), 0};
+  char** kwlist = getGaussian.kwlist();
 
   int index;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i", kwlist, &index)) return 0;
@@ -727,7 +727,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_getGaussian(PyBobIpBaseGaussianSc
   gaussian->cxx = self->cxx->getGaussian(index);
   return Py_BuildValue("O", gaussian);
 
-  CATCH("cannot get Gaussian", 0)
+  BOB_CATCH_MEMBER("cannot get Gaussian", 0)
 }
 
 static auto setNoSmooth = bob::extension::FunctionDoc(
@@ -739,16 +739,16 @@ static auto setNoSmooth = bob::extension::FunctionDoc(
 .add_prototype("");
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_setNoSmooth(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   self->cxx->setSigma0NoInitSmoothing();
   Py_RETURN_NONE;
 
-  CATCH("cannot call set_sigma0_no_init_smoothing", 0)
+  BOB_CATCH_MEMBER("cannot call set_sigma0_no_init_smoothing", 0)
 }
 
 static auto allocateOutput = bob::extension::FunctionDoc(
@@ -781,15 +781,15 @@ static PyObject* _allocate(PyBobIpBaseGaussianScaleSpaceObject* self){
 }
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_allocateOutput(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   return _allocate(self);
 
-  CATCH("cannot allocate output", 0)
+  BOB_CATCH_MEMBER("cannot allocate output", 0)
 }
 
 static auto process = bob::extension::FunctionDoc(
@@ -811,8 +811,8 @@ static void process_inner(PyBobIpBaseGaussianScaleSpaceObject* self, PyBlitzArra
 }
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("dst"), 0};
+  BOB_TRY
+  char** kwlist = process.kwlist();
 
   PyBlitzArrayObject* src;
   PyObject* dst = 0;
@@ -874,7 +874,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleS
   Py_INCREF(dst);
   return dst;
 
-  CATCH("cannot process image", 0)
+  BOB_CATCH_MEMBER("cannot process image", 0)
 }
 
 

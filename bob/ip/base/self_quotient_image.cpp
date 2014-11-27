@@ -37,10 +37,10 @@ static auto SelfQuotientImage_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("scales"), c("size_min"), c("size_step"), c("sigma"), c("border"), NULL};
-  char* kwlist2[] = {c("sqi"), NULL};
+  char** kwlist1 = SelfQuotientImage_doc.kwlist(0);
+  char** kwlist2 = SelfQuotientImage_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -67,7 +67,7 @@ static int PyBobIpBaseSelfQuotientImage_init(PyBobIpBaseSelfQuotientImageObject*
   self->cxx.reset(new bob::ip::base::SelfQuotientImage(scales, size_min, size_step, sigma, border));
   return 0;
 
-  CATCH("cannot create SelfQuotientImage", -1)
+  BOB_CATCH_MEMBER("cannot create SelfQuotientImage", -1)
 }
 
 static void PyBobIpBaseSelfQuotientImage_delete(PyBobIpBaseSelfQuotientImageObject* self) {
@@ -80,7 +80,7 @@ int PyBobIpBaseSelfQuotientImage_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseSelfQuotientImage_RichCompare(PyBobIpBaseSelfQuotientImageObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseSelfQuotientImage_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -96,7 +96,7 @@ static PyObject* PyBobIpBaseSelfQuotientImage_RichCompare(PyBobIpBaseSelfQuotien
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare SelfQuotientImage objects", 0)
+  BOB_CATCH_MEMBER("cannot compare SelfQuotientImage objects", 0)
 }
 
 /******************************************************************/
@@ -109,19 +109,19 @@ static auto scales = bob::extension::VariableDoc(
   "The number of scales (Weighted Gaussian); with read and write access"
 );
 PyObject* PyBobIpBaseSelfQuotientImage_getScales(PyBobIpBaseSelfQuotientImageObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getNScales());
-  CATCH("scales could not be read", 0)
+  BOB_CATCH_MEMBER("scales could not be read", 0)
 }
 int PyBobIpBaseSelfQuotientImage_setScales(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, scales.name());
     return -1;
   }
   self->cxx->setNScales(PyInt_AS_LONG(value));
   return 0;
-  CATCH("scales could not be set", -1)
+  BOB_CATCH_MEMBER("scales could not be set", -1)
 }
 
 
@@ -131,19 +131,19 @@ static auto sizeMin = bob::extension::VariableDoc(
   "The radius (size=2*radius+1) of the kernel of the smallest weighted Gaussian; with read and write access"
 );
 PyObject* PyBobIpBaseSelfQuotientImage_getSizeMin(PyBobIpBaseSelfQuotientImageObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getSizeMin());
-  CATCH("size_min could not be read", 0)
+  BOB_CATCH_MEMBER("size_min could not be read", 0)
 }
 int PyBobIpBaseSelfQuotientImage_setSizeMin(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, sizeMin.name());
     return -1;
   }
   self->cxx->setSizeMin(PyInt_AS_LONG(value));
   return 0;
-  CATCH("size_min could not be set", -1)
+  BOB_CATCH_MEMBER("size_min could not be set", -1)
 }
 
 static auto sizeStep = bob::extension::VariableDoc(
@@ -152,19 +152,19 @@ static auto sizeStep = bob::extension::VariableDoc(
   "The step used to set the kernel size of other Weighted Gaussians (size_s=2*(size_min+s*size_step)+1); with read and write access"
 );
 PyObject* PyBobIpBaseSelfQuotientImage_getSizeStep(PyBobIpBaseSelfQuotientImageObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getSizeStep());
-  CATCH("size_step could not be read", 0)
+  BOB_CATCH_MEMBER("size_step could not be read", 0)
 }
 int PyBobIpBaseSelfQuotientImage_setSizeStep(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, sizeStep.name());
     return -1;
   }
   self->cxx->setSizeStep(PyInt_AS_LONG(value));
   return 0;
-  CATCH("size_step could not be set", -1)
+  BOB_CATCH_MEMBER("size_step could not be set", -1)
 }
 
 
@@ -174,17 +174,17 @@ static auto sigma = bob::extension::VariableDoc(
   "The standard deviation of the kernel of the smallest weighted Gaussian (sigma_s = sigma * (size_min+s*size_step)/size_min); with read and write access"
 );
 PyObject* PyBobIpBaseSelfQuotientImage_getSigma(PyBobIpBaseSelfQuotientImageObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getSigma());
-  CATCH("sigma could not be read", 0)
+  BOB_CATCH_MEMBER("sigma could not be read", 0)
 }
 int PyBobIpBaseSelfQuotientImage_setSigma(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setSigma(d);
   return 0;
-  CATCH("sigma could not be set", -1)
+  BOB_CATCH_MEMBER("sigma could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -193,17 +193,17 @@ static auto border = bob::extension::VariableDoc(
   "The extrapolation method used by the convolution at the border; with read and write access"
 );
 PyObject* PyBobIpBaseSelfQuotientImage_getBorder(PyBobIpBaseSelfQuotientImageObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
-  CATCH("border could not be read", 0)
+  BOB_CATCH_MEMBER("border could not be read", 0)
 }
 int PyBobIpBaseSelfQuotientImage_setBorder(PyBobIpBaseSelfQuotientImageObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
   self->cxx->setConvBorder(b);
   return 0;
-  CATCH("border could not be set", -1)
+  BOB_CATCH_MEMBER("border could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseSelfQuotientImage_getseters[] = {
@@ -272,8 +272,8 @@ static PyObject* process_inner(PyBobIpBaseSelfQuotientImageObject* self, PyBlitz
 }
 
 static PyObject* PyBobIpBaseSelfQuotientImage_process(PyBobIpBaseSelfQuotientImageObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("dst"), 0};
+  BOB_TRY
+  char** kwlist = process.kwlist();
 
   PyBlitzArrayObject* src,* dst = 0;
 
@@ -316,7 +316,7 @@ static PyObject* PyBobIpBaseSelfQuotientImage_process(PyBobIpBaseSelfQuotientIma
       return 0;
   }
 
-  CATCH("cannot perform Self Quotient Image processing in image", 0)
+  BOB_CATCH_MEMBER("cannot perform Self Quotient Image processing in image", 0)
 }
 
 

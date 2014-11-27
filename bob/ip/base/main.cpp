@@ -18,10 +18,10 @@ static PyMethodDef module_methods[] = {
     s_scale.doc()
   },
   {
-    s_getScaledOutputShape.name(),
-    (PyCFunction)PyBobIpBase_getScaledOutputShape,
+    s_scaledOutputShape.name(),
+    (PyCFunction)PyBobIpBase_scaledOutputShape,
     METH_VARARGS|METH_KEYWORDS,
-    s_getScaledOutputShape.doc()
+    s_scaledOutputShape.doc()
   },
   {
     s_rotate.name(),
@@ -30,10 +30,10 @@ static PyMethodDef module_methods[] = {
     s_rotate.doc()
   },
   {
-    s_getRotatedOutputShape.name(),
-    (PyCFunction)PyBobIpBase_getRotatedOutputShape,
+    s_rotatedOutputShape.name(),
+    (PyCFunction)PyBobIpBase_rotatedOutputShape,
     METH_VARARGS|METH_KEYWORDS,
-    s_getRotatedOutputShape.doc()
+    s_rotatedOutputShape.doc()
   },
   {
     s_maxRectInMask.name(),

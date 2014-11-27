@@ -34,10 +34,10 @@ static auto WeightedGaussian_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseWeightedGaussian_init(PyBobIpBaseWeightedGaussianObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("sigma"), c("radius"), c("border"), NULL};
-  char* kwlist2[] = {c("weighted_gaussian"), NULL};
+  char** kwlist1 = WeightedGaussian_doc.kwlist(0);
+  char** kwlist2 = WeightedGaussian_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -67,7 +67,7 @@ static int PyBobIpBaseWeightedGaussian_init(PyBobIpBaseWeightedGaussianObject* s
   self->cxx.reset(new bob::ip::base::WeightedGaussian(radius[0], radius[1], sigma[0], sigma[1], border));
   return 0;
 
-  CATCH("cannot create WeightedGaussian", -1)
+  BOB_CATCH_MEMBER("cannot create WeightedGaussian", -1)
 }
 
 static void PyBobIpBaseWeightedGaussian_delete(PyBobIpBaseWeightedGaussianObject* self) {
@@ -80,7 +80,7 @@ int PyBobIpBaseWeightedGaussian_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseWeightedGaussian_RichCompare(PyBobIpBaseWeightedGaussianObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseWeightedGaussian_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -96,7 +96,7 @@ static PyObject* PyBobIpBaseWeightedGaussian_RichCompare(PyBobIpBaseWeightedGaus
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare WeightedGaussian objects", 0)
+  BOB_CATCH_MEMBER("cannot compare WeightedGaussian objects", 0)
 }
 
 
@@ -111,12 +111,12 @@ static auto sigma = bob::extension::VariableDoc(
   ".. note::\n\n  The :py:attr:`radius` of the kernel is **not** reset by setting the ``sigma`` value."
 );
 PyObject* PyBobIpBaseWeightedGaussian_getSigma(PyBobIpBaseWeightedGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(dd)", self->cxx->getSigmaY(), self->cxx->getSigmaX());
-  CATCH("sigma could not be read", 0)
+  BOB_CATCH_MEMBER("sigma could not be read", 0)
 }
 int PyBobIpBaseWeightedGaussian_setSigma(PyBobIpBaseWeightedGaussianObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<double,2> r;
   if (!PyArg_ParseTuple(value, "dd", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two floats", Py_TYPE(self)->tp_name, sigma.name());
@@ -124,7 +124,7 @@ int PyBobIpBaseWeightedGaussian_setSigma(PyBobIpBaseWeightedGaussianObject* self
   }
   self->cxx->setSigma(r);
   return 0;
-  CATCH("sigma could not be set", -1)
+  BOB_CATCH_MEMBER("sigma could not be set", -1)
 }
 
 static auto radius = bob::extension::VariableDoc(
@@ -134,12 +134,12 @@ static auto radius = bob::extension::VariableDoc(
   "When setting the radius to a negative value, it will be automatically computed as ``3*``:py:attr:`sigma`."
 );
 PyObject* PyBobIpBaseWeightedGaussian_getRadius(PyBobIpBaseWeightedGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getRadiusY(), self->cxx->getRadiusX());
-  CATCH("radius could not be read", 0)
+  BOB_CATCH_MEMBER("radius could not be read", 0)
 }
 int PyBobIpBaseWeightedGaussian_setRadius(PyBobIpBaseWeightedGaussianObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two integers", Py_TYPE(self)->tp_name, radius.name());
@@ -149,7 +149,7 @@ int PyBobIpBaseWeightedGaussian_setRadius(PyBobIpBaseWeightedGaussianObject* sel
   if (r[1] < 0) r[1] = std::max(int(self->cxx->getSigmaX() * 3 + 0.5), 1);
   self->cxx->setRadius(r);
   return 0;
-  CATCH("radius could not be set", -1)
+  BOB_CATCH_MEMBER("radius could not be set", -1)
 }
 
 static auto border = bob::extension::VariableDoc(
@@ -158,17 +158,17 @@ static auto border = bob::extension::VariableDoc(
   "The extrapolation method used by the convolution at the border, with read and write access"
 );
 PyObject* PyBobIpBaseWeightedGaussian_getBorder(PyBobIpBaseWeightedGaussianObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getConvBorder());
-  CATCH("border could not be read", 0)
+  BOB_CATCH_MEMBER("border could not be read", 0)
 }
 int PyBobIpBaseWeightedGaussian_setBorder(PyBobIpBaseWeightedGaussianObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::sp::Extrapolation::BorderType b;
   if (!PyBobSpExtrapolationBorder_Converter(value, &b)) return -1;
   self->cxx->setConvBorder(b);
   return 0;
-  CATCH("border could not be set", -1)
+  BOB_CATCH_MEMBER("border could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseWeightedGaussian_getseters[] = {
@@ -222,8 +222,8 @@ static PyObject* filter_inner(PyBobIpBaseWeightedGaussianObject* self, PyBlitzAr
 }
 
 static PyObject* PyBobIpBaseWeightedGaussian_filter(PyBobIpBaseWeightedGaussianObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("src"), c("dst"), 0};
+  BOB_TRY
+  char** kwlist = filter.kwlist();
 
   PyBlitzArrayObject* src,* dst = 0;
 
@@ -266,7 +266,7 @@ static PyObject* PyBobIpBaseWeightedGaussian_filter(PyBobIpBaseWeightedGaussianO
       return 0;
   }
 
-  CATCH("cannot perform WeightedGaussian filtering in image", 0)
+  BOB_CATCH_MEMBER("cannot perform WeightedGaussian filtering in image", 0)
 }
 
 

@@ -33,44 +33,12 @@
 #include <bob.ip.base/GLCM.h>
 
 
-#if PY_VERSION_HEX >= 0x03000000
-#define PyInt_Check PyLong_Check
-#define PyInt_AS_LONG PyLong_AS_LONG
-#define PyString_Check PyUnicode_Check
-#define PyString_AS_STRING(x) PyBytes_AS_STRING(make_safe(PyUnicode_AsUTF8String(x)).get())
-#endif
-
-#define TRY try{
-
-#define CATCH(message,ret) }\
-  catch (std::exception& e) {\
-    PyErr_SetString(PyExc_RuntimeError, e.what());\
-    return ret;\
-  } \
-  catch (...) {\
-    PyErr_Format(PyExc_RuntimeError, "%s " message ": unknown exception caught", Py_TYPE(self)->tp_name);\
-    return ret;\
-  }
-
-#define CATCH_(message, ret) }\
-  catch (std::exception& e) {\
-    PyErr_SetString(PyExc_RuntimeError, e.what());\
-    return ret;\
-  } \
-  catch (...) {\
-    PyErr_Format(PyExc_RuntimeError, message ": unknown exception caught");\
-    return ret;\
-  }
-
-static inline char* c(const char* o){return const_cast<char*>(o);}  /* converts const char* to char* */
-
 /// inserts the given key, value pair into the given dictionaries
 static inline int insert_item_string(PyObject* dict, PyObject* entries, const char* key, Py_ssize_t value){
   auto v = make_safe(Py_BuildValue("n", value));
   if (PyDict_SetItemString(dict, key, v.get()) < 0) return -1;
   return PyDict_SetItemString(entries, key, v.get());
 }
-
 
 
 // GeomNorm
@@ -96,13 +64,13 @@ int PyBobIpBaseFaceEyesNorm_Check(PyObject* o);
 // .. scaling
 PyObject* PyBobIpBase_scale(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_scale;
-PyObject* PyBobIpBase_getScaledOutputShape(PyObject*, PyObject*, PyObject*);
-extern bob::extension::FunctionDoc s_getScaledOutputShape;
+PyObject* PyBobIpBase_scaledOutputShape(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_scaledOutputShape;
 // .. rotating
 PyObject* PyBobIpBase_rotate(PyObject*, PyObject*, PyObject*);
 extern bob::extension::FunctionDoc s_rotate;
-PyObject* PyBobIpBase_getRotatedOutputShape(PyObject*, PyObject*, PyObject*);
-extern bob::extension::FunctionDoc s_getRotatedOutputShape;
+PyObject* PyBobIpBase_rotatedOutputShape(PyObject*, PyObject*, PyObject*);
+extern bob::extension::FunctionDoc s_rotatedOutputShape;
 
 // mask functions (in Affine.h)
 PyObject* PyBobIpBase_maxRectInMask(PyObject*, PyObject*, PyObject*);

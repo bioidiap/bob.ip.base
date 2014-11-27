@@ -168,10 +168,10 @@ static auto HOG_doc = bob::extension::ClassDoc(
 );
 
 static int PyBobIpBaseHOG_init(PyBobIpBaseHOGObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  char* kwlist1[] = {c("image_size"), c("bins"), c("full_orientation"), c("cell_size"), c("cell_overlap"), c("block_size"), c("block_overlap"), NULL};
-  char* kwlist2[] = {c("other"), NULL};
+  char** kwlist1 = HOG_doc.kwlist(0);
+  char** kwlist2 = HOG_doc.kwlist(1);
 
   // get the number of command line arguments
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
@@ -198,7 +198,7 @@ static int PyBobIpBaseHOG_init(PyBobIpBaseHOGObject* self, PyObject* args, PyObj
   self->cxx.reset(new bob::ip::base::HOG(image_size[0], image_size[1], bins, f(full_orientation), cell_size[0], cell_size[1], cell_overlap[0], cell_overlap[1], block_size[0], block_size[1], block_overlap[0], block_overlap[1]));
   return 0;
 
-  CATCH("cannot create HOG object", -1)
+  BOB_CATCH_MEMBER("cannot create HOG object", -1)
 }
 
 static void PyBobIpBaseHOG_delete(PyBobIpBaseHOGObject* self) {
@@ -211,7 +211,7 @@ int PyBobIpBaseHOG_Check(PyObject* o) {
 }
 
 static PyObject* PyBobIpBaseHOG_RichCompare(PyBobIpBaseHOGObject* self, PyObject* other, int op) {
-  TRY
+  BOB_TRY
 
   if (!PyBobIpBaseHOG_Check(other)) {
     PyErr_Format(PyExc_TypeError, "cannot compare `%s' with `%s'", Py_TYPE(self)->tp_name, Py_TYPE(other)->tp_name);
@@ -227,7 +227,7 @@ static PyObject* PyBobIpBaseHOG_RichCompare(PyBobIpBaseHOGObject* self, PyObject
       Py_INCREF(Py_NotImplemented);
       return Py_NotImplemented;
   }
-  CATCH("cannot compare HOG objects", 0)
+  BOB_CATCH_MEMBER("cannot compare HOG objects", 0)
 }
 
 
@@ -241,12 +241,12 @@ static auto imageSize = bob::extension::VariableDoc(
   "The size of the input image to process., with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getImageSize(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getHeight(), self->cxx->getWidth());
-  CATCH("image_size could not be read", 0)
+  BOB_CATCH_MEMBER("image_size could not be read", 0)
 }
 int PyBobIpBaseHOG_setImageSize(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, imageSize.name());
@@ -254,7 +254,7 @@ int PyBobIpBaseHOG_setImageSize(PyBobIpBaseHOGObject* self, PyObject* value, voi
   }
   self->cxx->setSize(r[0], r[1]);
   return 0;
-  CATCH("image_size could not be set", -1)
+  BOB_CATCH_MEMBER("image_size could not be set", -1)
 }
 
 static auto magnitudeType = bob::extension::VariableDoc(
@@ -263,17 +263,17 @@ static auto magnitudeType = bob::extension::VariableDoc(
   "Type of the magnitude to consider for the descriptors, with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getMagnitudeType(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getGradientMagnitudeType());
-  CATCH("magnitude_type could not be read", 0)
+  BOB_CATCH_MEMBER("magnitude_type could not be read", 0)
 }
 int PyBobIpBaseHOG_setMagnitudeType(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::ip::base::GradientMagnitudeType b;
   if (!PyBobIpBaseGradientMagnitude_Converter(value, &b)) return -1;
   self->cxx->setGradientMagnitudeType(b);
   return 0;
-  CATCH("magnitude_type could not be set", -1)
+  BOB_CATCH_MEMBER("magnitude_type could not be set", -1)
 }
 
 static auto bins = bob::extension::VariableDoc(
@@ -282,19 +282,19 @@ static auto bins = bob::extension::VariableDoc(
   "Dimensionality of a cell descriptor (i.e. the number of bins), with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getBins(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getCellDim());
-  CATCH("bins could not be read", 0)
+  BOB_CATCH_MEMBER("bins could not be read", 0)
 }
 int PyBobIpBaseHOG_setBins(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyInt_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects an int", Py_TYPE(self)->tp_name, bins.name());
     return -1;
   }
   self->cxx->setCellDim(PyInt_AS_LONG(value));
   return 0;
-  CATCH("bins could not be set", -1)
+  BOB_CATCH_MEMBER("bins could not be set", -1)
 }
 
 static auto fullOrientation = bob::extension::VariableDoc(
@@ -303,12 +303,12 @@ static auto fullOrientation = bob::extension::VariableDoc(
   "Whether the range [0,360] is used or not ([0,180] otherwise), with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getFullOrientation(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   if (self->cxx->getFullOrientation()) Py_RETURN_TRUE; else Py_RETURN_FALSE;
-  CATCH("full_orientation could not be read", 0)
+  BOB_CATCH_MEMBER("full_orientation could not be read", 0)
 }
 int PyBobIpBaseHOG_setFullOrientation(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   int r = PyObject_IsTrue(value);
   if (r < 0){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a bool", Py_TYPE(self)->tp_name, fullOrientation.name());
@@ -316,7 +316,7 @@ int PyBobIpBaseHOG_setFullOrientation(PyBobIpBaseHOGObject* self, PyObject* valu
   }
   self->cxx->setFullOrientation(r>0);
   return 0;
-  CATCH("full_orientation could not be set", -1)
+  BOB_CATCH_MEMBER("full_orientation could not be set", -1)
 }
 
 static auto cellSize = bob::extension::VariableDoc(
@@ -325,12 +325,12 @@ static auto cellSize = bob::extension::VariableDoc(
   "Size of a cell, with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getCellSize(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getCellHeight(), self->cxx->getCellWidth());
-  CATCH("cell_size could not be read", 0)
+  BOB_CATCH_MEMBER("cell_size could not be read", 0)
 }
 int PyBobIpBaseHOG_setCellSize(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, cellSize.name());
@@ -338,7 +338,7 @@ int PyBobIpBaseHOG_setCellSize(PyBobIpBaseHOGObject* self, PyObject* value, void
   }
   self->cxx->setCellSize(r[0], r[1]);
   return 0;
-  CATCH("cell_size could not be set", -1)
+  BOB_CATCH_MEMBER("cell_size could not be set", -1)
 }
 
 static auto cellOverlap = bob::extension::VariableDoc(
@@ -347,12 +347,12 @@ static auto cellOverlap = bob::extension::VariableDoc(
   "Overlap between cells, with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getCellOverlap(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getCellOverlapHeight(), self->cxx->getCellOverlapWidth());
-  CATCH("cell_overlap could not be read", 0)
+  BOB_CATCH_MEMBER("cell_overlap could not be read", 0)
 }
 int PyBobIpBaseHOG_setCellOverlap(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, cellOverlap.name());
@@ -360,7 +360,7 @@ int PyBobIpBaseHOG_setCellOverlap(PyBobIpBaseHOGObject* self, PyObject* value, v
   }
   self->cxx->setCellOverlap(r[0], r[1]);
   return 0;
-  CATCH("cell_overlap could not be set", -1)
+  BOB_CATCH_MEMBER("cell_overlap could not be set", -1)
 }
 
 static auto blockSize = bob::extension::VariableDoc(
@@ -369,12 +369,12 @@ static auto blockSize = bob::extension::VariableDoc(
   "Size of a block (in terms of cells), with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getBlockSize(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getBlockHeight(), self->cxx->getBlockWidth());
-  CATCH("block_size could not be read", 0)
+  BOB_CATCH_MEMBER("block_size could not be read", 0)
 }
 int PyBobIpBaseHOG_setBlockSize(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, blockSize.name());
@@ -382,7 +382,7 @@ int PyBobIpBaseHOG_setBlockSize(PyBobIpBaseHOGObject* self, PyObject* value, voi
   }
   self->cxx->setBlockSize(r[0], r[1]);
   return 0;
-  CATCH("block_size could not be set", -1)
+  BOB_CATCH_MEMBER("block_size could not be set", -1)
 }
 
 static auto blockOverlap = bob::extension::VariableDoc(
@@ -391,12 +391,12 @@ static auto blockOverlap = bob::extension::VariableDoc(
   "Overlap between blocks (in terms of cells), with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getBlockOverlap(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("(ii)", self->cxx->getBlockOverlapHeight(), self->cxx->getBlockOverlapWidth());
-  CATCH("block_overlap could not be read", 0)
+  BOB_CATCH_MEMBER("block_overlap could not be read", 0)
 }
 int PyBobIpBaseHOG_setBlockOverlap(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   blitz::TinyVector<int,2> r;
   if (!PyArg_ParseTuple(value, "ii", &r[0], &r[1])){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a tuple of two ints", Py_TYPE(self)->tp_name, blockOverlap.name());
@@ -404,7 +404,7 @@ int PyBobIpBaseHOG_setBlockOverlap(PyBobIpBaseHOGObject* self, PyObject* value, 
   }
   self->cxx->setBlockOverlap(r[0], r[1]);
   return 0;
-  CATCH("block_overlap could not be set", -1)
+  BOB_CATCH_MEMBER("block_overlap could not be set", -1)
 }
 
 static auto blockNorm = bob::extension::VariableDoc(
@@ -413,17 +413,17 @@ static auto blockNorm = bob::extension::VariableDoc(
   "The type of norm used for normalizing blocks, with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getBlockNorm(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("i", self->cxx->getBlockNorm());
-  CATCH("block_norm could not be read", 0)
+  BOB_CATCH_MEMBER("block_norm could not be read", 0)
 }
 int PyBobIpBaseHOG_setBlockNorm(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   bob::ip::base::BlockNorm b;
   if (!PyBobIpBaseBlockNorm_Converter(value, &b)) return -1;
   self->cxx->setBlockNorm(b);
   return 0;
-  CATCH("block_norm could not be set", -1)
+  BOB_CATCH_MEMBER("block_norm could not be set", -1)
 }
 
 static auto blockNormEps = bob::extension::VariableDoc(
@@ -432,19 +432,19 @@ static auto blockNormEps = bob::extension::VariableDoc(
   "Epsilon value used to avoid division by zeros when normalizing the blocks, read and write access"
 );
 PyObject* PyBobIpBaseHOG_getBlockNormEps(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getBlockNormEps());
-  CATCH("block_norm_eps could not be read", 0)
+  BOB_CATCH_MEMBER("block_norm_eps could not be read", 0)
 }
 int PyBobIpBaseHOG_setBlockNormEps(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   if (!PyFloat_Check(value)){
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a float", Py_TYPE(self)->tp_name, blockNormEps.name());
     return -1;
   }
   self->cxx->setBlockNormEps(PyFloat_AS_DOUBLE(value));
   return 0;
-  CATCH("block_norm_eps could not be set", -1)
+  BOB_CATCH_MEMBER("block_norm_eps could not be set", -1)
 }
 
 static auto blockNormThreshold = bob::extension::VariableDoc(
@@ -453,17 +453,17 @@ static auto blockNormThreshold = bob::extension::VariableDoc(
   "Threshold used to perform the clipping during the block normalization, with read and write access"
 );
 PyObject* PyBobIpBaseHOG_getBlockNormThreshold(PyBobIpBaseHOGObject* self, void*){
-  TRY
+  BOB_TRY
   return Py_BuildValue("d", self->cxx->getBlockNormThreshold());
-  CATCH("block_norm_threshold could not be read", 0)
+  BOB_CATCH_MEMBER("block_norm_threshold could not be read", 0)
 }
 int PyBobIpBaseHOG_setBlockNormThreshold(PyBobIpBaseHOGObject* self, PyObject* value, void*){
-  TRY
+  BOB_TRY
   double d = PyFloat_AsDouble(value);
   if (PyErr_Occurred()) return -1;
   self->cxx->setBlockNormThreshold(d);
   return 0;
-  CATCH("block_norm_threshold could not be set", -1)
+  BOB_CATCH_MEMBER("block_norm_threshold could not be set", -1)
 }
 
 static PyGetSetDef PyBobIpBaseHOG_getseters[] = {
@@ -563,16 +563,16 @@ static auto outputShape = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseHOG_outputShape(PyBobIpBaseHOGObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   auto shape = self->cxx->getOutputShape();
   return Py_BuildValue("(iii)", shape[0], shape[1], shape[2]);
 
-  CATCH("cannot compute output shape", 0)
+  BOB_CATCH_MEMBER("cannot compute output shape", 0)
 }
 
 static auto disableBlockNorm = bob::extension::FunctionDoc(
@@ -588,16 +588,16 @@ static auto disableBlockNorm = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseHOG_disableBlockNorm(PyBobIpBaseHOGObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {0};
+  char* kwlist[] = {0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", kwlist)) return 0;
 
   self->cxx->disableBlockNormalization();
   Py_RETURN_NONE;
 
-  CATCH("cannot disable block normalization", 0)
+  BOB_CATCH_MEMBER("cannot disable block normalization", 0)
 }
 
 static auto computeHistogram = bob::extension::FunctionDoc(
@@ -614,9 +614,9 @@ static auto computeHistogram = bob::extension::FunctionDoc(
 ;
 
 static PyObject* PyBobIpBaseHOG_computeHistogram(PyBobIpBaseHOGObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
+  BOB_TRY
 
-  static char* kwlist[] = {c("magnitude"), c("oritentation"), c("histogram"), 0};
+  char** kwlist = computeHistogram.kwlist();
 
   PyBlitzArrayObject* mag,* ori,* hist = 0;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&|O&", kwlist, &PyBlitzArray_Converter, &mag, &PyBlitzArray_Converter, &ori, &PyBlitzArray_OutputConverter, &hist)) return 0;
@@ -649,7 +649,7 @@ static PyObject* PyBobIpBaseHOG_computeHistogram(PyBobIpBaseHOGObject* self, PyO
   Py_INCREF(hist);
   return PyBlitzArray_AsNumpyArray(hist, 0);
 
-  CATCH("cannot compute histogram", 0)
+  BOB_CATCH_MEMBER("cannot compute histogram", 0)
 }
 
 static auto extract = bob::extension::FunctionDoc(
@@ -679,8 +679,8 @@ static PyObject* extract_inner(PyBobIpBaseHOGObject* self, PyBlitzArrayObject* i
 }
 
 static PyObject* PyBobIpBaseHOG_extract(PyBobIpBaseHOGObject* self, PyObject* args, PyObject* kwargs) {
-  TRY
-  static char* kwlist[] = {c("input"), c("output"), 0};
+  BOB_TRY
+  char** kwlist = extract.kwlist();
 
   PyBlitzArrayObject* input,* output = 0;
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&|O&", kwlist, &PyBlitzArray_Converter, &input, &PyBlitzArray_OutputConverter, &output)) return 0;
@@ -718,7 +718,7 @@ static PyObject* PyBobIpBaseHOG_extract(PyBobIpBaseHOGObject* self, PyObject* ar
       return 0;
   }
 
-  CATCH("cannot extract HOG features", 0)
+  BOB_CATCH_MEMBER("cannot extract HOG features", 0)
 }
 
 static PyMethodDef PyBobIpBaseHOG_methods[] = {
