@@ -17,7 +17,7 @@
 #include <bob.ip.base/GaussianScaleSpace.h>
 #include <bob.ip.base/HOG.h>
 
-#ifdef HAVE_VLFEAT
+#if HAVE_VLFEAT
 #include <vl/generic.h>
 #include <vl/sift.h>
 #include <vl/dsift.h>
@@ -235,7 +235,7 @@ namespace bob { namespace ip { namespace base {
   };
 
 
-#ifdef HAVE_VLFEAT
+#if HAVE_VLFEAT
 
   class VLSIFT
   {
@@ -515,4 +515,3 @@ namespace bob { namespace ip { namespace base {
 } } } // namespaces
 
 #endif /* BOB_IP_BASE_SIFT_H */
-

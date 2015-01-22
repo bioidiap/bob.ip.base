@@ -9,7 +9,7 @@
 
 #include "main.h"
 
-#ifdef HAVE_VLFEAT
+#if HAVE_VLFEAT
 
 static auto VLSIFT_doc = bob::extension::ClassDoc(
   BOB_EXT_MODULE_PREFIX ".VLSIFT",
@@ -798,4 +798,3 @@ bool init_BobIpBaseVLFEAT(PyObject* module)
 }
 
 #endif // HAVE_VLFEAT
-

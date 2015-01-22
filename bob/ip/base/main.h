@@ -204,7 +204,7 @@ extern PyTypeObject PyBobIpBaseSIFT_Type;
 bool init_BobIpBaseSIFT(PyObject* module);
 int PyBobIpBaseSIFT_Check(PyObject* o);
 
-#ifdef HAVE_VLFEAT
+#if HAVE_VLFEAT
 // .. VLSIFT
 typedef struct {
   PyObject_HEAD

@@ -17,7 +17,9 @@
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/version.hpp>
 #include <boost/format.hpp>
+#if HAVE_VLFEAT
 #include <vl/generic.h>
+#endif // HAVE_VLFEAT
 
 #include <bob.core/config.h>
 #include <bob.io.base/config.h>
@@ -84,9 +86,11 @@ static PyObject* python_version() {
 /**
  * VLFeat version
  */
+#if HAVE_VLFEAT
 static PyObject* vlfeat_version() {
   return Py_BuildValue("s", VL_VERSION_STRING);
 }
+#endif // HAVE_VLFEAT
 
 /**
  * Numpy version
@@ -149,7 +153,9 @@ static PyObject* build_version_dictionary() {
   if (!dict_steal(retval, "bob.io.base", bob_io_base_version())) return 0;
   if (!dict_steal(retval, "bob.sp", bob_sp_version())) return 0;
   if (!dict_steal(retval, "bob.math", bob_math_version())) return 0;
+#if HAVE_VLFEAT
   if (!dict_steal(retval, "VLFeat", vlfeat_version())) return 0;
+#endif // HAVE_VLFEAT
 
   Py_INCREF(retval);
   return retval;
