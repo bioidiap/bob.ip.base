@@ -164,7 +164,6 @@ PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
 
   // return the histogram, if wanted
   if (return_out){
-    Py_INCREF(hist);
     return PyBlitzArray_AsNumpyArray(hist, 0);
   } else {
     Py_RETURN_NONE;
@@ -273,7 +272,6 @@ bob::extension::FunctionDoc s_gammaCorrection = bob::extension::FunctionDoc(
 
 template <typename T> PyObject* inner_gammaCorrection(PyBlitzArrayObject* src, PyBlitzArrayObject* dst, double gamma) {
   bob::ip::base::gammaCorrection(*PyBlitzArrayCxx_AsBlitz<T, 2>(src), *PyBlitzArrayCxx_AsBlitz<double, 2>(dst), gamma);
-  Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst, 0);
 }
 
@@ -579,7 +577,6 @@ PyObject* PyBobIpBase_block(PyObject*, PyObject* args, PyObject* kwds) {
   }
 
   if (return_out){
-    Py_INCREF(output);
     return PyBlitzArray_AsNumpyArray(output, 0);
   } else
     Py_RETURN_NONE;
@@ -661,7 +658,6 @@ static inline blitz::TinyVector<int,2> lbphs_shape(PyBlitzArrayObject* input, Py
 template <typename T>
 static inline PyObject* lbphs_inner(PyBlitzArrayObject* input, PyBobIpBaseLBPObject* lbp, blitz::TinyVector<int,2> block_size, blitz::TinyVector<int,2> block_overlap, PyBlitzArrayObject* output){
   bob::ip::base::lbphs(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *lbp->cxx, block_size, block_overlap, *PyBlitzArrayCxx_AsBlitz<uint64_t,2>(output));
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
@@ -743,6 +739,3 @@ PyObject* PyBobIpBase_lbphsOutputShape(PyObject*, PyObject* args, PyObject* kwds
 
   BOB_CATCH_FUNCTION("in lbphs_output_shape", 0)
 }
-
-
-
