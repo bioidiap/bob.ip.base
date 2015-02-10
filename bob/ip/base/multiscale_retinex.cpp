@@ -266,7 +266,6 @@ static auto process = bob::extension::FunctionDoc(
 template <typename T, int D>
 static PyObject* process_inner(PyBobIpBaseMultiscaleRetinexObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
   self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<double,D>(output));
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
@@ -364,4 +363,3 @@ bool init_BobIpBaseMultiscaleRetinex(PyObject* module)
   Py_INCREF(&PyBobIpBaseMultiscaleRetinex_Type);
   return PyModule_AddObject(module, "MultiscaleRetinex", (PyObject*)&PyBobIpBaseMultiscaleRetinex_Type) >= 0;
 }
-

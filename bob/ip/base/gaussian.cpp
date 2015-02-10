@@ -254,7 +254,6 @@ static auto filter = bob::extension::FunctionDoc(
 template <typename T, int D>
 static PyObject* filter_inner(PyBobIpBaseGaussianObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
   self->cxx->filter(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<double,D>(output));
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
@@ -352,4 +351,3 @@ bool init_BobIpBaseGaussian(PyObject* module)
   Py_INCREF(&PyBobIpBaseGaussian_Type);
   return PyModule_AddObject(module, "Gaussian", (PyObject*)&PyBobIpBaseGaussian_Type) >= 0;
 }
-

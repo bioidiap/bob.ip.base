@@ -157,8 +157,7 @@ static PyObject* build_version_dictionary() {
   if (!dict_steal(retval, "VLFeat", vlfeat_version())) return 0;
 #endif // HAVE_VLFEAT
 
-  Py_INCREF(retval);
-  return retval;
+  return Py_BuildValue("O", retval);
 }
 
 static PyMethodDef module_methods[] = {

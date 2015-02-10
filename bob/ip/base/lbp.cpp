@@ -842,7 +842,6 @@ template <typename T>
 static PyObject* extract_inner(PyBobIpBaseLBPObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output, bool iii, bool ret_img){
   self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<uint16_t,2>(output), iii);
   if (ret_img){
-    Py_INCREF(output);
     return PyBlitzArray_AsNumpyArray(output, 0);
   } else {
     Py_RETURN_NONE;
@@ -1083,4 +1082,3 @@ bool init_BobIpBaseLBP(PyObject* module)
   Py_INCREF(&PyBobIpBaseLBP_Type);
   return PyModule_AddObject(module, "LBP", (PyObject*)&PyBobIpBaseLBP_Type) >= 0;
 }
-

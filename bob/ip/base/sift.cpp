@@ -630,7 +630,6 @@ static auto computeDescriptor = bob::extension::FunctionDoc(
 template <typename T>
 static PyObject* compute_inner(PyBobIpBaseSIFTObject* self, PyBlitzArrayObject* src, const std::vector<boost::shared_ptr<bob::ip::base::GSSKeypoint> >& keypoints, PyBlitzArrayObject* dst){
   self->cxx->computeDescriptor(*PyBlitzArrayCxx_AsBlitz<T,2>(src), keypoints, *PyBlitzArrayCxx_AsBlitz<double,4>(dst));
-  Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst,0);
 }
 
@@ -751,4 +750,3 @@ bool init_BobIpBaseSIFT(PyObject* module)
   Py_INCREF(&PyBobIpBaseSIFT_Type);
   return PyModule_AddObject(module, "SIFT", (PyObject*)&PyBobIpBaseSIFT_Type) >= 0;
 }
-

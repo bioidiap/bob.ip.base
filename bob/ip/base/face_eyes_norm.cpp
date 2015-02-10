@@ -459,7 +459,6 @@ static PyObject* PyBobIpBaseFaceEyesNorm_extract(PyBobIpBaseFaceEyesNormObject* 
   }
 
   if (nargs == 3){
-    Py_INCREF(output);
     return PyBlitzArray_AsNumpyArray(output,0);
   } else {
     Py_RETURN_NONE;
@@ -513,4 +512,3 @@ bool init_BobIpBaseFaceEyesNorm(PyObject* module)
   Py_INCREF(&PyBobIpBaseFaceEyesNorm_Type);
   return PyModule_AddObject(module, "FaceEyesNorm", (PyObject*)&PyBobIpBaseFaceEyesNorm_Type) >= 0;
 }
-

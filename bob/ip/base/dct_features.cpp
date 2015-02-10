@@ -492,7 +492,6 @@ static PyObject* PyBobIpBaseDCTFeatures_extract(PyBobIpBaseDCTFeaturesObject* se
   }
 
   if (return_out){
-    Py_INCREF(output);
     return PyBlitzArray_AsNumpyArray(output, 0);
   } else {
     Py_RETURN_NONE;
@@ -629,4 +628,3 @@ bool init_BobIpBaseDCTFeatures(PyObject* module)
   Py_INCREF(&PyBobIpBaseDCTFeatures_Type);
   return PyModule_AddObject(module, "DCTFeatures", (PyObject*)&PyBobIpBaseDCTFeatures_Type) >= 0;
 }
-

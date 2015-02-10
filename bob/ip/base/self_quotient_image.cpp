@@ -267,7 +267,6 @@ static auto process = bob::extension::FunctionDoc(
 template <typename T, int D>
 static PyObject* process_inner(PyBobIpBaseSelfQuotientImageObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
   self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,D>(input), *PyBlitzArrayCxx_AsBlitz<double,D>(output));
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
@@ -365,4 +364,3 @@ bool init_BobIpBaseSelfQuotientImage(PyObject* module)
   Py_INCREF(&PyBobIpBaseSelfQuotientImage_Type);
   return PyModule_AddObject(module, "SelfQuotientImage", (PyObject*)&PyBobIpBaseSelfQuotientImage_Type) >= 0;
 }
-

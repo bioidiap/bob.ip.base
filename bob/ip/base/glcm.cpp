@@ -121,8 +121,7 @@ static PyObject* createGLCMProperty() {
   if (insert_item_string(retval, entries, "inverse_difference_moment_normalized", GLCMProperty::inv_diff_mom_norm) < 0) return 0;
   if (PyDict_SetItemString(retval, "entries", entries) < 0) return 0;
 
-  Py_INCREF(retval);
-  return retval;
+  return Py_BuildValue("O", retval);
   BOB_CATCH_FUNCTION("create glmc", 0)
 }
 
@@ -673,7 +672,6 @@ static PyObject* PyBobIpBaseGLCM_extract(PyBobIpBaseGLCMObject* self, PyObject* 
     default: return 0;
   }
 
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 
   BOB_CATCH_MEMBER("cannot extract GLCM matrix from image", 0)
@@ -756,8 +754,7 @@ static PyObject* PyBobIpBaseGLCM_propertiesByName(PyBobIpBaseGLCMObject* self, P
     PyList_SET_ITEM(result, i, Py_BuildValue("O", PyBlitzArray_AsNumpyArray(values, 0)));
   }
 
-  Py_INCREF(result);
-  return result;
+  return Py_BuildValue("O", result);
 
   BOB_CATCH_MEMBER("cannot extract GLCM matrix from image", 0)
 }
@@ -833,4 +830,3 @@ bool init_BobIpBaseGLCM(PyObject* module)
   // here we actually bind the _GLCM class, which will be sub-typed in python later on (I cannot set attributes in C++ classes directly)
   return PyModule_AddObject(module, "_GLCM", (PyObject*)&PyBobIpBaseGLCM_Type) >= 0;
 }
-

@@ -334,7 +334,6 @@ static auto process = bob::extension::FunctionDoc(
 template <typename T>
 static PyObject* process_inner(PyBobIpBaseTanTriggsObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* output){
   self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<double,2>(output));
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
@@ -430,4 +429,3 @@ bool init_BobIpBaseTanTriggs(PyObject* module)
   Py_INCREF(&PyBobIpBaseTanTriggs_Type);
   return PyModule_AddObject(module, "TanTriggs", (PyObject*)&PyBobIpBaseTanTriggs_Type) >= 0;
 }
-

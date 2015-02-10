@@ -94,7 +94,6 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
       return 0;
     }
   } else {
-    assert (!isnan(scale_factor));
     // create output in the same dimensions as input
     switch (src->ndim){
       case 2:{
@@ -133,7 +132,6 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   if (!isnan(scale_factor)){
-    Py_INCREF(dst);
     return PyBlitzArray_AsNumpyArray(dst,0);
   }
 
@@ -265,7 +263,6 @@ PyObject* PyBobIpBase_rotate(PyObject*, PyObject* args, PyObject* kwargs) {
       return 0;
     }
   } else {
-    assert (!isnan(scale_factor));
     // create output in the same dimensions as input
     switch (src->ndim){
       case 2:{
@@ -304,7 +301,6 @@ PyObject* PyBobIpBase_rotate(PyObject*, PyObject* args, PyObject* kwargs) {
   }
 
   if (nargs == 2){
-    Py_INCREF(dst);
     return PyBlitzArray_AsNumpyArray(dst,0);
   }
 
@@ -481,5 +477,3 @@ PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject* args, PyObject* kwarg
 
   BOB_CATCH_FUNCTION("in extrapolate_mask", 0)
 }
-
-

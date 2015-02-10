@@ -38,8 +38,7 @@ static PyObject* createGradientMagnitude() {
   if (insert_item_string(retval, entries, "SqrtMagnitude", bob::ip::base::GradientMagnitudeType::SqrtMagnitude) < 0) return 0;
   if (PyDict_SetItemString(retval, "entries", entries) < 0) return 0;
 
-  Py_INCREF(retval);
-  return retval;
+  return Py_BuildValue("O", retval);
 }
 
 int PyBobIpBaseGradientMagnitude_Converter(PyObject* o, bob::ip::base::GradientMagnitudeType* b) {
@@ -96,8 +95,7 @@ static PyObject* createBlockNorm() {
   if (insert_item_string(retval, entries, "Nonorm", bob::ip::base::BlockNorm::Nonorm) < 0) return 0;
   if (PyDict_SetItemString(retval, "entries", entries) < 0) return 0;
 
-  Py_INCREF(retval);
-  return retval;
+  return Py_BuildValue("O", retval);
 }
 
 int PyBobIpBaseBlockNorm_Converter(PyObject* o, bob::ip::base::BlockNorm* b) {
@@ -646,7 +644,6 @@ static PyObject* PyBobIpBaseHOG_computeHistogram(PyBobIpBaseHOGObject* self, PyO
   self->cxx->computeHistogram(*PyBlitzArrayCxx_AsBlitz<double,2>(mag), *PyBlitzArrayCxx_AsBlitz<double,2>(ori), *PyBlitzArrayCxx_AsBlitz<double,1>(hist));
 
   // return the histogram
-  Py_INCREF(hist);
   return PyBlitzArray_AsNumpyArray(hist, 0);
 
   BOB_CATCH_MEMBER("cannot compute histogram", 0)
@@ -674,7 +671,6 @@ static PyObject* extract_inner(PyBobIpBaseHOGObject* self, PyBlitzArrayObject* i
   else
     input_.reference(bob::core::array::cast<double>(*PyBlitzArrayCxx_AsBlitz<T,2>(input)));
   self->cxx->extract(input_, *PyBlitzArrayCxx_AsBlitz<double,3>(output));
-  Py_INCREF(output);
   return PyBlitzArray_AsNumpyArray(output, 0);
 }
 
@@ -819,4 +815,3 @@ bool init_BobIpBaseHOG(PyObject* module)
   Py_INCREF(&PyBobIpBaseHOG_Type);
   return PyModule_AddObject(module, "HOG", (PyObject*)&PyBobIpBaseHOG_Type) >= 0;
 }
-

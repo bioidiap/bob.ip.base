@@ -376,8 +376,7 @@ static PyObject* PyBobIpBaseVLSIFT_extract(PyBobIpBaseVLSIFTObject* self, PyObje
     PyList_SET_ITEM(dst, i, PyBlitzArrayCxx_AsNumpy(features[i]));
   }
 
-  Py_INCREF(dst);
-  return dst;
+  return Py_BuildValue("O", dst);
 
   BOB_CATCH_MEMBER("cannot extract SIFT features for image", 0)
 }
@@ -706,7 +705,6 @@ static PyObject* PyBobIpBaseVLDSIFT_extract(PyBobIpBaseVLDSIFTObject* self, PyOb
 
   // finally, extract the features
   self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<float,2>(src), *PyBlitzArrayCxx_AsBlitz<float,2>(dst));
-  Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst,0);
 
   BOB_CATCH_MEMBER("cannot extract dense SIFT features for image", 0)

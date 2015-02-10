@@ -30,7 +30,6 @@ bob::extension::FunctionDoc s_median = bob::extension::FunctionDoc(
 
 template <typename T, int D> PyObject* inner_median(PyBlitzArrayObject* src, PyBlitzArrayObject* dst, const blitz::TinyVector<int,2>& radius) {
   bob::ip::base::medianFilter(*PyBlitzArrayCxx_AsBlitz<T, D>(src), *PyBlitzArrayCxx_AsBlitz<T, D>(dst), radius);
-  Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst, 0);
 }
 
@@ -126,10 +125,7 @@ PyObject* PyBobIpBase_sobel(PyObject*, PyObject* args, PyObject* kwargs) {
   // perform Sobel filtering
   bob::ip::base::sobel(*PyBlitzArrayCxx_AsBlitz<double,2>(src), *PyBlitzArrayCxx_AsBlitz<double,3>(dst), border);
 
-  Py_INCREF(dst);
   return PyBlitzArray_AsNumpyArray(dst, 0);
 
   BOB_CATCH_FUNCTION("in sobel", 0)
 }
-
-

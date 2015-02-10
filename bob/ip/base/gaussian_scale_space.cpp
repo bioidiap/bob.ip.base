@@ -773,11 +773,10 @@ static PyObject* _allocate(PyBobIpBaseGaussianScaleSpaceObject* self){
     const blitz::TinyVector<int,3> shape = self->cxx->getOutputShape(i);
     Py_ssize_t o[] = {shape[0], shape[1], shape[2]};
     PyBlitzArrayObject* array = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, o);
-    PyList_SET_ITEM(list, i, Py_BuildValue("O", PyBlitzArray_AsNumpyArray(array, 0)));
+    PyList_SET_ITEM(list, i, PyBlitzArray_AsNumpyArray(array, 0));
   }
 
-  Py_INCREF(list);
-  return list;
+  return Py_BuildValue("O", list);
 }
 
 static PyObject* PyBobIpBaseGaussianScaleSpace_allocateOutput(PyBobIpBaseGaussianScaleSpaceObject* self, PyObject* args, PyObject* kwargs) {
@@ -839,7 +838,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleS
     // create output in desired shape
     dst = _allocate(self);
   }
-  auto dst_ = make_xsafe(dst);
+  auto dst_ = make_safe(dst);
 
   // convert output to list of arrays
   std::vector<blitz::Array<double,3>> output(size);
@@ -871,8 +870,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleS
       return 0;
   }
 
-  Py_INCREF(dst);
-  return dst;
+  return Py_BuildValue("O", dst);
 
   BOB_CATCH_MEMBER("cannot process image", 0)
 }
@@ -967,4 +965,3 @@ bool init_BobIpBaseGaussianScaleSpace(PyObject* module)
   Py_INCREF(&PyBobIpBaseGaussianScaleSpace_Type);
   return PyModule_AddObject(module, "GaussianScaleSpace", (PyObject*)&PyBobIpBaseGaussianScaleSpace_Type) >= 0;
 }
-
