@@ -352,6 +352,7 @@ static PyObject* PyBobIpBaseDCTFeatures_outputShape(PyBobIpBaseDCTFeaturesObject
   blitz::TinyVector<int,2> shape;
   PyObject* flat = 0; // is_integral_image
   PyObject* k = Py_BuildValue("s", kwlist2[0]);
+  auto k_ = make_safe(k);
   if (
     (kwargs && PyDict_Contains(kwargs, k)) ||
     (args && (PyTuple_Check(PyTuple_GetItem(args, 0)) || PyList_Check(PyTuple_GetItem(args, 0))))

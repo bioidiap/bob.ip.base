@@ -81,7 +81,6 @@ PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
       } else {
         if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&", kwlist2, &PyBlitzArray_Converter, &src, &PyBlitzArray_OutputConverter, &hist)) return 0;
       }
-      // get the number of bins
       src_ = make_safe(src);
       hist_ = make_xsafe(hist);
       break;
@@ -95,6 +94,8 @@ PyObject* PyBobIpBase_histogram(PyObject*, PyObject* args, PyObject* kwargs) {
       } else {
         if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&OO&", kwlist4, &PyBlitzArray_Converter, &src, &min_max, &PyBlitzArray_OutputConverter, &hist)) return 0;
       }
+      src_ = make_safe(src);
+      hist_ = make_xsafe(hist);
       break;
     }
     default:

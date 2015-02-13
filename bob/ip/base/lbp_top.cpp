@@ -98,7 +98,7 @@ PyObject* PyBobIpBaseLBPTop_getXY(PyBobIpBaseLBPTopObject* self, void*){
   BOB_TRY
   PyBobIpBaseLBPObject* lbp = (PyBobIpBaseLBPObject*)PyBobIpBaseLBP_Type.tp_alloc(&PyBobIpBaseLBP_Type, 0);
   lbp->cxx = self->cxx->getXY();
-  return Py_BuildValue("O", lbp);
+  return Py_BuildValue("N", lbp);
   BOB_CATCH_MEMBER("xy could not be read", 0)
 }
 
@@ -111,7 +111,7 @@ PyObject* PyBobIpBaseLBPTop_getXT(PyBobIpBaseLBPTopObject* self, void*){
   BOB_TRY
   PyBobIpBaseLBPObject* lbp = (PyBobIpBaseLBPObject*)PyBobIpBaseLBP_Type.tp_alloc(&PyBobIpBaseLBP_Type, 0);
   lbp->cxx = self->cxx->getXT();
-  return Py_BuildValue("O", lbp);
+  return Py_BuildValue("N", lbp);
   BOB_CATCH_MEMBER("xt could not be read", 0)
 }
 
@@ -124,7 +124,7 @@ PyObject* PyBobIpBaseLBPTop_getYT(PyBobIpBaseLBPTopObject* self, void*){
   BOB_TRY
   PyBobIpBaseLBPObject* lbp = (PyBobIpBaseLBPObject*)PyBobIpBaseLBP_Type.tp_alloc(&PyBobIpBaseLBP_Type, 0);
   lbp->cxx = self->cxx->getYT();
-  return Py_BuildValue("O", lbp);
+  return Py_BuildValue("N", lbp);
   BOB_CATCH_MEMBER("yt could not be read", 0)
 }
 
@@ -261,4 +261,3 @@ bool init_BobIpBaseLBPTop(PyObject* module)
   Py_INCREF(&PyBobIpBaseLBPTop_Type);
   return PyModule_AddObject(module, "LBPTop", (PyObject*)&PyBobIpBaseLBPTop_Type) >= 0;
 }
-

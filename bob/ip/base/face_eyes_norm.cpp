@@ -260,7 +260,7 @@ PyObject* PyBobIpBaseFaceEyesNorm_getGeomNorm(PyBobIpBaseFaceEyesNormObject* sel
   BOB_TRY
   PyBobIpBaseGeomNormObject* geomNorm = (PyBobIpBaseGeomNormObject*)PyBobIpBaseGeomNorm_Type.tp_alloc(&PyBobIpBaseGeomNorm_Type, 0);
   geomNorm->cxx = self->cxx->getGeomNorm();
-  return Py_BuildValue("O", geomNorm);
+  return Py_BuildValue("N", geomNorm);
   BOB_CATCH_MEMBER("geom_norm could not be read", 0)
 }
 

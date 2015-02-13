@@ -350,6 +350,7 @@ static PyObject* PyBobIpBaseVLSIFT_extract(PyBobIpBaseVLSIFTObject* self, PyObje
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&|O&", kwlist, &PyBlitzArray_Converter, &src, &PyBlitzArray_Converter, &keypoints)) return 0;
 
   auto src_ = make_safe(src);
+  auto kp_ = make_xsafe(keypoints);
 
   // perform checks on input and output image
   if (src->ndim != 2 || src->type_num != NPY_UINT8){

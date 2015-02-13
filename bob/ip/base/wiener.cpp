@@ -165,6 +165,7 @@ int PyBobIpBaseWiener_setPs(PyBobIpBaseWienerObject* self, PyObject* value, void
     PyErr_Format(PyExc_RuntimeError, "%s %s expects a 2D array of floats", Py_TYPE(self)->tp_name, Ps.name());
     return -1;
   }
+  auto o_ = make_safe(o);
   auto b = PyBlitzArrayCxx_AsBlitz<double,2>(o, "Ps");
   if (!b) return -1;
   self->cxx->setPs(*b);
@@ -497,4 +498,3 @@ bool init_BobIpBaseWiener(PyObject* module)
   Py_INCREF(&PyBobIpBaseWiener_Type);
   return PyModule_AddObject(module, "Wiener", (PyObject*)&PyBobIpBaseWiener_Type) >= 0;
 }
-

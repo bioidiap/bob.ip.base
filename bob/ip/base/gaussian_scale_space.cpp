@@ -725,7 +725,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_getGaussian(PyBobIpBaseGaussianSc
 
   PyBobIpBaseGaussianObject* gaussian = (PyBobIpBaseGaussianObject*)PyBobIpBaseGaussian_Type.tp_alloc(&PyBobIpBaseGaussian_Type, 0);
   gaussian->cxx = self->cxx->getGaussian(index);
-  return Py_BuildValue("O", gaussian);
+  return Py_BuildValue("N", gaussian);
 
   BOB_CATCH_MEMBER("cannot get Gaussian", 0)
 }
@@ -773,6 +773,7 @@ static PyObject* _allocate(PyBobIpBaseGaussianScaleSpaceObject* self){
     const blitz::TinyVector<int,3> shape = self->cxx->getOutputShape(i);
     Py_ssize_t o[] = {shape[0], shape[1], shape[2]};
     PyBlitzArrayObject* array = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, o);
+    auto array_ = make_safe(array);
     PyList_SET_ITEM(list, i, PyBlitzArray_AsNumpyArray(array, 0));
   }
 

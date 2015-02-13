@@ -283,6 +283,7 @@ static int PyBobIpBaseGLCM_init(PyBobIpBaseGLCMObject* self, PyObject* args, PyO
 }
 
 static void PyBobIpBaseGLCM_delete(PyBobIpBaseGLCMObject* self) {
+  self->prop.reset();
   self->cxx.reset();
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -751,7 +752,7 @@ static PyObject* PyBobIpBaseGLCM_propertiesByName(PyBobIpBaseGLCMObject* self, P
       case GLCMProperty::GLCMProperty_Count: return 0; // cannot happen
     }
     // set list item
-    PyList_SET_ITEM(result, i, Py_BuildValue("O", PyBlitzArray_AsNumpyArray(values, 0)));
+    PyList_SET_ITEM(result, i, Py_BuildValue("N", PyBlitzArray_AsNumpyArray(values, 0)));
   }
 
   return Py_BuildValue("O", result);

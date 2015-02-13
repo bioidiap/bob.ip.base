@@ -54,6 +54,7 @@ Functions
    bob.ip.base.crop
    bob.ip.base.shift
 
+   bob.ip.base.extrapolate_mask
    bob.ip.base.max_rect_in_mask
    bob.ip.base.angle_to_horizontal
 
@@ -76,4 +77,3 @@ Detailed Information
 --------------------
 
 .. automodule:: bob.ip.base
-
