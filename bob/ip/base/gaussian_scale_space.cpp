@@ -820,6 +820,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleS
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&|O!", kwlist, &PyBlitzArray_Converter, &src, &PyList_Type, &dst)) return 0;
 
   auto src_ = make_safe(src);
+  auto dst_ = make_xsafe(dst);
 
   // perform checks on input and output image
   if (src->ndim != 2){
@@ -834,12 +835,10 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleS
       PyErr_Format(PyExc_TypeError, "`%s' The given output list needs to have %d elements, but has %d", Py_TYPE(self)->tp_name, (int)PyList_Size(dst),(int) size);
       return 0;
     }
-    Py_INCREF(dst);
   } else {
     // create output in desired shape
     dst = _allocate(self);
   }
-  auto dst_ = make_safe(dst);
 
   // convert output to list of arrays
   std::vector<blitz::Array<double,3>> output(size);

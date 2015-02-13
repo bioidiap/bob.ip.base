@@ -207,8 +207,7 @@ static PyObject* create_module (void) {
   if (import_bob_io_base() < 0) return 0;
   if (import_bob_sp() < 0) return 0;
 
-  Py_INCREF(module);
-  return module;
+  return Py_BuildValue("O", module);
 
 }
 
