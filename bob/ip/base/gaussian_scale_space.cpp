@@ -772,9 +772,8 @@ static PyObject* _allocate(PyBobIpBaseGaussianScaleSpaceObject* self){
     // allocate memory for the current octave in the desired size
     const blitz::TinyVector<int,3> shape = self->cxx->getOutputShape(i);
     Py_ssize_t o[] = {shape[0], shape[1], shape[2]};
-    PyBlitzArrayObject* array = (PyBlitzArrayObject*)PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, o);
-    auto array_ = make_safe(array);
-    PyList_SET_ITEM(list, i, PyBlitzArray_AsNumpyArray(array, 0));
+    PyObject* array = PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, o);
+    PyList_SET_ITEM(list, i, PyBlitzArray_NUMPY_WRAP(array));
   }
 
   return Py_BuildValue("O", list);
@@ -838,6 +837,7 @@ static PyObject* PyBobIpBaseGaussianScaleSpace_process(PyBobIpBaseGaussianScaleS
   } else {
     // create output in desired shape
     dst = _allocate(self);
+    dst_ = make_safe(dst);
   }
 
   // convert output to list of arrays
