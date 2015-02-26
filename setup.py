@@ -163,7 +163,6 @@ setup(
           "bob/ip/base/hog.cpp",
           "bob/ip/base/glcm.cpp",
           "bob/ip/base/filter.cpp",
-          "bob/ip/base/utils.cpp",
           "bob/ip/base/wiener.cpp",
           "bob/ip/base/main.cpp",
         ],
