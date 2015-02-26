@@ -20,6 +20,7 @@ before_install:
 - if [ -n "${NUMPYSPEC}" ]; then sudo apt-get install -qq  gfortran; fi
 - if [ -n "${NUMPYSPEC}" ]; then pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel numpy$NUMPYSPEC; fi
 - pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel sphinx matplotlib==1.3.1 nose==1.3.0 jinja2==2.6 cpp-coveralls pygments==1.6
+- pip install coveralls
 install:
 - python bootstrap-buildout.py
 - CPPFLAGS=--coverage LDFLAGS=--coverage ./bin/buildout
@@ -29,5 +30,6 @@ script:
 - ./bin/sphinx-build -b doctest doc sphinx
 - ./bin/sphinx-build -b html doc sphinx
 after_success:
-- coveralls --build-root=`pwd` --exclude=src --exclude-pattern=".*Compiler.*"
+- cpp-coveralls --build-root=`pwd` --exclude=src --dump=cpp_cov.json
+- coveralls --merge=cpp_cov.json
 - ./src/bob.extension/scripts/upload-sphinx.sh
