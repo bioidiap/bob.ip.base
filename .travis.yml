@@ -22,7 +22,7 @@ before_install:
 - pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel sphinx matplotlib==1.3.1 nose==1.3.0 jinja2==2.6 cpp-coveralls pygments==1.6
 install:
 - python bootstrap-buildout.py
-- CFLAGS=-coverage ./bin/buildout
+- CFLAGS=--coverage LDFLAGS=--coverage ./bin/buildout
 script:
 - ./bin/python -c 'from bob.ip.base import get_config; print(get_config())'
 - ./bin/coverage run --source=bob.ip.base ./bin/nosetests -sv
