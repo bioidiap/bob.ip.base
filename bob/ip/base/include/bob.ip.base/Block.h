@@ -77,7 +77,7 @@ namespace bob { namespace ip { namespace base {
   ){
     // Check parameters and throw exception if required
     if (block_h < 1 || block_h > height) throw std::runtime_error((boost::format("setting `block_h' to %lu is outside the expected range [1, %lu]") % block_h % height).str());
-    if (block_w < 1 || block_h > width) throw std::runtime_error((boost::format("setting `block_w' to %lu is outside the expected range [1, %lu]") % block_w % width).str());
+    if (block_w < 1 || block_w > width) throw std::runtime_error((boost::format("setting `block_w' to %lu is outside the expected range [1, %lu]") % block_w % width).str());
     if (overlap_h >= block_h) throw std::runtime_error((boost::format("setting `overlap_h' to %lu is outside the expected range [0, %lu]") % overlap_h % (block_h-1)).str());
     if (overlap_w >= block_w) throw std::runtime_error((boost::format("setting `overlap_w' to %lu is outside the expected range [0, %lu]") % overlap_w % (block_w-1)).str());
   }
@@ -241,4 +241,3 @@ namespace bob { namespace ip { namespace base {
 } } } // namespaces
 
 #endif /* BOB_IP_BASE_BLOCK_H */
-
