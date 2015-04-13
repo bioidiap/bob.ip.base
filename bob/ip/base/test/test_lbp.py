@@ -762,11 +762,9 @@ def test_lpb_top_with_radii():
   op = bob.ip.base.LBPTop(lbp_xy, lbp_xt, lbp_yt)
 
   # all other orders should raise
-  with nose.tools.assert_raises(RuntimeError) as exc:
-    op = bob.ip.base.LBPTop(lbp_xy, lbp_yt, lbp_xt)
-
-  with nose.tools.assert_raises(RuntimeError) as exc:
-    op = bob.ip.base.LBPTop(lbp_xt, lbp_yt, lbp_xy)
+  nose.tools.assert_raises(RuntimeError, bob.ip.base.LBPTop, lbp_xy, lbp_yt, lbp_xt)
+  nose.tools.assert_raises(RuntimeError, bob.ip.base.LBPTop, lbp_xt, lbp_yt, lbp_xy)
+  nose.tools.assert_raises(RuntimeError, bob.ip.base.LBPTop, lbp_yt, lbp_xt, lbp_xy)
 
 
 """
