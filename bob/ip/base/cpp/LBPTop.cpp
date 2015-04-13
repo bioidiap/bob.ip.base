@@ -27,23 +27,18 @@ bob::ip::base::LBPTop::LBPTop(
 {
   /*
    * Checking the inputs. The radius in XY,XT and YT must be the same
+   * Note: radii are in opposity direction lbp_xy has radii stored in (y,x), aso.
    */
-  if(lbp_xy->getRadii()[0]!=lbp_xt->getRadii()[0]) {
-    boost::format m("the radii R_xy[0] (%f) and R_xt[0] (%f) do not match");
-    m % lbp_xy->getRadii()[0] % lbp_xt->getRadii()[0];
-    throw std::runtime_error(m.str());
+  if(lbp_xy->getRadii()[1]!=lbp_xt->getRadii()[1]) {
+    throw std::runtime_error((boost::format("The X radii of R_xy (%f) and R_xt (%f) do not match")% lbp_xy->getRadii()[1] % lbp_xt->getRadii()[1]).str());
   }
 
-  if(lbp_xy->getRadii()[1]!=lbp_yt->getRadii()[0]) {
-    boost::format m("the radii R_xy[1] (%f) and R_yt[0] (%f) do not match");
-    m % lbp_xy->getRadii()[1] % lbp_yt->getRadii()[0];
-    throw std::runtime_error(m.str());
+  if(lbp_xy->getRadii()[0]!=lbp_yt->getRadii()[1]) {
+    throw std::runtime_error((boost::format("The Y radii R_xy (%f) and R_yt (%f) do not match")% lbp_xy->getRadii()[0] % lbp_yt->getRadii()[1]).str());
   }
 
-  if(lbp_xt->getRadii()[1]!=lbp_yt->getRadii()[0]) {
-    boost::format m("the radii R_xt[1] (%f) and R_yt[0] (%f) do not match");
-    m % lbp_xt->getRadii()[1] % lbp_yt->getRadii()[0];
-    throw std::runtime_error(m.str());
+  if(lbp_xt->getRadii()[0]!=lbp_yt->getRadii()[0]) {
+    throw std::runtime_error((boost::format("The T radii R_xt (%f) and R_yt (%f) do not match")% lbp_xt->getRadii()[0] % lbp_yt->getRadii()[0]).str());
   }
 
 }
@@ -63,4 +58,3 @@ bob::ip::base::LBPTop& bob::ip::base::LBPTop::operator= (const LBPTop& other) {
   m_lbp_yt = other.m_lbp_yt;
   return *this;
 }
-

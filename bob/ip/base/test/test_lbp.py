@@ -745,6 +745,30 @@ def test_vanilla_4p1r_4p1r_4p1r():
   nose.tools.eq_(proc2(values_5x5,plane_index=2,operator_coordinates=(0,0,0)),0x7)
 
 
+def test_lpb_top_with_radii():
+
+  # XY with rx = 4 and ry = 6
+  lbp_xy = bob.ip.base.LBP(8, 6., 4.)
+  # XT with rx = 4 and rt = 2
+  lbp_xt = bob.ip.base.LBP(8, 2., 4.)
+  # YT with ry = 6 and rt = 2
+  lbp_yt = bob.ip.base.LBP(8, 2., 6.)
+
+  assert lbp_xy.radii[1] == lbp_xt.radii[1]
+  assert lbp_xy.radii[0] == lbp_yt.radii[1]
+  assert lbp_xt.radii[0] == lbp_yt.radii[0]
+
+  # the correct order shouldn't raise
+  op = bob.ip.base.LBPTop(lbp_xy, lbp_xt, lbp_yt)
+
+  # all other orders should raise
+  with nose.tools.assert_raises(RuntimeError) as exc:
+    op = bob.ip.base.LBPTop(lbp_xy, lbp_yt, lbp_xt)
+
+  with nose.tools.assert_raises(RuntimeError) as exc:
+    op = bob.ip.base.LBPTop(lbp_xt, lbp_yt, lbp_xy)
+
+
 """
 " Test LBPHS feature extraction
 """
@@ -782,6 +806,3 @@ def test_lbphs():
   result = bob.ip.base.lbphs(src, lbp, block_size = (5,5), block_overlap=(0,0))
 
   assert numpy.allclose(result, lbphs)
-
-
-

@@ -27,8 +27,13 @@ static auto LBPTop_doc = bob::extension::ClassDoc(
 ).add_constructor(
   bob::extension::FunctionDoc(
     "__init__",
-    "Constructs a new LBPTop object starting from the algorithm configuration",
-    0,
+    "Constructs a new LBPTop object",
+    "For all three directions, the LBP objects need to be specified. "
+    "The radii for the three LBP classes must be consistent, i.e., ``xy.radii[1] == xt.radii[1]``, ``xy.radii[0] == yt.radii[1]`` and ``xt.radii[0] == yt.radii[0]``.\n\n"
+    ".. warning::\n\n"
+    "   The order of the ``radius_x`` and ``radius_y`` parameters are not ``(radius_x, radius_y)`` in the :py:class:`LBP` constructor, but ``(radius_y, radius_x)``. "
+    "   Hence, to get an ``x`` radius 2 and ``y`` radius 3, you need to use ``xy = bob.ip.base.LBP(8, 3, 2)`` or more specifically ``xy = bob.ip.base.LBP(8, radius_x=2, radius_y=3)``. "
+    "   The same applies for ``xt`` and ``yt``.",
     true
   )
   .add_prototype("xy, xt, yt", "")

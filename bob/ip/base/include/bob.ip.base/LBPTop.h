@@ -141,9 +141,9 @@ namespace bob { namespace ip { namespace base {
         blitz::Array<uint16_t,3>& yt
     ) const
     {
-      int radius_x = m_lbp_xy->getRadii()[0];  ///< The LBPu2,i radius in X direction
-      int radius_y = m_lbp_xy->getRadii()[1];  ///< The LBPu2,i radius in Y direction
-      int radius_t = m_lbp_yt->getRadii()[1];  ///< The LBPu2,i radius in T direction
+      int radius_x = m_lbp_xy->getRadii()[1];  ///< The LBPu2,i radius in X direction
+      int radius_y = m_lbp_xy->getRadii()[0];  ///< The LBPu2,i radius in Y direction
+      int radius_t = m_lbp_yt->getRadii()[0];  ///< The LBPu2,i radius in T direction
 
       int Tlength = src.extent(0);
       int height = src.extent(1);
