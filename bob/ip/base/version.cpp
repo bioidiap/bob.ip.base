@@ -25,6 +25,7 @@
 #include <bob.io.base/config.h>
 #include <bob.sp/config.h>
 #include <bob.math/config.h>
+#include <bob.ip.base/config.h>
 
 static int dict_set(PyObject* d, const char* key, const char* value) {
   PyObject* v = Py_BuildValue("s", value);
@@ -190,6 +191,7 @@ static PyObject* create_module (void) {
   auto m_ = make_safe(m); ///< protects against early returns
 
   /* register version numbers and constants */
+  if (PyModule_AddIntConstant(m, "api", BOB_IP_BASE_API_VERSION) < 0) return 0;
   if (PyModule_AddStringConstant(m, "module", BOB_EXT_MODULE_VERSION) < 0) return 0;
 
   PyObject* externals = build_version_dictionary();
