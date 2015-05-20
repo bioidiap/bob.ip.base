@@ -27,7 +27,7 @@ script:
 - ./bin/sphinx-build -b doctest doc sphinx
 - ./bin/sphinx-build -b html doc sphinx
 after_success:
-- cpp-coveralls --build-root=`pwd` --exclude=src --dump=cpp_cov.json
+- cpp-coveralls --build-root=`pwd` --exclude=src --exclude-pattern=".*Compiler.*" --dump=cpp_cov.json
 - coveralls --merge=cpp_cov.json
 - wget https://raw.githubusercontent.com/bioidiap/bob.extension/master/scripts/upload-{sphinx,wheel}.sh
 - chmod a+x upload-sphinx.sh upload-wheel.sh
