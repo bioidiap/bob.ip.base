@@ -238,11 +238,15 @@ void bob::ip::base::DCTFeatures::extract_(const blitz::Array<double,2>& src, bli
   {
     blitz::firstIndex ii;
     blitz::secondIndex jj;
-    blitz::thirdIndex kk;
-    m_cache_dct1 = blitz::mean(dst(kk,ii,jj), kk); // mean
-    m_cache_dct2 = blitz::sum(blitz::pow2(dst(kk,ii,jj) - m_cache_dct1(ii,jj)),kk) / (double)(dst.extent(0));
-    m_cache_dct2 = blitz::where(m_cache_dct2 <= m_norm_epsilon, 1., blitz::sqrt(m_cache_dct2));
-    dst = (dst(ii,jj,kk) - m_cache_dct1(kk)) / m_cache_dct2(kk);
+    
+    for (int kk=0; kk<dst.extent(2); ++kk) {
+      blitz::Array<double,2> dst_slice = dst(blitz::Range::all(), blitz::Range::all(), kk);
+      double mean = blitz::mean(dst_slice);
+      m_cache_dct1(kk) = mean;
+      double variance = blitz::sum(blitz::pow2(dst_slice))/(double)(dst.extent(0)*dst.extent(1)) - mean*mean;
+      m_cache_dct2(kk) = variance;
+      dst_slice = (dst_slice(ii,jj) - mean) / (variance <= m_norm_epsilon ? 1. : sqrt(variance));
+    }
   }
 }
 
