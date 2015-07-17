@@ -109,3 +109,19 @@ def test04_output_shape():
   dct_op = bob.ip.base.DCTFeatures(6, (3, 4), (0, 0))
   assert dct_op.output_shape(src, flat=True) == (4,6)
   assert dct_op.output_shape(src, flat=False) == (2,2,6)
+  
+  
+def test_3Doutput_and_2Doutput():
+  numpy.random.seed(3)
+  data = numpy.random.randn(10,10)
+
+  #Comparing the regular output with the output per block WITHOUT DCT coefficient normalization
+  o = bob.ip.base.DCTFeatures(5, (3,3),(1,1),True,False,False)
+  assert (numpy.allclose(o(data, False).flatten(),o(data, True).flatten(),1e-10))
+
+  #Comparing the regular output with the output per block WITH DCT coefficient normalization
+  o = bob.ip.base.DCTFeatures(5,(3,3),(1,1),True,True,False)
+  assert (numpy.allclose(o(data, False).flatten(),o(data, True).flatten(),1e-10))
+
+  
+  
