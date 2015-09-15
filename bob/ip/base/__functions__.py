@@ -17,7 +17,7 @@ def angle_to_horizontal(right, left):
     The angle **in degrees** between the left and the right point
   """
 
-  return math.atan2(right[0] - left[0], right[1] - left[1]) * 108. / math.pi
+  return math.atan2(right[0] - left[0], right[1] - left[1]) * 180. / math.pi
 
 
 def flip(src, dst = None):
@@ -175,4 +175,3 @@ def shift(src, offset, dst = None, src_mask = None, dst_mask = None, fill_patter
 
   # shift image by cropping
   return crop(src, offset, dst=dst, src_mask=src_mask, dst_mask=dst_mask, fill_pattern=fill_pattern)
-
