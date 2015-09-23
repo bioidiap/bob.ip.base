@@ -45,10 +45,16 @@ Functions
 ---------
 
 .. autosummary::
+   bob.ip.base.flip
+   bob.ip.base.flop
+   bob.ip.base.crop
+   bob.ip.base.shift
+
    bob.ip.base.scale
    bob.ip.base.scaled_output_shape
    bob.ip.base.rotate
    bob.ip.base.rotated_output_shape
+   bob.ip.base.angle_to_horizontal
    bob.ip.base.block
    bob.ip.base.block_output_shape
    bob.ip.base.crop
