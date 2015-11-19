@@ -98,10 +98,7 @@ setup(
     setup_requires = build_requires,
     install_requires = build_requires,
 
-    namespace_packages=[
-      "bob",
-      "bob.ip",
-    ],
+
 
     ext_modules = [
       Extension("bob.ip.base.version",
