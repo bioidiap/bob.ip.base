@@ -357,6 +357,15 @@ def test_face_eyes_norm():
   reference_image = bob.io.base.load(reference_file)
 
   assert numpy.allclose(normalized, reference_image)
+  
+  # check that the color conversion also works
+  color = numpy.array((test_image, test_image, test_image))
+  processed = fen(color, right_eye, left_eye)
+  assert processed.ndim == 3
+  normalized = numpy.round(processed).astype(numpy.uint8)
+  assert all(numpy.allclose(normalized[i], reference_image) for i in range(3))
+  
+  
 
   # check that the eye positions are actually alligned correctly
   center = ((right_eye[0] + left_eye[0]) / 2., (right_eye[1] + left_eye[1]) / 2.)

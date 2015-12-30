@@ -343,21 +343,34 @@ static auto extract = bob::extension::FunctionDoc(
 .add_prototype("input, right_eye, left_eye", "output")
 .add_prototype("input, output, right_eye, left_eye")
 .add_prototype("input, input_mask, output, output_mask, right_eye, left_eye")
-.add_parameter("input", "array_like (2D)", "The input image to which FaceEyesNorm should be applied")
-.add_parameter("output", "array_like (2D, float)", "The output image, which must be of size :py:attr:`crop_size`")
+.add_parameter("input", "array_like (2D or 3D)", "The input image to which FaceEyesNorm should be applied")
+.add_parameter("output", "array_like (2D or 3D, float)", "The output image, which must be of size :py:attr:`crop_size`")
 .add_parameter("right_eye", "(float, float)", "The position of the right eye (or another landmark) in ``input`` image coordinates.")
 .add_parameter("left_eye", "(float, float)", "The position of the left eye (or another landmark) in ``input`` image coordinates.")
 .add_parameter("input_mask", "array_like (2D, bool)", "An input mask of valid pixels before geometric normalization, must be of same size as ``input``")
 .add_parameter("output_mask", "array_like (2D, bool)", "The output mask of valid pixels after geometric normalization, must be of same size as ``output``")
-.add_return("output", "array_like(2D, float)", "The resulting normalized face image, which is of size :py:attr:`crop_size`")
+.add_return("output", "array_like(2D or 3D, float)", "The resulting normalized face image, which is of size :py:attr:`crop_size`")
 ;
 
 template <typename T>
 static void extract_inner(PyBobIpBaseFaceEyesNormObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* input_mask, PyBlitzArrayObject* output, PyBlitzArrayObject* output_mask, const blitz::TinyVector<double,2>& right, const blitz::TinyVector<double,2>& left){
-  if (input_mask && output_mask){
-    self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<bool,2>(input_mask), *PyBlitzArrayCxx_AsBlitz<double,2>(output), *PyBlitzArrayCxx_AsBlitz<bool,2>(output_mask), right, left);
+  if (input->ndim == 3){
+    auto a = blitz::Range::all();
+    for (int i = 0; i < input->shape[0]; ++i){
+      const blitz::Array<T,2> in = (*PyBlitzArrayCxx_AsBlitz<T,3>(input))(i,a,a);
+      blitz::Array<double,2> out = (*PyBlitzArrayCxx_AsBlitz<double,3>(output))(i,a,a);
+      if (input_mask && output_mask){
+        self->cxx->extract(in, *PyBlitzArrayCxx_AsBlitz<bool,2>(input_mask), out, *PyBlitzArrayCxx_AsBlitz<bool,2>(output_mask), right, left);
+      } else {
+        self->cxx->extract(in, out, right, left);
+      }
+    }
   } else {
-    self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<double,2>(output), right, left);
+    if (input_mask && output_mask){
+      self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<bool,2>(input_mask), *PyBlitzArrayCxx_AsBlitz<double,2>(output), *PyBlitzArrayCxx_AsBlitz<bool,2>(output_mask), right, left);
+    } else {
+      self->cxx->extract(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<double,2>(output), right, left);
+    }
   }
 }
 
@@ -408,17 +421,17 @@ static PyObject* PyBobIpBaseFaceEyesNorm_extract(PyBobIpBaseFaceEyesNormObject* 
   auto input_ = make_safe(input), output_ = make_xsafe(output);
   auto input_mask_ = make_xsafe(input_mask), output_mask_ = make_xsafe(output_mask);
 
-  if (input->ndim != 2){
+  if (input->ndim != 2 and input->ndim != 3){
     extract.print_usage();
-    PyErr_Format(PyExc_TypeError, "'%s' only 2D facial images can be normalized", Py_TYPE(self)->tp_name);
+    PyErr_Format(PyExc_TypeError, "'%s' only 2D or 3D facial images can be normalized", Py_TYPE(self)->tp_name);
     return 0;
   }
 
   if (output){
     // check that data type is correct and dimensions fit
-    if (output->ndim != 2){
+    if (output->ndim != input->ndim){
       extract.print_usage();
-      PyErr_Format(PyExc_TypeError, "'%s' the 'output' array must be 2D", Py_TYPE(self)->tp_name);
+      PyErr_Format(PyExc_TypeError, "'%s' the 'output' array must have the same number of dimensions as 'input' (2D or 3D)", Py_TYPE(self)->tp_name);
       return 0;
     }
     if (output->type_num != NPY_FLOAT64){
@@ -429,14 +442,19 @@ static PyObject* PyBobIpBaseFaceEyesNorm_extract(PyBobIpBaseFaceEyesNormObject* 
   } else {
     // create output in the desired dimensions
     auto shape = self->cxx->getCropSize();
-    Py_ssize_t n[] = {shape[0], shape[1]};
-    output = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_FLOAT64, 2, n));
+    if (input->ndim == 2){
+      Py_ssize_t n[] = {shape[0], shape[1]};
+      output = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_FLOAT64, 2, n));
+    } else {
+      Py_ssize_t n[] = {input->shape[0], shape[0], shape[1]};
+      output = reinterpret_cast<PyBlitzArrayObject*>(PyBlitzArray_SimpleNew(NPY_FLOAT64, 3, n));
+    }
     output_ = make_safe(output);
   }
 
   if (input_mask && output_mask){
     if (input_mask->ndim != 2 || output_mask->ndim != 2){
-      PyErr_Format(PyExc_TypeError, "`%s' masks must have the same shape as the input or output matrix", Py_TYPE(self)->tp_name);
+      PyErr_Format(PyExc_TypeError, "`%s' masks must be 2D and have the same shape as the input or output matrix", Py_TYPE(self)->tp_name);
       extract.print_usage();
       return 0;
     }
