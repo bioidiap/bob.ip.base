@@ -400,6 +400,10 @@ namespace bob { namespace ip { namespace base {
     int true_min_index=blitz::first(column_true);
     int true_max_index=blitz::last(column_true);
 
+    if (true_min_index < 0 || true_max_index < 0){
+      throw std::runtime_error("The given mask is invalid as it contains only 'False' values.");
+    }
+
     // Extrapolate the "non false" columns
     for(int jj=true_min_index; jj<=true_max_index; ++jj)
     {
@@ -571,4 +575,3 @@ namespace bob { namespace ip { namespace base {
 } } } // namespaces
 
 #endif // BOB_IP_BASE_AFFINE_H
-
