@@ -1,6 +1,7 @@
 # import Libraries of other lib packages
 import bob.io.base
 import bob.sp
+import bob.math
 
 # import our own Library
 import bob.extension
