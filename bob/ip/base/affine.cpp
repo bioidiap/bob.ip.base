@@ -30,7 +30,7 @@ bob::extension::FunctionDoc s_scale = bob::extension::FunctionDoc(
 .add_parameter("dst", "array_like (2D or 3D, float)", "The resulting scaled gray or color image")
 .add_parameter("src_mask", "array_like (bool, 2D or 3D)", "An input mask of valid pixels before geometric normalization, must be of same size as ``src``")
 .add_parameter("dst_mask", "array_like (bool, 2D or 3D)", "The output mask of valid pixels after geometric normalization, must be of same size as ``dst``")
-.add_parameter("scaling_factor", "float", "the scaling factor that should be applied to the image")
+.add_parameter("scaling_factor", "float", "the scaling factor that should be applied to the image; can be negative, but cannot be ``0.``")
 .add_return("dst", "array_like (2D, float)", "The resulting scaled image")
 ;
 
@@ -54,7 +54,7 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
   Py_ssize_t nargs = (args?PyTuple_Size(args):0) + (kwargs?PyDict_Size(kwargs):0);
 
   PyBlitzArrayObject* src,* src_mask = 0,* dst = 0,* dst_mask = 0;
-  double scale_factor = std::numeric_limits<float>::quiet_NaN();
+  double scale_factor = 0;
   if (nargs == 4){
     // with masks
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&O&O&", kwlist3, &PyBlitzArray_Converter, &src, &PyBlitzArray_Converter, &src_mask, &PyBlitzArray_OutputConverter, &dst, &PyBlitzArray_OutputConverter, &dst_mask)) return 0;
@@ -66,6 +66,10 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
     if ((args && PyTuple_Size(args) == 2 && (PyInt_Check(PyTuple_GET_ITEM(args,1)) || PyFloat_Check(PyTuple_GET_ITEM(args,1)))) || (kwargs && PyDict_Contains(kwargs, k))){
       // with scale
       if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&d", kwlist1, &PyBlitzArray_Converter, &src, &scale_factor)) return 0;
+      if (!scale_factor){
+        PyErr_SetString(PyExc_ValueError, "scaling with a scale factor of 0. is not supported.");
+        return 0;
+      }
     } else {
       // with input and output
       if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O&O&", kwlist2, &PyBlitzArray_Converter, &src, &PyBlitzArray_OutputConverter, &dst)) return 0;
@@ -131,7 +135,7 @@ PyObject* PyBobIpBase_scale(PyObject*, PyObject* args, PyObject* kwargs) {
       return 0;
   }
 
-  if (!isnan(scale_factor)){
+  if (scale_factor){
     return PyBlitzArray_AsNumpyArray(dst,0);
   }
 
