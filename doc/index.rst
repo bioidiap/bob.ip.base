@@ -36,6 +36,7 @@ References
 .. [Dalal2005]       *N. Dalal, B. Triggs*. **Histograms of Oriented Gradients for Human Detection,** In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, 2005.
 .. [Haralick1973]    *R. M. Haralick, K. Shanmugam, I. Dinstein*. **Textural Features for Image Classification,** In IEEE Transactions on Systems, Man and Cybernetics, vol. SMC-3, No. 6, p. 610-621, 1973.
 .. [Szeliski2010]    *Richard Szeliski*. **Computer Vision: Algorithms and Applications** (1st ed.). Springer-Verlag New York, USA, 2010.
+.. [Zhao2007]        *G. Zhao and M. Pietikainen.* **Dynamic Texture Recognition Using Local Binary Patterns with an Application to Facial Expressions,** in IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 29, no. 6, pp. 915-928, June 2007. doi: 10.1109/TPAMI.2007.1110
 
 Indices and tables
 ------------------
