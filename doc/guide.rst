@@ -229,5 +229,56 @@ you need to get the required shape of the output image using the :py:class:`bob.
   >>> print(bin ( lbp_output_image [ 68, 61 ] ))
   0b1111000
 
+
+LBP-TOP extraction
+~~~~~~~~~~~~~~~~~~
+
+  LBP-TOP [Zhao2007]_ extraction for temporal texture analysis.
+
+.. doctest:: lbptoptest
+  :options: +NORMALIZE_WHITESPACE
+
+  >>> import bob.ip.base
+  >>> import numpy
+  >>> numpy.random.seed(10)
+  >>> #Defining the lbp operator for each plane
+  >>> lbp_xy = bob.ip.base.LBP(8,1)
+  >>> lbp_xt = bob.ip.base.LBP(8,1)
+  >>> lbp_yt = bob.ip.base.LBP(8,1)
+  >>> lbptop = bob.ip.base.LBPTop(lbp_xy, lbp_xt, lbp_yt)
+
+Defining the test 3D image and creating the containers for the outputs in each plane
+
+.. doctest:: lbptoptest
+  :options: +NORMALIZE_WHITESPACE
+
+  >>> img3d = (numpy.random.rand(3,5,5)*100).astype('uint16')
+  >>> t = int(max(lbp_xt.radius, lbp_yt.radius))
+  >>> w = int(img3d.shape[1] - lbp_xy.radii[0]*2)
+  >>> h = int(img3d.shape[2] - lbp_xy.radii[1]*2)
+  >>> output_xy = numpy.zeros((t,w,h),dtype='uint16')
+  >>> output_xt = numpy.zeros((t,w,h),dtype='uint16')
+  >>> output_yt = numpy.zeros((t,w,h),dtype='uint16')
+
+Extracting the bins for each plane
+
+.. doctest:: lbptoptest
+  :options: +NORMALIZE_WHITESPACE
+
+  >>> lbptop(img3d,output_xy, output_xt, output_yt)
+  >>> print(output_xy)
+  [[[ 89   0 235]
+  [255  72 255]
+  [ 40  95   2]]]
+  >>> print(output_xt)
+  [[[ 55   2 135]
+  [223 130 119]
+  [  0 253  64]]]
+  >>> print(output_yt)
+  [[[ 45   0 173]
+  [247   1 255]
+  [130 127  64]]]
+  
+
 .. Place here your external references
 .. include:: links.rst
