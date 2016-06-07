@@ -68,11 +68,11 @@ static int PyBobIpBaseGeomNorm_init(PyBobIpBaseGeomNormObject* self, PyObject* a
   blitz::TinyVector<int,2> size;
   blitz::TinyVector<double,2> offset;
   // more than one parameter; check the second one
-  if (!(PyArg_ParseTupleAndKeywords(args, kwargs, "dd(ii)(dd)", kwlist1, &scale, &angle, &size[0], &size[1], &offset[0], &offset[1]))){
+  if (!(PyArg_ParseTupleAndKeywords(args, kwargs, "dd(ii)(dd)", kwlist1, &angle, &scale, &size[0], &size[1], &offset[0], &offset[1]))){
     GeomNorm_doc.print_usage();
     return -1;
   }
-  self->cxx.reset(new bob::ip::base::GeomNorm(scale, angle, size, offset));
+  self->cxx.reset(new bob::ip::base::GeomNorm(angle, scale, size, offset));
   return 0;
 
   BOB_CATCH_MEMBER("cannot create GeomNorm object", -1)
@@ -400,4 +400,3 @@ bool init_BobIpBaseGeomNorm(PyObject* module)
   Py_INCREF(&PyBobIpBaseGeomNorm_Type);
   return PyModule_AddObject(module, "GeomNorm", (PyObject*)&PyBobIpBaseGeomNorm_Type) >= 0;
 }
-
