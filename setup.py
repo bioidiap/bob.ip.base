@@ -85,7 +85,7 @@ setup(
     name='bob.ip.base',
     version=version,
     description='Basic Image Processing Utilities for Bob',
-    url='http://github.com/bioidiap/bob.ip.base',
+    url='http://gitlab.idiap.ch/bob/bob.ip.base',
     license='BSD',
     author='Andre Anjos',
     author_email='andre.anjos@idiap.ch',
