@@ -820,7 +820,7 @@ static auto extract = bob::extension::FunctionDoc(
   "When MB-LBP features will be extracted, an integral image will be computed to speed up the calculation. "
   "The integral image calculation can be done **before** this function is called, and the integral image can be passed to this function directly. "
   "In this case, please set the ``is_integral_image`` parameter to ``True``.\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [is_integral_image]", "output")

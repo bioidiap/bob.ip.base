@@ -332,7 +332,7 @@ static auto extract = bob::extension::FunctionDoc(
   "It returns a list of descriptors, one for each keypoint and orientation. "
   "The first four values are the x, y, sigma and orientation of the values. "
   "The 128 remaining values define the descriptor.\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [keypoints]", "dst")
@@ -666,7 +666,7 @@ static auto extract_ = bob::extension::FunctionDoc(
   "Computes the dense SIFT features from an input image, using the VLFeat library",
   "If given, the results are put in the output ``dst``, which should be of type float and allocated in the shape :py:func:`output_shape` method.\n\n"
   ".. todo:: Describe the output of the :py:func:`VLDSIFT.extract` method in more detail.\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [dst]", "dst")

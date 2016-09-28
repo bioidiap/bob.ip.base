@@ -337,7 +337,7 @@ static auto extract = bob::extension::FunctionDoc(
   ".. note::\n\n  Instead of the eyes, any two fixed positions can be used to normalize the face. "
   "This can simply be achieved by selecting two other nodes in the constructor (see :py:class:`FaceEyesNorm`) and in this function. "
   "Just make sure that 'right' and 'left' refer to the same landmarks in both functions.\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, right_eye, left_eye", "output")

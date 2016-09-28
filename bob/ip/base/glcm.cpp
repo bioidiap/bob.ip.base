@@ -176,7 +176,7 @@ static auto GLCM_doc = bob::extension::ClassDoc(
   .add_prototype("[levels], [min_level], [max_level], [dtype]","")
   .add_prototype("quantization_table","")
   .add_prototype("glcm", "")
-  .add_parameter("dtype", ":py:attr:`numpy.dtype`", "[default: ``numpy.uint8``] The data-type for the GLCM class")
+  .add_parameter("dtype", ":py:class:`numpy.dtype`", "[default: ``numpy.uint8``] The data-type for the GLCM class")
   .add_parameter("glcm", ":py:class:`bob.ip.base.GLCM`", "The GLCM object to use for copy-construction")
 );
 
@@ -622,7 +622,7 @@ static auto extract = bob::extension::FunctionDoc(
   "extract",
   "Extracts the GLCM matrix from the given input image",
   "If given, the output array should have the expected type (numpy.float64) and the size as defined by :py:func:`output_shape` .\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [output]", "output")

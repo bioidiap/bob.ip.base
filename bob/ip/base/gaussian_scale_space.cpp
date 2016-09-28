@@ -795,7 +795,7 @@ static auto process = bob::extension::FunctionDoc(
   "process",
   "Computes a Gaussian Pyramid for an input 2D image",
   "If given, the results are put in the output ``dst``, which output should already be allocated and of the correct size (using the :py:func:`allocate_output` method).\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [dst]", "dst")

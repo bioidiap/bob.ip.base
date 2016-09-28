@@ -297,7 +297,7 @@ static auto filter = bob::extension::FunctionDoc(
   "filter",
   "Filters the input image",
   "If given, the dst array should have the expected type (numpy.float64) and the same size as the src array.\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("src, [dst]", "dst")

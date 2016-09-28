@@ -396,7 +396,7 @@ static auto extract = bob::extension::FunctionDoc(
   "The destination array, if given, should be a 2D or 3D array of type float64 and allocated with the correct dimensions (see :py:func:`output_shape`). "
   "If the destination array is not given (first version), it is generated in the required size. "
   "The blocks can be split into either a 2D array of shape ``(block_index, coefficients)`` by setting ``flat=True``, or into a 3D array of shape ``(block_index_y, block_index_x, coefficients)`` with ``flat=False``.\n\n"
-  ".. note::\n\n  The :py:func:`__call__` function is an alias for this method.",
+  ".. note::\n\n  The `__call__` function is an alias for this method.",
   true
 )
 .add_prototype("input, [flat]", "output")
