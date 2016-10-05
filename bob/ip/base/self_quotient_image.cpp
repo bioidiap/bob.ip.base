@@ -23,7 +23,7 @@ static auto SelfQuotientImage_doc = bob::extension::ClassDoc(
     "Creates an object to preprocess images with the Self Quotient Image algorithm",
     ".. todo:: explain SelfQuotientImage constructor\n\n"
     ".. warning:: Compared to the last Bob version, here the sigma parameter is the **standard deviation** and not the variance. "
-    "This includes that the :py:class:`WeightedGaussian` pyramid is **different**, see https://github.com/bioidiap/bob.ip.base/issues/1.",
+    "This includes that the :py:class:`WeightedGaussian` pyramid is **different**, see https://gitlab.idiap.ch/bob/bob.ip.base/issues/1.",
     true
   )
   .add_prototype("[scales], [size_min], [size_step], [sigma], [border]","")
