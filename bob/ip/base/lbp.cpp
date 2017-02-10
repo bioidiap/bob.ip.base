@@ -8,11 +8,17 @@
  */
 
 #include "main.h"
+#include <boost/assign.hpp>
 
 static inline bool f(PyObject* o){return o != 0 && PyObject_IsTrue(o) > 0;}  /* converts PyObject to bool and returns false if object is NULL */
 
 // ELBP type conversion
-static const std::map<std::string, bob::ip::base::ELBPType> E = {{"regular",  bob::ip::base::ELBP_REGULAR}, {"transitional", bob::ip::base::ELBP_TRANSITIONAL}, {"direction-coded", bob::ip::base::ELBP_DIRECTION_CODED}};
+static const std::map<std::string, bob::ip::base::ELBPType> E = \
+  boost::assign::map_list_of
+  ("regular",  bob::ip::base::ELBP_REGULAR)
+  ("transitional", bob::ip::base::ELBP_TRANSITIONAL)
+  ("direction-coded", bob::ip::base::ELBP_DIRECTION_CODED);
+
 static inline bob::ip::base::ELBPType e(const std::string& o){            /* converts string to ELBP type */
   auto it = E.find(o);
   if (it == E.end()) throw std::runtime_error("The given LBP type '" + o + "' is not known; choose one of ('regular', 'transitional', 'direction-coded')");
@@ -24,7 +30,11 @@ static inline const std::string& e(bob::ip::base::ELBPType o){            /* con
 }
 
 // Border handling
-static const std::map<std::string, bob::ip::base::LBPBorderHandling> B = {{"shrink",  bob::ip::base::LBP_BORDER_SHRINK}, {"wrap", bob::ip::base::LBP_BORDER_WRAP}};
+static const std::map<std::string, bob::ip::base::LBPBorderHandling> B = \
+  boost::assign::map_list_of
+  ("shrink",  bob::ip::base::LBP_BORDER_SHRINK)
+  ("wrap", bob::ip::base::LBP_BORDER_WRAP);
+
 static inline bob::ip::base::LBPBorderHandling b(const std::string& o){  /* converts string to border handling */
   auto it = B.find(o);
   if (it == B.end()) throw std::runtime_error("The given border handling '" + o + "' is not known; choose one of ('shrink', 'wrap')");
