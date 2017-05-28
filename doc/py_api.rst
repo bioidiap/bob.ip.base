@@ -83,3 +83,4 @@ Detailed Information
 --------------------
 
 .. automodule:: bob.ip.base
+   :inherited-members:
