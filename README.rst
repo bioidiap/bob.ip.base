@@ -26,7 +26,7 @@ Bob_. It contains Bob's Basic Image Processing tools.
 Installation
 ------------
 
-Complete Bob's `installation`_ instructions. Then, to install this pacakge,
+Complete Bob's `installation`_ instructions. Then, to install this package,
 run::
 
   $ conda install bob.ip.base
