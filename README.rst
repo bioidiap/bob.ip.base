@@ -2,9 +2,9 @@
 .. Sun 14 Aug 2016 20:01:03 CEST
 
 .. image:: http://img.shields.io/badge/docs-stable-yellow.svg
-   :target: http://pythonhosted.org/bob.ip.base/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.base/stable/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.ip.base/master/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.ip.base/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.base/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.base/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.ip.base/badges/master/coverage.svg
@@ -12,8 +12,6 @@
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.ip.base
 .. image:: http://img.shields.io/pypi/v/bob.ip.base.svg
-   :target: https://pypi.python.org/pypi/bob.ip.base
-.. image:: http://img.shields.io/pypi/dm/bob.ip.base.svg
    :target: https://pypi.python.org/pypi/bob.ip.base
 
 
@@ -28,7 +26,7 @@ Bob_. It contains Bob's Basic Image Processing tools.
 Installation
 ------------
 
-Complete Bob's `installation`_ instructions. Then, to install this pacakge,
+Complete Bob's `installation`_ instructions. Then, to install this package,
 run::
 
   $ conda install bob.ip.base
