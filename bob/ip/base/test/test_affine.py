@@ -330,6 +330,33 @@ def test_geom_norm_position():
   assert numpy.allclose(rotated, (40 - 5. * math.sqrt(2.) * 2, 80. ))
 
 
+def test_geom_norm_color():
+  # tests the geom-norm functionality (copied from old C++ tests)
+
+  test_image = bob.io.base.load(bob.io.base.test_utils.datafile("image_r10.hdf5", "bob.ip.base", "data/affine"))
+  test_image = numpy.array([test_image, test_image, test_image])
+  processed = numpy.ndarray((3, 40, 40))
+
+  # Define a Geometric normalizer
+  # * rotation angle: 10 degrees
+  # * scaling factor: 0.65
+  # * Cropping area: 40x40
+  geom_norm = bob.ip.base.GeomNorm(-10., 0.65, (40, 40), (0, 0))
+
+  # Process giving the upper left corner as the rotation center (and the offset of the cropping area)
+  geom_norm(test_image, processed, (54, 27));
+
+  # compute normalized image
+  normalized = numpy.round(processed).astype(numpy.uint8)
+
+  # This is the actual test image that was copied from the old implementation of Bob
+  reference_file = bob.io.base.test_utils.datafile("image_r10_geom_norm.hdf5", "bob.ip.base", "data/affine")
+  reference_image = bob.io.base.load(reference_file)
+  for i in range(3):
+    assert numpy.allclose(normalized[i], reference_image)
+
+
+
 ###############################################
 ########## FaceEyesNorm #######################
 ###############################################
@@ -357,15 +384,15 @@ def test_face_eyes_norm():
   reference_image = bob.io.base.load(reference_file)
 
   assert numpy.allclose(normalized, reference_image)
-  
+
   # check that the color conversion also works
   color = numpy.array((test_image, test_image, test_image))
   processed = fen(color, right_eye, left_eye)
   assert processed.ndim == 3
   normalized = numpy.round(processed).astype(numpy.uint8)
   assert all(numpy.allclose(normalized[i], reference_image) for i in range(3))
-  
-  
+
+
 
   # check that the eye positions are actually alligned correctly
   center = ((right_eye[0] + left_eye[0]) / 2., (right_eye[1] + left_eye[1]) / 2.)
@@ -382,5 +409,3 @@ def test_face_eyes_norm():
   processed = fen(test_image, right_eye, left_eye)
   normalized = numpy.round(processed).astype(numpy.uint8)
   assert numpy.allclose(normalized, reference_image)
-
-

@@ -252,14 +252,23 @@ static auto process = bob::extension::FunctionDoc(
 .add_return("transformed", "uint16", "The resulting GeomNorm code at the given position in the image")
 ;
 
-template <typename T>
+template <typename T,int N>
 static PyObject* process_inner(PyBobIpBaseGeomNormObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* input_mask, PyBlitzArrayObject* output, PyBlitzArrayObject* output_mask, const blitz::TinyVector<double,2>& offset){
   if (input_mask && output_mask){
-    self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<bool,2>(input_mask), *PyBlitzArrayCxx_AsBlitz<double,2>(output), *PyBlitzArrayCxx_AsBlitz<bool,2>(output_mask), offset);
+    self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,N>(input), *PyBlitzArrayCxx_AsBlitz<bool,N>(input_mask), *PyBlitzArrayCxx_AsBlitz<double,N>(output), *PyBlitzArrayCxx_AsBlitz<bool,N>(output_mask), offset);
   } else {
-    self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,2>(input), *PyBlitzArrayCxx_AsBlitz<double,2>(output), offset);
+    self->cxx->process(*PyBlitzArrayCxx_AsBlitz<T,N>(input), *PyBlitzArrayCxx_AsBlitz<double,N>(output), offset);
   }
   Py_RETURN_NONE;
+}
+
+template <typename T>
+static PyObject* process_inner1(PyBobIpBaseGeomNormObject* self, PyBlitzArrayObject* input, PyBlitzArrayObject* input_mask, PyBlitzArrayObject* output, PyBlitzArrayObject* output_mask, const blitz::TinyVector<double,2>& offset){
+  switch (input->ndim){
+    case 2: return process_inner<T,2>(self, input, input_mask, output, output_mask, offset);
+    case 3: return process_inner<T,3>(self, input, input_mask, output, output_mask, offset);
+    default: return 0;// already handled
+  }
 }
 
 static PyObject* PyBobIpBaseGeomNorm_process(PyBobIpBaseGeomNormObject* self, PyObject* args, PyObject* kwargs) {
@@ -343,9 +352,9 @@ static PyObject* PyBobIpBaseGeomNorm_process(PyBobIpBaseGeomNormObject* self, Py
 
   // finally, process the data
   switch (input->type_num){
-    case NPY_UINT8:   return process_inner<uint8_t>(self, input, input_mask, output, output_mask, center);
-    case NPY_UINT16:  return process_inner<uint16_t>(self, input, input_mask, output, output_mask, center);
-    case NPY_FLOAT64: return process_inner<double>(self, input, input_mask, output, output_mask, center);
+    case NPY_UINT8:   return process_inner1<uint8_t>(self, input, input_mask, output, output_mask, center);
+    case NPY_UINT16:  return process_inner1<uint16_t>(self, input, input_mask, output, output_mask, center);
+    case NPY_FLOAT64: return process_inner1<double>(self, input, input_mask, output, output_mask, center);
     default:
       PyErr_Format(PyExc_TypeError, "`%s' input array of type %s are currently not supported", Py_TYPE(self)->tp_name, PyBlitzArray_TypenumAsString(input->type_num));
       process.print_usage();
