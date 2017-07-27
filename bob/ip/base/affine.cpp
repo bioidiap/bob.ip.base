@@ -420,11 +420,33 @@ bob::extension::FunctionDoc s_extrapolateMask = bob::extension::FunctionDoc(
 .add_prototype("mask, img")
 .add_prototype("mask, img, random_sigma, [neighbors], [rng]")
 .add_parameter("mask", "array_like (2D, bool)", "The mask which has the valid pixel set to ``True`` and the invalid pixel set to ``False``")
-.add_parameter("img", "array_like (2D, bool)", "The image that will be filled; must have the same shape as ``mask``")
+.add_parameter("img", "array_like (2D or 3D, bool)", "The image that will be filled; must have the same shape as ``mask``")
 .add_parameter("random_sigma", "float", "The standard deviation of the random factor to multiply thevalid pixel value from the border with; must be greater than or equal to 0")
 .add_parameter("neighbors", "int", "[Default: 5] The number of neighbors of valid border pixels to choose one from; set ``neighbors=0`` to disable random selection")
 .add_parameter("rng", ":py:class:`bob.core.random.mt19937`", "[Default: rng initialized with the system time] The random number generator to consider")
 ;
+
+template <int N>
+static void extrapolate_inner(PyBlitzArrayObject* mask, PyBlitzArrayObject* img){
+  switch (img->type_num){
+    case NPY_UINT8:   bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint8_t, N>(img)); break;
+    case NPY_UINT16:  bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint16_t, N>(img)); break;
+    case NPY_FLOAT64: bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<double, N>(img)); break;
+    default:
+      throw std::runtime_error((boost::format("img arrays of type %s are currently not supported") % PyBlitzArray_TypenumAsString(img->type_num)).str());
+  }
+}
+
+template <int N>
+static void extrapolate_inner2(PyBlitzArrayObject* mask, PyBlitzArrayObject* img, PyBoostMt19937Object* rng, double sigma, int neighbors){
+  switch (img->type_num){
+    case NPY_UINT8:   bob::ip::base::extrapolateMaskRandom(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint8_t, N>(img), *rng->rng, sigma, neighbors); break;
+    case NPY_UINT16:  bob::ip::base::extrapolateMaskRandom(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint16_t, N>(img), *rng->rng, sigma, neighbors); break;
+    case NPY_FLOAT64: bob::ip::base::extrapolateMaskRandom(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<double, N>(img), *rng->rng, sigma, neighbors); break;
+    default:
+      throw std::runtime_error((boost::format("img arrays of type %s are currently not supported") % PyBlitzArray_TypenumAsString(img->type_num)).str());
+  }
+}
 
 PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject* args, PyObject* kwargs) {
   BOB_TRY
@@ -450,30 +472,24 @@ PyObject* PyBobIpBase_extrapolateMask(PyObject*, PyObject* args, PyObject* kwarg
     PyErr_Format(PyExc_TypeError, "extrapolate_mask: the mask must be 2D and of boolean type");
     return 0;
   }
-  if (img->ndim != 2) {
-    PyErr_Format(PyExc_TypeError, "extrapolate_mask: the img must be 2D");
+  if (img->ndim != 2 && img->ndim != 3) {
+    PyErr_Format(PyExc_TypeError, "extrapolate_mask: the img must be 2D or 3D");
     return 0;
   }
 
   if (sigma < 0){
     // first variant
-    switch (img->type_num){
-      case NPY_UINT8:   bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint8_t, 2>(img)); break;
-      case NPY_UINT16:  bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint16_t, 2>(img)); break;
-      case NPY_FLOAT64: bob::ip::base::extrapolateMask(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<double, 2>(img)); break;
-      default:
-        PyErr_Format(PyExc_TypeError, "extrapolate_mask: img arrays of type %s are currently not supported", PyBlitzArray_TypenumAsString(img->type_num));
-        return 0;
+    switch (img->ndim){
+      case 2: extrapolate_inner<2>(mask, img); break;
+      case 3: extrapolate_inner<3>(mask, img); break;
+      default: break; // already handled
     }
   } else {
     // second variant
-    switch (img->type_num){
-      case NPY_UINT8:   bob::ip::base::extrapolateMaskRandom(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint8_t, 2>(img), *rng->rng, sigma, neighbors); break;
-      case NPY_UINT16:  bob::ip::base::extrapolateMaskRandom(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<uint16_t, 2>(img), *rng->rng, sigma, neighbors); break;
-      case NPY_FLOAT64: bob::ip::base::extrapolateMaskRandom(*PyBlitzArrayCxx_AsBlitz<bool, 2>(mask), *PyBlitzArrayCxx_AsBlitz<double, 2>(img), *rng->rng, sigma, neighbors); break;
-      default:
-        PyErr_Format(PyExc_TypeError, "extrapolate_mask: img arrays of type %s are currently not supported", PyBlitzArray_TypenumAsString(img->type_num));
-        return 0;
+    switch (img->ndim){
+      case 2: extrapolate_inner2<2>(mask, img, rng, sigma, neighbors); break;
+      case 3: extrapolate_inner2<3>(mask, img, rng, sigma, neighbors); break;
+      default: break; // already handled
     }
   }
 
