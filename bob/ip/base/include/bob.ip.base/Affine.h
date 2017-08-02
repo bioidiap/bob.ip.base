@@ -438,6 +438,39 @@ namespace bob { namespace ip { namespace base {
     }
   }
 
+  /**
+    * brief Color version of mask extrapolation
+    */
+  template <typename T>
+  void extrapolateMask(const blitz::Array<bool,2>& mask, blitz::Array<T,3>& img){
+    blitz::Range a = blitz::Range::all();
+    for (int i = 0; i < img.extent(0); ++i){
+      blitz::Array<T,2> slice(img(i,a,a));
+      extrapolateMask(mask(a,a), slice);
+    }
+  }
+
+
+  template <typename T>
+  void _copy(blitz::Array<T,2>& img, const blitz::TinyVector<int,2>& to, const blitz::TinyVector<int,2>& from, double random_factor, boost::mt19937& rng){
+    T value = img(from);
+    if (random_factor){
+      value = static_cast<T>(bob::core::random::normal_distribution<double>(1., random_factor)(rng) * value);
+    }
+    img(to) = value;
+  }
+
+  template <typename T>
+  void _copy(blitz::Array<T,3>& img, const blitz::TinyVector<int,2>& to, const blitz::TinyVector<int,2>& from, double random_factor, boost::mt19937& rng){
+    blitz::Array<T,1> pixel(img(blitz::Range::all(), from[0], from[1]));
+    if (random_factor){
+      double factor = bob::core::random::normal_distribution<double>(1., random_factor)(rng);
+      for (int i = 0; i < img.extent(0); ++i)
+        pixel(i) = static_cast<T>(pixel(i) * factor);
+    }
+    img(blitz::Range::all(), to[0], to[1]) = pixel;
+  }
+
 
   /**
     * @brief Function which fills  unmasked pixel areas of an image with pixel values from the border of the masked part of the image
@@ -453,10 +486,11 @@ namespace bob { namespace ip { namespace base {
     *   high performance. A copy might be done by the user before calling
     *   the function if required.
     */
-  template <typename T>
-  void extrapolateMaskRandom(const blitz::Array<bool,2>& mask, blitz::Array<T,2>& img, boost::mt19937& rng, double random_factor = 0.01, int neighbors = 5){
+  template <typename T, int N>
+  void extrapolateMaskRandom(const blitz::Array<bool,2>& mask, blitz::Array<T,N>& img, boost::mt19937& rng, double random_factor = 0.01, int neighbors = 5){
     // Check input and output size
-    bob::core::array::assertSameShape(mask, img);
+    blitz::TinyVector<int,2> shape(img.extent(N-2), img.extent(N-1));
+    bob::core::array::assertSameShape(mask, shape);
 
     // get the masked center
     int miny = mask.extent(0)-1, maxy = 0, minx = mask.extent(1)-1, maxx = 0;
@@ -536,30 +570,31 @@ namespace bob { namespace ip { namespace base {
         if (valid_y * next_dir_y + valid_x * next_dir_x >= border[next_index]){
           bob::core::warn << "Could not find valid pixel in direction (" << next_dir_y << ", " << next_dir_x << ") at pixel position (" << current_pos_y << ", " << current_pos_x << "); is your mask convex?";
         } else {
-          T value = static_cast<T>(0);
           // choose one of the next pixels
+          std::vector<blitz::TinyVector<int,2>> locations;
           if (neighbors >= 1){
-            std::vector<T> values;
             for (int c = -neighbors; c <= neighbors; ++c){
               int pos_y = valid_y + c * current_dir_y;
               int pos_x = valid_x + c * current_dir_x;
               if (pos_y >= 0 && pos_y < img.extent(0) && pos_x >= 0 && pos_x < img.extent(1) && filled_mask(pos_y, pos_x)){
-                values.push_back(img(pos_y, pos_x));
+                locations.push_back(blitz::TinyVector<int,2>(pos_y, pos_x));
               }
             }
-            if (!values.size()){
-              bob::core::warn << "Could not find valid pixel in range " << neighbors << " close to the border at pixel position (" << current_pos_y << ", " << current_pos_x << "); is your mask convex?";
-            } else {
-              // choose random value
-              value = values[boost::uniform_int<int>(0, values.size()-1)(rng)];
-            }
           } else { // neighbors == 1
-            value = img(valid_y, valid_x);
+            locations.push_back(blitz::TinyVector<int,2>(valid_y, valid_x));
           }
-          if (random_factor){
-            value = static_cast<T>(bob::core::random::normal_distribution<double>(1., random_factor)(rng) * value);
+
+          // choose random location
+          blitz::TinyVector<int,2> location;
+          if (!locations.size()){
+            bob::core::warn << "Could not find valid pixel in range " << neighbors << " close to the border at pixel position (" << current_pos_y << ", " << current_pos_x << "); is your mask convex?";
+            location = blitz::TinyVector<int,2>(current_pos_y, current_pos_x);
+          } else {
+            location = locations[boost::uniform_int<int>(0, locations.size()-1)(rng)];
           }
-          img(current_pos_y, current_pos_x) = value;
+
+          // copy pixel value
+          _copy(img, blitz::TinyVector<int,2>(current_pos_y, current_pos_x), location, random_factor, rng);
           filled_mask(current_pos_y, current_pos_x) = true;
         }
       } // write value

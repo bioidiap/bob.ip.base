@@ -92,9 +92,14 @@ def test_extrapolate_mask():
   bob.ip.base.extrapolate_mask(a2_5_3, i2_5_3)
   assert numpy.allclose(i2_5_3, s2_5_3)
 
+  # test color image
+  i = numpy.array([i2_5, i2_5, i2_5])
+  bob.ip.base.extrapolate_mask(a2_5_1,i)
+  assert numpy.allclose(i, [s2_5_1,s2_5_1,s2_5_1])
+
 
 ###############################################
-#### random image extrapolartion with mask ####
+#### random image extrapolation with mask #####
 ###############################################
 
 fill_src_image = numpy.array([
@@ -128,6 +133,11 @@ def test_extrapolate_random():
 
   assert numpy.allclose(image, fill_ref_image)
 
+  # test color image
+  color_image = numpy.array([fill_src_image.astype(numpy.float64)]*3)
+  bob.ip.base.extrapolate_mask(fill_src_mask, color_image, random_sigma = 0.05, neighbors = 1, rng = bob.core.random.mt19937(42))
+
+  assert numpy.allclose(image, [fill_ref_image]*3)
 
 
 ###############################################
