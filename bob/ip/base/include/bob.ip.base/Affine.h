@@ -571,7 +571,7 @@ namespace bob { namespace ip { namespace base {
           bob::core::warn << "Could not find valid pixel in direction (" << next_dir_y << ", " << next_dir_x << ") at pixel position (" << current_pos_y << ", " << current_pos_x << "); is your mask convex?";
         } else {
           // choose one of the next pixels
-          std::vector<blitz::TinyVector<int,2>> locations;
+          std::vector<blitz::TinyVector<int,2> > locations;
           if (neighbors >= 1){
             for (int c = -neighbors; c <= neighbors; ++c){
               int pos_y = valid_y + c * current_dir_y;
