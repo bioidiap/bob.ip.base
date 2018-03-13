@@ -1,5 +1,4 @@
 setuptools
-matplotlib
 bob.extension
 bob.blitz
 bob.core

@@ -25,7 +25,6 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
-    - matplotlib {{ matplotlib }}
     - bob.extension
     - bob.blitz
     - bob.core
@@ -39,7 +38,6 @@ requirements:
   run:
     - python
     - setuptools
-    - matplotlib
     - boost
     - {{ pin_compatible('numpy') }}
 
@@ -58,6 +56,7 @@ test:
     - coverage
     - sphinx
     - sphinx_rtd_theme
+    - matplotlib
 
 about:
   home: https://www.idiap.ch/software/bob/
