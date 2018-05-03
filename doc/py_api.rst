@@ -57,6 +57,7 @@ Functions
    bob.ip.base.angle_to_horizontal
    bob.ip.base.block
    bob.ip.base.block_output_shape
+   bob.ip.base.block_generator
    bob.ip.base.crop
    bob.ip.base.shift
 
