@@ -175,3 +175,54 @@ def shift(src, offset, dst = None, src_mask = None, dst_mask = None, fill_patter
 
   # shift image by cropping
   return crop(src, offset, dst=dst, src_mask=src_mask, dst_mask=dst_mask, fill_pattern=fill_pattern)
+
+
+def block_generator(input, block_size, block_overlap=(0, 0)):
+  """Performs a block decomposition of a 2D or 3D array/image
+
+  It works exactly as :any:`bob.ip.base.block` except that it yields the blocks
+  one by one instead of concatenating them. It also works with color images.
+
+  Parameters
+  ----------
+  input : :any:`numpy.ndarray`
+      A 2D array (Height, Width) or a color image (Bob format: Channels,
+      Height, Width).
+  block_size : (:obj:`int`, :obj:`int`)
+      The size of the blocks in which the image is decomposed.
+  block_overlap : (:obj:`int`, :obj:`int`), optional
+      The overlap of the blocks.
+
+  Yields
+  ------
+  array_like
+      A block view of the image. Modifying the blocks will change the original
+      image as well. This is different from :any:`bob.ip.base.block`.
+
+  Raises
+  ------
+  ValueError
+      If the block_overlap is not smaller than block_size.
+      If the block_size is bigger than the image size.
+  """
+  block_h, block_w = block_size
+  overlap_h, overlap_w = block_overlap
+  img_h, img_w = input.shape[-2:]
+
+  if overlap_h >= block_h or overlap_w >= block_w:
+    raise ValueError(
+        "block_overlap: {} must be smaller than block_size: {}.".format(
+            block_overlap, block_size))
+  if img_h < block_h or img_w < block_w:
+    raise ValueError(
+        "block_size: {} must be smaller than the image size: {}.".format(
+            block_size, input.shape[-2:]))
+
+  # Determine the number of block per row and column
+  size_ov_h = block_h - overlap_h
+  size_ov_w = block_w - overlap_w
+
+  # Perform the block decomposition
+  for h in range(0, img_h - block_h + 1, size_ov_h):
+    for w in range(0, img_w - block_w + 1, size_ov_w):
+      yield input[..., h: h + block_h, w: w + block_w]
