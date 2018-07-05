@@ -52,10 +52,8 @@ the :py:func:`bob.ip.base.scale` function of |project| is then called to up-scal
   :options: +NORMALIZE_WHITESPACE
 
   >>> bob.ip.base.scale(A, B)
-  >>> print(B)
-  [[ 1.   1.5  2.   2.5  3. ]
-   [ 2.5  3.   3.5  4.   4.5]
-   [ 4.   4.5  5.   5.5  6. ]]
+  >>> numpy.allclose(B, [[ 1.,1.5, 2., 2.5,  3.],[ 2.5, 3.,3.5, 4., 4.5],[ 4.,4.5, 5., 5.5,6. ]])
+  True
 
 which bi-linearly interpolates image A to image B. Of course, scaling factors
 can be different in horizontal and vertical direction:
@@ -65,10 +63,8 @@ can be different in horizontal and vertical direction:
 
   >>> C = numpy.ndarray( (2, 5), dtype = numpy.float64 )
   >>> bob.ip.base.scale(A, C)
-  >>> print(C)
-  [[ 1.   1.5  2.   2.5  3. ]
-   [ 4.   4.5  5.   5.5  6. ]]
-
+  >>> numpy.allclose(C, [[1., 1.5,  2., 2.5, 3.],[4., 4.5, 5., 5.5, 6. ]])
+  True
 
 Rotating images
 ~~~~~~~~~~~~~~~
@@ -96,10 +92,8 @@ After the creation of the image in the desired size, the
 
   >>> A_rotated = numpy.ndarray( rotated_shape, dtype = numpy.float64 ) # A small image of rotated size
   >>> bob.ip.base.rotate(A, A_rotated, 90)      # execute the rotation
-  >>> print(A_rotated)
-  [[ 3.  6.]
-   [ 2.  5.]
-   [ 1.  4.]]
+  >>> numpy.allclose(A_rotated, [[ 3.,  6.],[ 2.,  5.],[ 1.,  4.]])
+  True
 
 
 Complex image operations
