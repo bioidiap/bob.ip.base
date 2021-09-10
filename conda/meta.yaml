@@ -52,12 +52,11 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - bob-devel {{ bob_devel }}.*
-    - nose
-    - coverage
-    - sphinx
-    - sphinx_rtd_theme
-    - matplotlib
+    - nose {{ nose }}
+    - coverage {{ coverage }}
+    - sphinx {{ sphinx }}
+    - sphinx_rtd_theme {{ sphinx_rtd_theme }}
+    - matplotlib {{ matplotlib }}
 
 about:
   home: https://www.idiap.ch/software/bob/
