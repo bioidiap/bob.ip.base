@@ -20,64 +20,6 @@ import os
 packages = ['boost']
 boost_modules = ['system']
 
-class vl:
-
-  def __init__ (self, only_static=False):
-    """
-    Searches for libvl in stock locations. Allows user to override.
-
-    If the user sets the environment variable BOB_PREFIX_PATH, that prefixes
-    the standard path locations.
-
-    Parameters:
-
-    only_static, boolean
-      A flag, that indicates if we intend to link against the static library only.
-      This will trigger our library search to disconsider shared libraries when searching.
-    """
-    import os
-
-    self.name = 'vlfeat'
-    header = 'vl/sift.h'
-    module = 'vl'
-
-    self.include_directories = []
-    self.libraries = []
-    self.library_directories = []
-    self.macros = []
-
-    # get include directory
-    candidates = bob.extension.utils.find_header(header)
-    if not candidates:
-#      raise RuntimeError("could not find %s's `%s' - have you installed %s on this machine?" % (self.name, header, self.name))
-      return
-    directory = os.path.dirname(candidates[0])
-
-    # find library
-    prefix = os.path.dirname(os.path.dirname(directory))
-    candidates = bob.extension.utils.find_library(module, prefixes=[prefix], only_static=only_static)
-    if not candidates:
-#      raise RuntimeError("cannot find required %s binary module `%s' - make sure libvlfeat-dev is installed on `%s'" % (self.name, module, prefix))
-      return
-
-    # include directories
-    self.include_directories = [os.path.normpath(directory)]
-    # libraries
-    name, ext = os.path.splitext(os.path.basename(candidates[0]))
-    if ext in ['.so', '.a', '.dylib', '.dll']:
-      self.libraries.append(name[3:]) #strip 'lib' from the name
-    else: #link against the whole thing
-      self.libraries.append(':' + os.path.basename(candidates[0]))
-
-    # library path
-    self.library_directories = [os.path.dirname(candidates[0])]
-    # macros
-    self.macros = [('HAVE_%s' % self.name.upper(), '1')]
-
-
-vl_pkg = vl()
-
-system_include_dirs = vl_pkg.include_directories
 
 
 setup(
@@ -122,23 +64,14 @@ setup(
           "bob/ip/base/cpp/DCTFeatures.cpp",
           "bob/ip/base/cpp/TanTriggs.cpp",
           "bob/ip/base/cpp/Gaussian.cpp",
-          "bob/ip/base/cpp/MultiscaleRetinex.cpp",
-          "bob/ip/base/cpp/WeightedGaussian.cpp",
-          "bob/ip/base/cpp/SelfQuotientImage.cpp",
-          "bob/ip/base/cpp/GaussianScaleSpace.cpp",
-          "bob/ip/base/cpp/SIFT.cpp",
+          "bob/ip/base/cpp/WeightedGaussian.cpp",          
           "bob/ip/base/cpp/HOG.cpp",
           "bob/ip/base/cpp/GLCM.cpp",
-          "bob/ip/base/cpp/Wiener.cpp",
         ],
         packages = packages,
         boost_modules = boost_modules,
         bob_packages = bob_packages,
-        system_include_dirs = vl_pkg.library_directories,
         version = version,
-        library_dirs = vl_pkg.library_directories,
-        libraries = vl_pkg.libraries,
-        define_macros = vl_pkg.macros,
       ),
 
       Extension("bob.ip.base._library",
@@ -151,27 +84,17 @@ setup(
           "bob/ip/base/lbp_top.cpp",
           "bob/ip/base/dct_features.cpp",
           "bob/ip/base/tan_triggs.cpp",
-          "bob/ip/base/gaussian.cpp",
-          "bob/ip/base/multiscale_retinex.cpp",
+          "bob/ip/base/gaussian.cpp",        
           "bob/ip/base/weighted_gaussian.cpp",
-          "bob/ip/base/self_quotient_image.cpp",
-          "bob/ip/base/gaussian_scale_space.cpp",
-          "bob/ip/base/sift.cpp",
-          "bob/ip/base/vl_feat.cpp",
           "bob/ip/base/hog.cpp",
           "bob/ip/base/glcm.cpp",
           "bob/ip/base/filter.cpp",
-          "bob/ip/base/wiener.cpp",
           "bob/ip/base/main.cpp",
         ],
         packages = packages,
         boost_modules = boost_modules,
         bob_packages = bob_packages,
-        system_include_dirs = vl_pkg.library_directories,
         version = version,
-        library_dirs = vl_pkg.library_directories,
-        libraries = vl_pkg.libraries,
-        define_macros = vl_pkg.macros,
       ),
     ],
 

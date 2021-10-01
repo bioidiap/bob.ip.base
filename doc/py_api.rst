@@ -21,17 +21,7 @@ Classes
 
    bob.ip.base.TanTriggs
    bob.ip.base.Gaussian
-   bob.ip.base.Wiener
-   bob.ip.base.MultiscaleRetinex
    bob.ip.base.WeightedGaussian
-   bob.ip.base.SelfQuotientImage
-
-   bob.ip.base.GaussianScaleSpace
-   bob.ip.base.GSSKeypoint
-   bob.ip.base.GSSKeypointInfo
-   bob.ip.base.SIFT
-   bob.ip.base.VLSIFT
-   bob.ip.base.VLDSIFT
 
    bob.ip.base.GradientMagnitude
    bob.ip.base.BlockNorm

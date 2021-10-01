@@ -21,16 +21,7 @@
   #include <Python.h>
   #include <boost/preprocessor/stringize.hpp>
 
-  /**
-   * VLFeat version
-   */
-  #if HAVE_VLFEAT
-  #include <vl/generic.h>
-  static PyObject* vlfeat_version() {
-    return Py_BuildValue("s", VL_VERSION_STRING);
-  }
-  #endif // HAVE_VLFEAT
-
+  
   /**
    * bob.ip.base c/c++ api version
    */
