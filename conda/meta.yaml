@@ -33,7 +33,6 @@ requirements:
     - bob.io.base
     - bob.math
     - libblitz {{ libblitz }}
-    - vlfeat {{ vlfeat }}
     - boost {{ boost }}
     - numpy {{ numpy }}
   run:

@@ -23,16 +23,12 @@
 #include <bob.ip.base/DCTFeatures.h>
 #include <bob.ip.base/TanTriggs.h>
 #include <bob.ip.base/Gaussian.h>
-#include <bob.ip.base/MultiscaleRetinex.h>
 #include <bob.ip.base/WeightedGaussian.h>
-#include <bob.ip.base/SelfQuotientImage.h>
-#include <bob.ip.base/GaussianScaleSpace.h>
-#include <bob.ip.base/SIFT.h>
 #include <bob.ip.base/HOG.h>
 #include <bob.ip.base/GeomNorm.h>
 #include <bob.ip.base/FaceEyesNorm.h>
 #include <bob.ip.base/GLCM.h>
-#include <bob.ip.base/Wiener.h>
+
 
 
 /// inserts the given key, value pair into the given dictionaries
@@ -133,17 +129,6 @@ bool init_BobIpBaseGaussian(PyObject* module);
 int PyBobIpBaseGaussian_Check(PyObject* o);
 
 
-// MultiscaleRetinex
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::MultiscaleRetinex> cxx;
-} PyBobIpBaseMultiscaleRetinexObject;
-
-extern PyTypeObject PyBobIpBaseMultiscaleRetinex_Type;
-bool init_BobIpBaseMultiscaleRetinex(PyObject* module);
-int PyBobIpBaseMultiscaleRetinex_Check(PyObject* o);
-
-
 // WeightedGaussian
 typedef struct {
   PyObject_HEAD
@@ -154,78 +139,6 @@ extern PyTypeObject PyBobIpBaseWeightedGaussian_Type;
 bool init_BobIpBaseWeightedGaussian(PyObject* module);
 int PyBobIpBaseWeightedGaussian_Check(PyObject* o);
 
-
-// SelfQuotientImage
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::SelfQuotientImage> cxx;
-} PyBobIpBaseSelfQuotientImageObject;
-
-extern PyTypeObject PyBobIpBaseSelfQuotientImage_Type;
-bool init_BobIpBaseSelfQuotientImage(PyObject* module);
-int PyBobIpBaseSelfQuotientImage_Check(PyObject* o);
-
-
-// SIFT...
-// .. Gaussian Scale Space Keypoint
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::GSSKeypoint> cxx;
-} PyBobIpBaseGSSKeypointObject;
-
-extern PyTypeObject PyBobIpBaseGSSKeypoint_Type;
-int PyBobIpBaseGSSKeypoint_Check(PyObject* o);
-
-// .. Gaussian Scale Space KeypointInfo
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::GSSKeypointInfo> cxx;
-} PyBobIpBaseGSSKeypointInfoObject;
-
-extern PyTypeObject PyBobIpBaseGSSKeypointInfo_Type;
-int PyBobIpBaseGSSKeypointInfo_Check(PyObject* o);
-
-// .. Gaussian Scale Space
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::GaussianScaleSpace> cxx;
-} PyBobIpBaseGaussianScaleSpaceObject;
-
-extern PyTypeObject PyBobIpBaseGaussianScaleSpace_Type;
-bool init_BobIpBaseGaussianScaleSpace(PyObject* module);
-int PyBobIpBaseGaussianScaleSpace_Check(PyObject* o);
-
-// .. SIFT
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::SIFT> cxx;
-} PyBobIpBaseSIFTObject;
-
-extern PyTypeObject PyBobIpBaseSIFT_Type;
-bool init_BobIpBaseSIFT(PyObject* module);
-int PyBobIpBaseSIFT_Check(PyObject* o);
-
-#if HAVE_VLFEAT
-// .. VLSIFT
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::VLSIFT> cxx;
-} PyBobIpBaseVLSIFTObject;
-
-extern PyTypeObject PyBobIpBaseVLSIFT_Type;
-int PyBobIpBaseVLSIFT_Check(PyObject* o);
-
-// .. VLDSIFT
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::VLDSIFT> cxx;
-} PyBobIpBaseVLDSIFTObject;
-
-extern PyTypeObject PyBobIpBaseVLDSIFT_Type;
-int PyBobIpBaseVLDSIFT_Check(PyObject* o);
-
-bool init_BobIpBaseVLFEAT(PyObject* module);
-#endif // HAVE_VLFEAT
 
 
 // HOG...
@@ -264,18 +177,6 @@ extern PyTypeObject PyBobIpBaseGLCM_Type;
 int PyBobIpBaseGLCM_Check(PyObject* o);
 
 bool init_BobIpBaseGLCM(PyObject* module);
-
-
-// .. Wiener filter
-typedef struct {
-  PyObject_HEAD
-  boost::shared_ptr<bob::ip::base::Wiener> cxx;
-} PyBobIpBaseWienerObject;
-
-extern PyTypeObject PyBobIpBaseWiener_Type;
-int PyBobIpBaseWiener_Check(PyObject* o);
-
-bool init_BobIpBaseWiener(PyObject* module);
 
 
 // block

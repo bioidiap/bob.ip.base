@@ -152,19 +152,10 @@ static PyObject* create_module (void) {
   if (!init_BobIpBaseLBPTop(module)) return 0;
   if (!init_BobIpBaseDCTFeatures(module)) return 0;
   if (!init_BobIpBaseTanTriggs(module)) return 0;
-  if (!init_BobIpBaseGaussian(module)) return 0;
-  if (!init_BobIpBaseMultiscaleRetinex(module)) return 0;
-  if (!init_BobIpBaseWeightedGaussian(module)) return 0;
-  if (!init_BobIpBaseSelfQuotientImage(module)) return 0;
-  if (!init_BobIpBaseGaussianScaleSpace(module)) return 0;
-  if (!init_BobIpBaseSIFT(module)) return 0;
+  if (!init_BobIpBaseGaussian(module)) return 0;  
+  if (!init_BobIpBaseWeightedGaussian(module)) return 0;  
   if (!init_BobIpBaseHOG(module)) return 0;
-  if (!init_BobIpBaseGLCM(module)) return 0;
-  if (!init_BobIpBaseWiener(module)) return 0;
-
-#if HAVE_VLFEAT
-  if (!init_BobIpBaseVLFEAT(module)) return 0;
-#endif // HAVE_VLFEAT
+  if (!init_BobIpBaseGLCM(module)) return 0;  
 
 
   static void* PyBobIpBase_API[PyBobIpBase_API_pointers];
