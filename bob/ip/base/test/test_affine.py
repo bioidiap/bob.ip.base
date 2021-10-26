@@ -41,7 +41,7 @@ def test_extrapolate_mask():
     [True, True, True, False, False],
     [True, True, False, False, False],
     [True, False, False, False, False]],
-    dtype = numpy.bool)
+    dtype = bool)
   s2_5_1 = numpy.array([
     [ 0,  1,  2,  3,  4],
     [ 5,  6,  7,  8,  4],
@@ -56,7 +56,7 @@ def test_extrapolate_mask():
     [True, True, True, True, True],
     [False, True, True, True, False],
     [False, False, True, False, False]],
-    dtype = numpy.bool)
+    dtype = bool)
   s2_5_2 = numpy.array([
     [10,  6,  2,  8, 14],
     [10,  6,  7,  8, 14],
@@ -71,7 +71,7 @@ def test_extrapolate_mask():
     [False, True, True, False, False],
     [False, True, True, False, False],
     [False, True, True, False, False]],
-    dtype = numpy.bool)
+    dtype = bool)
   s2_5_3 = numpy.array([
     [0,  1,  2,  3,  4],
     [0,  6,  7,  3,  4],
@@ -290,7 +290,7 @@ def test_geom_norm_with_mask():
   processed = numpy.ndarray((160, 160))
 
   test_mask = test_image != 0;
-  processed_mask = numpy.ndarray(processed.shape, numpy.bool);
+  processed_mask = numpy.ndarray(processed.shape, bool);
 
   # Define a Geometric normalizer
   # * rotation angle: 70 degrees
